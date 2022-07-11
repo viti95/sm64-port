@@ -103,10 +103,14 @@ uint32_t *osmesa_buffer; // 320x240x4 bytes (RGBA)
 static void gfx_dos_init_impl(void) {
     // create Bayer 8x8 dithering matrix
     for (unsigned y = 0; y < 8; ++y)
-        for (unsigned x = 0; x < 8; ++x)
+        for (unsigned x = 0; x < 8; ++x){
             dit_kernel[y][x] =
                 ((x  ) & 4)/4u + ((x  ) & 2)*2u + ((x  ) & 1)*16u
               + ((x^y) & 4)/2u + ((x^y) & 2)*4u + ((x^y) & 1)*32u;
+            dit_kernel[y][x] = (dit_kernel[y][x] & (0x3F - (0x3F >> DIT_BITS))) << 2;
+        }
+            
+            
 
     // create gamma-corrected look-up tables for dithering
     double dtab[256], ptab[256];
@@ -187,7 +191,7 @@ static inline void gfx_dos_swap_buffers_modex(void) {
             // calculate the x part and then just add 16 + 64 until bottom
             outp = VGA_BASE + (x >> 2);
             for (register unsigned y = 0; y < SCREEN_HEIGHT_X; ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
-                d = (dit_kernel[y&7][x&7] & (0x3F - (0x3F >> DIT_BITS))) << 2;
+                d = dit_kernel[y&7][x&7];
                 _farnspokeb(outp, rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d]);
             }
         }
@@ -195,13 +199,14 @@ static inline void gfx_dos_swap_buffers_modex(void) {
 }
 
 static inline void gfx_dos_swap_buffers_mode13(void) {
-    register const RGBA *inp = (RGBA *)GFX_BUFFER;
-    register unsigned outp = VGA_BASE;
-    register unsigned d;
+    const RGBA *inp = (RGBA *)GFX_BUFFER;
+    uint8_t *ptrscreen = VGA_BASE + __djgpp_conventional_base;
+
     for (register unsigned y = 0; y < SCREEN_HEIGHT; ++y) {
-        for (register unsigned x = 0; x < SCREEN_WIDTH; ++x, ++inp, ++outp) {
-            d = (dit_kernel[y&7][x&7] & (0x3F - (0x3F >> DIT_BITS))) << 2;
-            _farnspokeb(outp, rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d]);
+        for (register unsigned x = 0; x < SCREEN_WIDTH; ++x, ++inp, ptrscreen++) {
+            register unsigned d;
+            d = dit_kernel[y&7][x&7];
+            *ptrscreen = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
         }
     }
 }
