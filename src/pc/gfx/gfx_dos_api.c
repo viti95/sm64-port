@@ -89,6 +89,8 @@ static void gfx_dos_shutdown_impl(void) {
 typedef struct { uint8_t r, g, b, a; } RGBA;
 static uint8_t rgbconv[3][256][256];
 static uint8_t dit_kernel[8][8];
+static uint8_t dit_kernel_mode13h[320*200];
+
 
 #ifdef ENABLE_OSMESA
 #include <osmesa.h>
@@ -109,9 +111,12 @@ static void gfx_dos_init_impl(void) {
               + ((x^y) & 4)/2u + ((x^y) & 2)*4u + ((x^y) & 1)*32u;
             dit_kernel[y][x] = (dit_kernel[y][x] & (0x3F - (0x3F >> DIT_BITS))) << 2;
         }
-            
-            
 
+    // optimize Bayer 8x8 dithering matrix access (mode 13H)
+    for (unsigned i = 0; i < 320*200; i++){
+        dit_kernel_mode13h[i] = dit_kernel[(i/320)&7][i&7];
+    }
+            
     // create gamma-corrected look-up tables for dithering
     double dtab[256], ptab[256];
     for(unsigned n = 0; n < 256; ++n) {
@@ -202,12 +207,9 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
     const RGBA *inp = (RGBA *)GFX_BUFFER;
     uint8_t *ptrscreen = VGA_BASE + __djgpp_conventional_base;
 
-    for (register unsigned y = 0; y < SCREEN_HEIGHT; ++y) {
-        for (register unsigned x = 0; x < SCREEN_WIDTH; ++x, ++inp, ptrscreen++) {
-            register unsigned d;
-            d = dit_kernel[y&7][x&7];
-            *ptrscreen = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
-        }
+    for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++, inp++, ptrscreen++){
+        uint8_t d = dit_kernel_mode13h[i];
+        *ptrscreen = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
     }
 }
 
