@@ -102,7 +102,12 @@ uint32_t *osmesa_buffer; // 320x240x4 bytes (RGBA)
 #define GFX_BUFFER gfx_output
 #endif
 
+uint8_t *ptrscreen;
+
 static void gfx_dos_init_impl(void) {
+
+    ptrscreen = VGA_BASE + __djgpp_conventional_base;
+
     // create Bayer 8x8 dithering matrix
     for (unsigned y = 0; y < 8; ++y)
         for (unsigned x = 0; x < 8; ++x){
@@ -205,11 +210,11 @@ static inline void gfx_dos_swap_buffers_modex(void) {
 
 static inline void gfx_dos_swap_buffers_mode13(void) {
     const RGBA *inp = (RGBA *)GFX_BUFFER;
-    uint8_t *ptrscreen = VGA_BASE + __djgpp_conventional_base;
+    uint8_t *vram = ptrscreen;
 
-    for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++, inp++, ptrscreen++){
+    for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++, inp++, vram++){
         uint8_t d = dit_kernel_mode13h[i];
-        *ptrscreen = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
+        *vram = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
     }
 }
 
@@ -288,9 +293,12 @@ static void gfx_dos_swap_buffers_begin(void) {
     DMesaSwapBuffers(db);
 #else
     if (GFX_BUFFER != NULL) {
-        _farsetsel(_dos_ds);
-        if (configScreenHeight == SCREEN_HEIGHT_X)
+        if (configScreenHeight == SCREEN_HEIGHT_X){
+
+        
+            _farsetsel(_dos_ds);
             gfx_dos_swap_buffers_modex();
+        }
         else
             gfx_dos_swap_buffers_mode13();
     }
