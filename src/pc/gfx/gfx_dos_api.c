@@ -96,7 +96,7 @@ static uint8_t dit_kernel_mode13h[320*200];
 #ifdef ENABLE_OSMESA
 #include <osmesa.h>
 OSMesaContext ctx;
-uint32_t *osmesa_buffer; // 320x240x4 bytes (RGBA)
+uint32_t *osmesa_buffer; // 320x240x3 bytes (RGB)
 #define GFX_BUFFER osmesa_buffer
 #else
 #include "gfx_soft.h"
@@ -162,7 +162,7 @@ static void gfx_dos_init_impl(void) {
     }
 
 #ifdef ENABLE_OSMESA
-    osmesa_buffer = (void *)malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
+    osmesa_buffer = (void *)malloc(configScreenWidth * configScreenHeight * 3 * sizeof(GLubyte));
     if (!osmesa_buffer) {
         fprintf(stderr, "osmesa_buffer malloc failed!\n");
         abort();
