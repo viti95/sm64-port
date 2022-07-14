@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 extern bool         configFullscreen;
+extern unsigned int configVideomode;
 extern bool         configDrawSky;
 extern bool         configFiltering;
 extern bool         configEnableSound;

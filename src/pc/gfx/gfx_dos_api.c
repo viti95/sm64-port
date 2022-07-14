@@ -138,27 +138,36 @@ static void gfx_dos_init_impl(void) {
         }
     }
 
-    // if resolution isn't 320x200 or 320x240 reset it to 320x200
-    if (configScreenWidth != SCREEN_WIDTH || (configScreenHeight != SCREEN_HEIGHT && configScreenHeight != SCREEN_HEIGHT_X)) {
-        printf("software mode only supports 320x200 (mode 13h) and 320x240 (mode X)!\ndefaulting to 320x200\n");
-        configScreenWidth = SCREEN_WIDTH;
-        configScreenHeight = SCREEN_HEIGHT;
-        rest(2000);
+    switch (configVideomode){
+        case VM_13H:
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT;
+            set_color_depth(8);
+            set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+            break;
+        case VM_X:
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT_X;
+            set_color_depth(8);
+            set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
+            break;
+        case VM_VESA:
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT_X;
+            set_color_depth(16);
+            set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
+            break;
     }
 
-    // set mode X if height is 240, 13h otherwise
-    if (configScreenHeight == SCREEN_HEIGHT_X)
-        set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
-    else
-        set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
-
-    // set up regular palette as configured above;
-    // however, bias the colors towards darker ones in an exponential curve
-    outportb(PAL_LOAD, 0);
-    for(unsigned color = 0; color < PAL_RBITS * PAL_GBITS * PAL_BBITS; ++color) {
-        outportb(PAL_COLOR, pow(((color / (PAL_BBITS * PAL_GBITS)) % PAL_RBITS) * 1.0 / (PAL_RBITS-1), PAL_GAMMA) * 63);
-        outportb(PAL_COLOR, pow(((color / (PAL_BBITS            )) % PAL_GBITS) * 1.0 / (PAL_GBITS-1), PAL_GAMMA) * 63);
-        outportb(PAL_COLOR, pow(((color                          ) % PAL_BBITS) * 1.0 / (PAL_BBITS-1), PAL_GAMMA) * 63);
+    if (configVideomode == VM_13H || configVideomode == VM_X){
+        // set up regular palette as configured above;
+        // however, bias the colors towards darker ones in an exponential curve
+        outportb(PAL_LOAD, 0);
+        for(unsigned color = 0; color < PAL_RBITS * PAL_GBITS * PAL_BBITS; ++color) {
+            outportb(PAL_COLOR, pow(((color / (PAL_BBITS * PAL_GBITS)) % PAL_RBITS) * 1.0 / (PAL_RBITS-1), PAL_GAMMA) * 63);
+            outportb(PAL_COLOR, pow(((color / (PAL_BBITS            )) % PAL_GBITS) * 1.0 / (PAL_GBITS-1), PAL_GAMMA) * 63);
+            outportb(PAL_COLOR, pow(((color                          ) % PAL_BBITS) * 1.0 / (PAL_BBITS-1), PAL_GAMMA) * 63);
+        }
     }
 
 #ifdef ENABLE_OSMESA
@@ -294,14 +303,17 @@ static void gfx_dos_swap_buffers_begin(void) {
     DMesaSwapBuffers(db);
 #else
     if (GFX_BUFFER != NULL) {
-        if (configScreenHeight == SCREEN_HEIGHT_X){
-
-        
-            _farsetsel(_dos_ds);
-            gfx_dos_swap_buffers_modex();
+        switch(configVideomode){
+            case VM_13H:
+                gfx_dos_swap_buffers_mode13();
+                break;
+            case VM_X:
+                _farsetsel(_dos_ds);
+                gfx_dos_swap_buffers_modex();
+                break;
+            case VM_VESA:
+                break;
         }
-        else
-            gfx_dos_swap_buffers_mode13();
     }
 #endif
 }

@@ -30,6 +30,7 @@ struct ConfigOption {
  *Config options and default values
  */
 bool configFullscreen            = false;
+unsigned int configVideomode     = 1;
 bool configDrawSky               = true;
 bool configFiltering             = true;
 bool configEnableSound           = false;
@@ -72,6 +73,7 @@ unsigned int configKeyStickRight = 0x20;
 
 static const struct ConfigOption options[] = {
     {.name = "fullscreen",        .type = CONFIG_TYPE_BOOL, .boolValue = &configFullscreen},
+    {.name = "videomode",         .type = CONFIG_TYPE_UINT, .uintValue = &configVideomode},
     {.name = "draw_sky",          .type = CONFIG_TYPE_BOOL, .boolValue = &configDrawSky},
     {.name = "texture_filtering", .type = CONFIG_TYPE_BOOL, .boolValue = &configFiltering},
     {.name = "enable_fog",        .type = CONFIG_TYPE_BOOL, .boolValue = &configEnableFog},

@@ -5,4 +5,8 @@
 
 extern struct GfxWindowManagerAPI gfx_dos_api;
 
+#define VM_13H   1
+#define VM_X     2
+#define VM_VESA  3
+
 #endif
