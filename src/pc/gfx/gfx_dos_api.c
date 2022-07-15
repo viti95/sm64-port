@@ -22,6 +22,7 @@
 #include <time.h>
 #include <stdarg.h>
 #include <allegro.h>
+#include <dpmi.h>
 
 #ifdef ENABLE_DMESA
 
@@ -104,10 +105,9 @@ uint32_t *osmesa_buffer; // 320x240x3 bytes (RGB)
 #endif
 
 uint8_t *ptrscreen;
+unsigned long screen_base_addr;
 
 static void gfx_dos_init_impl(void) {
-
-    ptrscreen = VGA_BASE + __djgpp_conventional_base;
 
     // create Bayer 8x8 dithering matrix
     for (unsigned y = 0; y < 8; ++y)
@@ -144,18 +144,22 @@ static void gfx_dos_init_impl(void) {
             configScreenHeight = SCREEN_HEIGHT;
             set_color_depth(8);
             set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+            ptrscreen = VGA_BASE + __djgpp_conventional_base;
             break;
         case VM_X:
             configScreenWidth = SCREEN_WIDTH;
             configScreenHeight = SCREEN_HEIGHT_X;
             set_color_depth(8);
             set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
+            ptrscreen = VGA_BASE + __djgpp_conventional_base;
             break;
         case VM_VESA:
             configScreenWidth = SCREEN_WIDTH;
             configScreenHeight = SCREEN_HEIGHT_X;
             set_color_depth(16);
             set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
+            __dpmi_get_segment_base_address(screen->seg, &ptrscreen);
+            ptrscreen -=__djgpp_base_address;
             break;
     }
 
@@ -225,6 +229,17 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
     for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++, inp++, vram++){
         uint8_t d = dit_kernel_mode13h[i];
         *vram = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
+    }
+}
+
+static inline void gfx_dos_swap_buffers_vesa(void) {
+    const RGBx *inp = (RGBx *)GFX_BUFFER;
+    uint16_t *vram = ptrscreen;
+
+
+    for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT_X; i++, inp++, vram++){
+        uint16_t color = (inp->r/7) | ((inp->g/3)*64) | ((inp->b/7)*2048);
+        *vram = color;
     }
 }
 
@@ -312,6 +327,7 @@ static void gfx_dos_swap_buffers_begin(void) {
                 gfx_dos_swap_buffers_modex();
                 break;
             case VM_VESA:
+                gfx_dos_swap_buffers_vesa();
                 break;
         }
     }
