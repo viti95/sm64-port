@@ -238,7 +238,7 @@ static inline void gfx_dos_swap_buffers_vesa(void) {
 
 
     for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT_X; i++, inp++, vram++){
-        uint16_t color = ((inp->b >> 3) | ((inp->g >> 2) << 5) | ((inp->r >> 3) << 11));
+        uint16_t color = ((inp->r & 0b11111000) << 8) | ((inp->g & 0b11111100) << 3) | (inp->b >> 3);
         *vram = color;
     }
 }
