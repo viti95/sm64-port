@@ -88,7 +88,6 @@ static void gfx_dos_shutdown_impl(void) {
 #define umin(a, b) (((a) < (b)) ? (a) : (b))
 
 typedef struct { uint8_t r, g, b, a; } RGBA;
-typedef struct { uint8_t r, g, b; } RGBx;
 static uint8_t rgbconv[3][256][256];
 static uint8_t dit_kernel[8][8];
 static uint8_t dit_kernel_mode13h[320*200];
@@ -175,12 +174,12 @@ static void gfx_dos_init_impl(void) {
     }
 
 #ifdef ENABLE_OSMESA
-    osmesa_buffer = (void *)malloc(configScreenWidth * configScreenHeight * 3 * sizeof(GLubyte));
+    osmesa_buffer = (void *)malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
     if (!osmesa_buffer) {
         fprintf(stderr, "osmesa_buffer malloc failed!\n");
         abort();
     }
-    ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
+    ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
     if (!OSMesaMakeCurrent(ctx, osmesa_buffer, GL_UNSIGNED_BYTE, configScreenWidth, configScreenHeight)) {
         fprintf(stderr, "OSMesaMakeCurrent failed!\n");
         abort();
@@ -202,7 +201,7 @@ static void gfx_dos_shutdown_impl(void) {
 static inline void gfx_dos_swap_buffers_modex(void) {
     // we're gonna be only sending plane switch commands until the end of the function
     outportb(REG_SELECT, REG_MASK);
-    register const RGBx *inp;
+    register const RGBA *inp;
     register unsigned outp;
     register unsigned d;
     // the pixels go 0 1 2 3 0 1 2 3, so we can't afford switching planes every pixel
@@ -210,7 +209,7 @@ static inline void gfx_dos_swap_buffers_modex(void) {
     for (unsigned plane = 0; plane < 4; ++plane) {
         outportb(REG_VALUE, 1 << plane);
         for (register unsigned x = plane; x < SCREEN_WIDTH; x += 4) {
-            inp = (RGBx *)(GFX_BUFFER + x);
+            inp = (RGBA *)(GFX_BUFFER + x);
             // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
             // calculate the x part and then just add 16 + 64 until bottom
             outp = VGA_BASE + (x >> 2);
@@ -223,7 +222,7 @@ static inline void gfx_dos_swap_buffers_modex(void) {
 }
 
 static inline void gfx_dos_swap_buffers_mode13(void) {
-    const RGBx *inp = (RGBx *)GFX_BUFFER;
+    const RGBA *inp = (RGBA *)GFX_BUFFER;
     uint8_t *vram = ptrscreen;
 
     for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++, inp++, vram++){
@@ -233,13 +232,13 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
 }
 
 static inline void gfx_dos_swap_buffers_vesa(void) {
-    const RGBx *inp = (RGBx *)GFX_BUFFER;
+    uint32_t *inp = GFX_BUFFER;
     uint16_t *vram = ptrscreen;
 
-
     for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT_X; i++, inp++, vram++){
-        uint16_t color = ((inp->r & 0b11111000) << 8) | ((inp->g & 0b11111100) << 3) | (inp->b >> 3);
-        *vram = color;
+        *inp &= 0b00000000111111111111110011111000;
+        RGBA *inps = (RGBA *)inp;
+        *vram = (inps->r << 8) | (inps->g << 3) | (inps->b >> 3);
     }
 }
 
