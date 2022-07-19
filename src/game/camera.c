@@ -109,11 +109,8 @@ u8 sFramesPaused;
 extern struct CameraFOVStatus sFOVState;
 extern struct TransitionInfo sModeTransition;
 extern struct PlayerGeometry sMarioGeometry;
-extern s16 unusedFreeRoamWallYaw;
 extern s16 sAvoidYawVel;
 extern s16 sCameraYawAfterDoorCutscene;
-extern s16 unusedSplinePitch;
-extern s16 unusedSplineYaw;
 extern struct HandheldShakePoint sHandheldShakeSpline[4];
 extern s16 sHandheldShakeMag;
 extern f32 sHandheldShakeTimer;
@@ -121,17 +118,12 @@ extern f32 sHandheldShakeInc;
 extern s16 sHandheldShakePitch;
 extern s16 sHandheldShakeYaw;
 extern s16 sHandheldShakeRoll;
-extern u32 unused8033B30C;
-extern u32 unused8033B310;
 extern s16 sSelectionFlags;
-extern s16 unused8033B316;
 extern s16 s2ndRotateFlags;
-extern s16 unused8033B31A;
 extern s16 sCameraSoundFlags;
 extern u16 sCButtonsPressed;
 extern s16 sCutsceneDialogID;
 extern struct LakituState gLakituState;
-extern s16 unused8033B3E8;
 extern s16 sAreaYaw;
 extern s16 sAreaYawChange;
 extern s16 sLakituDist;
@@ -160,7 +152,6 @@ extern struct CutsceneSplinePoint sCurCreditsSplinePos[32];
 extern struct CutsceneSplinePoint sCurCreditsSplineFocus[32];
 extern s16 sCutsceneSplineSegment;
 extern f32 sCutsceneSplineSegmentProgress;
-extern s16 unused8033B6E8;
 extern s16 sCutsceneShot;
 extern s16 gCutsceneTimer;
 extern struct CutsceneVariable sCutsceneVars[10];
@@ -177,7 +168,6 @@ struct CameraFOVStatus sFOVState;
 struct TransitionInfo sModeTransition;
 struct PlayerGeometry sMarioGeometry;
 struct Camera *gCamera;
-s16 unusedFreeRoamWallYaw;
 s16 sAvoidYawVel;
 s16 sCameraYawAfterDoorCutscene;
 /**
@@ -190,9 +180,6 @@ struct CutsceneSplinePoint sCurCreditsSplinePos[32];
  */
 struct CutsceneSplinePoint sCurCreditsSplineFocus[32];
 
-s16 unusedSplinePitch;
-s16 unusedSplineYaw;
-
 /**
  * The progress (from 0 to 1) through the current spline segment.
  * When it becomes >= 1, 1.0 is subtracted from it and sCutsceneSplineSegment is increased.
@@ -203,7 +190,6 @@ f32 sCutsceneSplineSegmentProgress;
  * The current segment of the CutsceneSplinePoint[] being used.
  */
 s16 sCutsceneSplineSegment;
-s16 unused8033B6E8;
 
 // Shaky Hand-held Camera effect variables
 struct HandheldShakePoint sHandheldShakeSpline[4];
@@ -224,9 +210,6 @@ u32 gCutsceneObjSpawn;
  */
 s32 gObjCutsceneDone;
 
-u32 unused8033B30C;
-u32 unused8033B310;
-
 /**
  * Determines which R-Trigger mode is selected in the pause menu.
  */
@@ -236,7 +219,6 @@ s16 sSelectionFlags;
  * Flags that determine what movements the camera should start / do this frame.
  */
 s16 gCameraMovementFlags;
-s16 unused8033B316;
 
 /**
  * Flags that change how modes operate and how Lakitu moves.
@@ -249,7 +231,6 @@ s16 sStatusFlags;
  * determine whether to rotate all the way, or just to 60 degrees.
  */
 s16 s2ndRotateFlags;
-s16 unused8033B31A;
 /**
  * Flags that control buzzes and sounds that play, mostly for C-button input.
  */
@@ -270,10 +251,6 @@ s16 sCutsceneShot;
  * The current frame of the cutscene shot.
  */
 s16 gCutsceneTimer;
-s16 unused8033B3E8;
-#ifdef VERSION_EU
-s16 unused8033B3E82;
-#endif
 /**
  * The angle of the direction vector from the area's center to Mario's position.
  */
@@ -388,11 +365,8 @@ struct CameraStoredInfo sCameraStoreCUp;
 struct CameraStoredInfo sCameraStoreCutscene;
 
 // first iteration of data
-u32 unused8032CFC0 = 0;
 struct Object *gCutsceneFocus = NULL;
 // other camera focuses?
-u32 unused8032CFC8 = 0;
-u32 unused8032CFCC = 0;
 struct Object *gSecondCameraFocus = NULL;
 
 /**
@@ -402,9 +376,6 @@ s16 sYawSpeed = 0x400;
 s32 gCurrLevelArea = 0;
 u32 gPrevLevel = 0;
 
-f32 unused8032CFE0 = 1000.0f;
-f32 unused8032CFE4 = 800.0f;
-u32 unused8032CFE8 = 0;
 f32 gCameraZoomDist = 800.0f;
 
 /**
@@ -434,7 +405,6 @@ u8 sFramesSinceCutsceneEnded = 0;
 u8 sCutsceneDialogResponse = 0;
 struct PlayerCameraState *sMarioCamState = &gPlayerCameraState[0];
 struct PlayerCameraState *sLuigiCamState = &gPlayerCameraState[1];
-u32 unused8032D008 = 0;
 Vec3f sFixedModeBasePosition    = { 646.0f, 143.0f, -1513.0f };
 Vec3f sUnusedModeBasePosition_2 = { 646.0f, 143.0f, -1513.0f };
 Vec3f sUnusedModeBasePosition_3 = { 646.0f, 143.0f, -1513.0f };
@@ -626,25 +596,6 @@ void set_camera_shake_from_point(s16 shake, f32 posX, f32 posY, f32 posZ) {
         case SHAKE_POS_LARGE:
             set_pitch_shake_from_point(0x100, 0x8, 0x3000, 8000.f, posX, posY, posZ);
             set_fov_shake_from_point_preset(SHAKE_FOV_LARGE, posX, posY, posZ);
-            break;
-    }
-}
-
-/**
- * Start a camera shake from an environmental source, but only shake the camera's pitch.
- */
-void unused_set_camera_pitch_shake_env(s16 shake) {
-    switch (shake) {
-        case SHAKE_ENV_EXPLOSION:
-            set_camera_pitch_shake(0x60, 0x8, 0x4000);
-            break;
-
-        case SHAKE_ENV_BOWSER_THROW_BOUNCE:
-            set_camera_pitch_shake(0xC0, 0x8, 0x4000);
-            break;
-
-        case SHAKE_ENV_BOWSER_JUMP:
-            set_camera_pitch_shake(0x100, 0x8, 0x3000);
             break;
     }
 }
@@ -1705,9 +1656,6 @@ struct ParallelTrackingPoint sBBHLibraryParTrackPath[] = {
 s32 unused_update_mode_5_camera(UNUSED struct Camera *c, UNUSED Vec3f focus, UNUSED Vec3f pos) {
 }
 
-static void stub_camera_1(UNUSED s32 unused) {
-}
-
 void mode_boss_fight_camera(struct Camera *c) {
     c->nextYaw = update_boss_fight_camera(c, c->focus, c->pos);
 }
@@ -2187,7 +2135,6 @@ s16 update_default_camera(struct Camera *c) {
     avoidStatus = rotate_camera_around_walls(c, cPos, &avoidYaw, 0x600);
     // If a wall is blocking the view of Mario, then rotate in the calculated direction
     if (avoidStatus == 3) {
-        unusedFreeRoamWallYaw = avoidYaw;
         sAvoidYawVel = yaw;
         sStatusFlags |= CAM_FLAG_COLLIDED_WITH_WALL;
         //! Does nothing
@@ -3216,19 +3163,13 @@ void reset_camera(struct Camera *c) {
     gCutsceneObjSpawn = 0;
     gObjCutsceneDone = FALSE;
     gCutsceneFocus = NULL;
-    unused8032CFC8 = 0;
-    unused8032CFCC = 0;
     gSecondCameraFocus = NULL;
     sCButtonsPressed = 0;
     vec3f_copy(sModeTransition.marioPos, sMarioCamState->pos);
     sModeTransition.framesLeft = 0;
-    unused8032CFCC = -1;
-    unused8032CFC8 = -1;
     gCameraMovementFlags = 0;
     gCameraMovementFlags |= CAM_MOVE_INIT_CAMERA;
-    unused8033B316 = 0;
     sStatusFlags = 0;
-    unused8033B31A = 0;
     sCameraSoundFlags = 0;
     sCUpCameraPitch = 0;
     sModeOffsetYaw = 0;
@@ -3270,8 +3211,6 @@ void reset_camera(struct Camera *c) {
     sFOVState.shakePhase = 0;
     sObjectCutscene = 0;
     gRecentCutscene = 0;
-    unused8033B30C = 0;
-    unused8033B310 = 0;
 }
 
 void init_camera(struct Camera *c) {
@@ -3310,7 +3249,6 @@ void init_camera(struct Camera *c) {
     }
     sCutsceneSplineSegment = 0;
     sCutsceneSplineSegmentProgress = 0.f;
-    unused8033B6E8 = 0;
     sHandheldShakeInc = 0.f;
     sHandheldShakeTimer = 0.f;
     sHandheldShakeMag = 0;
@@ -3565,12 +3503,6 @@ void unused_object_angle_to_vec3s(Vec3s dst, struct Object *o) {
  * The spline is described at www2.cs.uregina.ca/~anima/408/Notes/Interpolation/UniformBSpline.htm
  */
 void evaluate_cubic_spline(f32 u, Vec3f Q, Vec3f a0, Vec3f a1, Vec3f a2, Vec3f a3) {
-    f32 B[4];
-    f32 x;
-    f32 y;
-    f32 z;
-    UNUSED u8 unused[16];
-
     if (u > 1.f) {
         u = 1.f;
     }
@@ -3583,19 +3515,6 @@ void evaluate_cubic_spline(f32 u, Vec3f Q, Vec3f a0, Vec3f a1, Vec3f a2, Vec3f a
     Q[0] = B[0] * a0[0] + B[1] * a1[0] + B[2] * a2[0] + B[3] * a3[0];
     Q[1] = B[0] * a0[1] + B[1] * a1[1] + B[2] * a2[1] + B[3] * a3[1];
     Q[2] = B[0] * a0[2] + B[1] * a1[2] + B[2] * a2[2] + B[3] * a3[2];
-
-    // Unused code
-    B[0] = -0.5f * u * u + u - 0.33333333f;
-    B[1] = 1.5f * u * u - 2.f * u - 0.5f;
-    B[2] = -1.5f * u * u + u + 1.f;
-    B[3] = 0.5f * u * u - 0.16666667f;
-
-    x = B[0] * a0[0] + B[1] * a1[0] + B[2] * a2[0] + B[3] * a3[0];
-    y = B[0] * a0[1] + B[1] * a1[1] + B[2] * a2[1] + B[3] * a3[1];
-    z = B[0] * a0[2] + B[1] * a1[2] + B[2] * a2[2] + B[3] * a3[2];
-
-    unusedSplinePitch = atan2s(sqrtf(x * x + z * z), y);
-    unusedSplineYaw = atan2s(z, x);
 }
 
 /**
@@ -9029,14 +8948,6 @@ BAD_RETURN(s32) cutscene_read_message_start(struct Camera *c) {
     sCUpCameraPitch = -0x830;
     sModeOffsetYaw = 0;
     sCutsceneVars[0].angle[0] = 0;
-}
-
-static void unused_cam_to_mario(struct Camera *c) {
-    Vec3s dir;
-
-    vec3s_set(dir, 0, sMarioCamState->faceAngle[1], 0);
-    offset_rotated_coords(c->pos, sMarioCamState->pos, dir, 0, 100.f, 190.f);
-    offset_rotated_coords(c->focus, sMarioCamState->pos, dir, 0, 70.f, -20.f);
 }
 
 /**

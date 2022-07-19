@@ -34,9 +34,6 @@
 #include "sound_init.h"
 #include "thread6.h"
 
-u32 unused80339F10;
-s8 filler80339F1C[20];
-
 /**************************************************
  *                    ANIMATIONS                  *
  **************************************************/
@@ -1796,8 +1793,6 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 void init_mario(void) {
     Vec3s capPos;
     struct Object *capObject;
-
-    unused80339F10 = 0;
 
     gMarioState->actionTimer = 0;
     gMarioState->framesSinceA = 0xFF;

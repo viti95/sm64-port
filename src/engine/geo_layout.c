@@ -100,8 +100,6 @@ UNUSED s16 D_8038BD7C;
 s16 gGeoLayoutReturnIndex; // similar to RA register in MIPS
 u8 *gGeoLayoutCommand;
 
-u32 unused_8038B894[3] = { 0 };
-
 /*
   0x00: Branch and store return address
    cmd+0x04: void *branchTarget
