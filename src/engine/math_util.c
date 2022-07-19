@@ -12,11 +12,6 @@ Vec4s *gSplineKeyframe;
 float gSplineKeyframeFraction;
 int gSplineState;
 
-// These functions have bogus return values.
-// Disable the compiler warning.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-local-addr"
-
 /// Copy vector 'src' to 'dest'
 void vec3f_copy(Vec3f dest, Vec3f src) {
     dest[0] = src[0];
@@ -26,9 +21,16 @@ void vec3f_copy(Vec3f dest, Vec3f src) {
 
 /// Set vector 'dest' to (x, y, z)
 void vec3f_set(Vec3f dest, f32 x, f32 y, f32 z) {
-    dest[0] = x;
-    dest[1] = y;
-    dest[2] = z;
+
+    u32 *destptr = (u32 *) dest;
+
+    u32 *xptr = (u32 *) &x;
+    u32 *yptr = (u32 *) &y;
+    u32 *zptr = (u32 *) &z;
+
+    destptr[0] = *xptr;
+    destptr[1] = *yptr;
+    destptr[2] = *zptr;
 }
 
 /// Add vector 'a' to 'dest'
