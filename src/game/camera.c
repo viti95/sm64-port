@@ -846,10 +846,10 @@ void pan_ahead_of_player(struct Camera *c) {
     // The camera will pan ahead up to about 30% of the camera's distance to Mario.
     pan[2] = sins(0xC00) * dist;
 
-    rotate_in_xz(pan, pan, sMarioCamState->faceAngle[1]);
+    rotate_in_xz(pan, sMarioCamState->faceAngle[1]);
     // rotate in the opposite direction
     yaw = -yaw;
-    rotate_in_xz(pan, pan, yaw);
+    rotate_in_xz(pan, yaw);
     // Only pan left or right
     pan[2] = 0.f;
 
@@ -870,7 +870,7 @@ void pan_ahead_of_player(struct Camera *c) {
     // Now apply the pan. It's a dir vector to the left or right, rotated by the camera's yaw to Mario
     pan[0] = sPanDistance;
     yaw = -yaw;
-    rotate_in_xz(pan, pan, yaw);
+    rotate_in_xz(pan, yaw);
     vec3f_add(c->focus, pan);
 }
 
@@ -1318,10 +1318,10 @@ s32 update_parallel_tracking_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     // marioOffset[1] = the vertical distance from the path
     // marioOffset[2] = the (parallel) horizontal distance from the path's midpoint
     pathYaw = -pathYaw;
-    rotate_in_xz(marioOffset, marioOffset, pathYaw);
+    rotate_in_xz(marioOffset, pathYaw);
     pathYaw = -pathYaw;
     pathPitch = -pathPitch;
-    rotate_in_yz(marioOffset, marioOffset, pathPitch);
+    rotate_in_yz(marioOffset, pathPitch);
     pathPitch = -pathPitch;
     vec3f_copy(focOffset, marioOffset);
 
@@ -1334,10 +1334,10 @@ s32 update_parallel_tracking_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     camOffset[1] = pos[1] - parMidPoint[1];
     camOffset[2] = pos[2] - parMidPoint[2];
     pathYaw = -pathYaw;
-    rotate_in_xz(camOffset, camOffset, pathYaw);
+    rotate_in_xz(camOffset, pathYaw);
     pathYaw = -pathYaw;
     pathPitch = -pathPitch;
-    rotate_in_yz(camOffset, camOffset, pathPitch);
+    rotate_in_yz(camOffset, pathPitch);
     pathPitch = -pathPitch;
 
     // If Mario is distThresh units away from the camera along the path, move the camera
@@ -4497,7 +4497,7 @@ s32 is_pos_in_bounds(Vec3f pos, Vec3f center, Vec3f bounds, s16 boundsYaw) {
     rel[1] = center[1] - pos[1];
     rel[2] = center[2] - pos[2];
 
-    rotate_in_xz(rel, rel, boundsYaw);
+    rotate_in_xz(rel, boundsYaw);
 
     if (-bounds[0] < rel[0] && rel[0] < bounds[0] &&
         -bounds[1] < rel[1] && rel[1] < bounds[1] &&
@@ -4563,13 +4563,12 @@ f32 calc_hor_dist(Vec3f a, Vec3f b) {
 /**
  * Rotates a vector in the horizontal plane and copies it to a new vector.
  */
-void rotate_in_xz(Vec3f dst, Vec3f src, s16 yaw) {
+void rotate_in_xz(Vec3f vec, s16 yaw) {
     Vec3f tempVec;
 
-    vec3f_copy(tempVec, src);
-    dst[0] = tempVec[2] * sins(yaw) + tempVec[0] * coss(yaw);
-    dst[1] = tempVec[1];
-    dst[2] = tempVec[2] * coss(yaw) - tempVec[0] * sins(yaw);
+    vec3f_copy(tempVec, vec);
+    vec[0] = tempVec[2] * sins(yaw) + tempVec[0] * coss(yaw);
+    vec[2] = tempVec[2] * coss(yaw) - tempVec[0] * sins(yaw);
 }
 
 /**
@@ -4578,13 +4577,12 @@ void rotate_in_xz(Vec3f dst, Vec3f src, s16 yaw) {
  * Note: This function also flips the Z axis, so +Z moves forward, not backward like it would in world
  * space. If possible, use vec3f_set_dist_and_angle()
  */
-void rotate_in_yz(Vec3f dst, Vec3f src, s16 pitch) {
+void rotate_in_yz(Vec3f vec, s16 pitch) {
     Vec3f tempVec;
 
-    vec3f_copy(tempVec, src);
-    dst[2] = -(tempVec[2] * coss(pitch) - tempVec[1] * sins(pitch));
-    dst[1] =   tempVec[2] * sins(pitch) + tempVec[1] * coss(pitch);
-    dst[0] =   tempVec[0];
+    vec3f_copy(tempVec, vec);
+    vec[2] = -(tempVec[2] * coss(pitch) - tempVec[1] * sins(pitch));
+    vec[1] =   tempVec[2] * sins(pitch) + tempVec[1] * coss(pitch);
 }
 
 /**
@@ -9496,8 +9494,8 @@ s32 intro_peach_move_camera_start_to_pipe(struct Camera *c, struct CutsceneSplin
 
     // The two splines used by this function are reflected in the horizontal plane for some reason,
     // so they are rotated every frame. Why do this, Nintendo?
-    rotate_in_xz(c->focus, c->focus, DEGREES(180));
-    rotate_in_xz(c->pos, c->pos, DEGREES(180));
+    rotate_in_xz(c->focus, DEGREES(180));
+    rotate_in_xz(c->pos, DEGREES(180));
 
     vec3f_set(offset, -1328.f, 260.f, 4664.f);
     vec3f_add(c->focus, offset);
