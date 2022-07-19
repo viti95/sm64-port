@@ -130,8 +130,6 @@ void vec3f_normalize(Vec3f dest) {
     dest[2] *= invsqrt;
 }
 
-#pragma GCC diagnostic pop
-
 /// Copy matrix 'src' to 'dest'
 void mtxf_copy(Mat4 dest, Mat4 src) {
     register s32 i;
