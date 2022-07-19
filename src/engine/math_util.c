@@ -14,14 +14,16 @@ int gSplineState;
 
 /// Copy vector 'src' to 'dest'
 void vec3f_copy(Vec3f dest, Vec3f src) {
-    dest[0] = src[0];
-    dest[1] = src[1];
-    dest[2] = src[2];
+    u32 *destptr = (u32 *) dest;
+    u32 *srcptr = (u32 *) src;
+
+    destptr[0] = srcptr[0];
+    destptr[1] = srcptr[1];
+    destptr[2] = srcptr[2];
 }
 
 /// Set vector 'dest' to (x, y, z)
 void vec3f_set(Vec3f dest, f32 x, f32 y, f32 z) {
-
     u32 *destptr = (u32 *) dest;
 
     u32 *xptr = (u32 *) &x;
