@@ -105,7 +105,6 @@ struct GraphNodeOrthoProjection
 struct GraphNodePerspective
 {
     /*0x00*/ struct FnGraphNode fnNode;
-    /*0x18*/ s32 unused;
     /*0x1C*/ f32 fov;   // horizontal field of view in degrees
     /*0x20*/ s16 near;  // near clipping plane
     /*0x22*/ s16 far;   // far clipping plane
@@ -360,7 +359,6 @@ extern s16 gCurGraphNodeIndex;
 extern Vec3f gVec3fZero;
 extern Vec3s gVec3sZero;
 extern Vec3f gVec3fOne;
-extern Vec3s gVec3sOne;
 
 void init_scene_graph_node_links(struct GraphNode *graphNode, s32 type);
 

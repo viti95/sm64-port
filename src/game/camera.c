@@ -6915,21 +6915,11 @@ s16 cutscene_common_set_dialog_state(s32 state) {
     return timer;
 }
 
-/// Unused SSL cutscene?
-static UNUSED void unused_cutscene_mario_dialog_looking_down(UNUSED struct Camera *c) {
-    gCutsceneTimer = cutscene_common_set_dialog_state(3);
-}
-
 /**
  * Cause Mario to enter the normal dialog state.
  */
 static BAD_RETURN(s32) cutscene_mario_dialog(UNUSED struct Camera *c) {
     gCutsceneTimer = cutscene_common_set_dialog_state(1);
-}
-
-/// Unused SSL cutscene?
-static UNUSED void unused_cutscene_mario_dialog_looking_up(UNUSED struct Camera *c) {
-    gCutsceneTimer = cutscene_common_set_dialog_state(2);
 }
 
 /**

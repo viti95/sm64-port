@@ -16,7 +16,6 @@ s16 zeroMtx[4][4] = { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0,
 Vec3f gVec3fZero = { 0.0f, 0.0f, 0.0f };
 Vec3s gVec3sZero = { 0, 0, 0 };
 Vec3f gVec3fOne = { 1.0f, 1.0f, 1.0f };
-UNUSED Vec3s gVec3sOne = { 1, 1, 1 };
 
 /**
  * Initialize a geo node with a given type. Sets all links such that there
@@ -92,7 +91,6 @@ struct GraphNodePerspective *init_graph_node_perspective(struct AllocOnlyPool *p
         graphNode->near = near;
         graphNode->far = far;
         graphNode->fnNode.func = nodeFunc;
-        graphNode->unused = unused;
 
         if (nodeFunc != NULL) {
             nodeFunc(GEO_CONTEXT_CREATE, &graphNode->fnNode.node, pool);
@@ -173,7 +171,6 @@ struct GraphNodeSwitchCase *init_graph_node_switch_case(struct AllocOnlyPool *po
         graphNode->numCases = numCases;
         graphNode->selectedCase = selectedCase;
         graphNode->fnNode.func = nodeFunc;
-        graphNode->unused = unused;
 
         if (nodeFunc != NULL) {
             nodeFunc(GEO_CONTEXT_CREATE, &graphNode->fnNode.node, pool);
@@ -482,7 +479,6 @@ struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *poo
 
         graphNode->background = (background << 16) | background;
         graphNode->fnNode.func = backgroundFunc;
-        graphNode->unused = zero; // always 0, unused
 
         if (backgroundFunc != NULL) {
             backgroundFunc(GEO_CONTEXT_CREATE, &graphNode->fnNode.node, pool);

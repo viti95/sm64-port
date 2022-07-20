@@ -257,11 +257,6 @@ void temporary_pool_clear(struct TemporaryPool *temporary) {
     temporary->entries[1].id = -1;
 }
 
-void unused_803160F8(struct SoundAllocPool *pool) {
-    pool->unused = 0;
-    pool->cur = pool->start;
-}
-
 void sound_init_main_pools(s32 sizeForAudioInitPool) {
     sound_alloc_pool_init(&gAudioInitPool, gAudioHeap, sizeForAudioInitPool);
     sound_alloc_pool_init(&gAudioSessionPool, gAudioHeap + sizeForAudioInitPool, gAudioHeapSize - sizeForAudioInitPool);

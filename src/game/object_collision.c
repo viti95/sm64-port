@@ -7,21 +7,6 @@
 #include "object_list_processor.h"
 #include "spawn_object.h"
 
-struct Object *debug_print_obj_collision(struct Object *a) {
-    struct Object *sp24;
-    UNUSED s32 unused;
-    s32 i;
-
-    for (i = 0; i < a->numCollidedObjs; i++) {
-        print_debug_top_down_objectinfo("ON", 0);
-        sp24 = a->collidedObjs[i];
-        if (sp24 != gMarioObject) {
-            return sp24;
-        }
-    }
-    return NULL;
-}
-
 int detect_object_hitbox_overlap(struct Object *a, struct Object *b) {
     f32 sp3C = a->oPosY - a->hitboxDownOffset;
     f32 sp38 = b->oPosY - b->hitboxDownOffset;

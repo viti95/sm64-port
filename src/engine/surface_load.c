@@ -650,9 +650,6 @@ void clear_dynamic_surfaces(void) {
     }
 }
 
-static void unused_80383604(void) {
-}
-
 /**
  * Applies an object's transformation to the object's vertices.
  */

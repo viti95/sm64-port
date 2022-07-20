@@ -356,20 +356,9 @@ f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil) {
  **************************************************/
 
 /**
- * Find the height of the highest floor below an object.
- */
-f32 unused_obj_find_floor_height(struct Object *obj) {
-    struct Surface *floor;
-    f32 floorHeight = find_floor(obj->oPosX, obj->oPosY, obj->oPosZ, &floor);
-    return floorHeight;
-}
-
-/**
  * Basically a local variable that passes through floor geo info.
  */
 struct FloorGeometry sFloorGeo;
-
-static u8 unused8038BE50[0x40];
 
 /**
  * Return the floor height underneath (xPos, yPos, zPos) and populate `floorGeo`
@@ -475,32 +464,6 @@ f32 find_floor_height(f32 x, f32 y, f32 z) {
     struct Surface *floor;
 
     f32 floorHeight = find_floor(x, y, z, &floor);
-
-    return floorHeight;
-}
-
-/**
- * Find the highest dynamic floor under a given position. Perhaps originally static
- * and dynamic floors were checked separately.
- */
-f32 unused_find_dynamic_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor) {
-    struct SurfaceNode *surfaceList;
-    struct Surface *floor;
-    f32 floorHeight = -11000.0f;
-
-    // Would normally cause PUs, but dynamic floors unload at that range.
-    s16 x = (s16) xPos;
-    s16 y = (s16) yPos;
-    s16 z = (s16) zPos;
-
-    // Each level is split into cells to limit load, find the appropriate cell.
-    s16 cellX = ((x + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0x0F;
-    s16 cellZ = ((z + LEVEL_BOUNDARY_MAX) / CELL_SIZE) & 0x0F;
-
-    surfaceList = gDynamicSurfacePartition[cellZ][cellX][SPATIAL_PARTITION_FLOORS].next;
-    floor = find_floor_from_list(surfaceList, x, y, z, &floorHeight);
-
-    *pfloor = floor;
 
     return floorHeight;
 }
@@ -730,48 +693,4 @@ void debug_surface_list_info(f32 xPos, f32 zPos) {
     gNumCalls.floor = 0;
     gNumCalls.ceil = 0;
     gNumCalls.wall = 0;
-}
-
-/**
- * An unused function that finds and interacts with any type of surface.
- * Perhaps an original implementation of surfaces before they were more specialized.
- */
-s32 unused_resolve_floor_or_ceil_collisions(s32 checkCeil, f32 *px, f32 *py, f32 *pz, f32 radius,
-                                            struct Surface **psurface, f32 *surfaceHeight) {
-    f32 nx, ny, nz, oo;
-    f32 x = *px;
-    f32 y = *py;
-    f32 z = *pz;
-    f32 offset, distance;
-
-    *psurface = NULL;
-
-    if (checkCeil) {
-        *surfaceHeight = find_ceil(x, y, z, psurface);
-    } else {
-        *surfaceHeight = find_floor(x, y, z, psurface);
-    }
-
-    if (*psurface == NULL) {
-        return -1;
-    }
-
-    nx = (*psurface)->normal.x;
-    ny = (*psurface)->normal.y;
-    nz = (*psurface)->normal.z;
-    oo = (*psurface)->originOffset;
-
-    offset = nx * x + ny * y + nz * z + oo;
-    distance = offset >= 0 ? offset : -offset;
-
-    // Interesting surface interaction that should be surf type independent.
-    if (distance < radius) {
-        *px += nx * (radius - offset);
-        *py += ny * (radius - offset);
-        *pz += nz * (radius - offset);
-
-        return 1;
-    }
-
-    return 0;
 }

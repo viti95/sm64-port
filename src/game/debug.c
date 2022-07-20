@@ -321,7 +321,6 @@ void debug_unknown_level_select_check(void) {
 
 void reset_debug_objectinfo(void) {
     gNumFindFloorMisses = 0;
-    gUnknownWallCount = 0;
     gObjectCounter = 0;
     sDebugStringArrPrinted = FALSE;
     D_8035FEE2 = 0;
@@ -469,10 +468,6 @@ void try_print_debug_mario_object_info(void) {
 
     if (gNumFindFloorMisses) {
         print_debug_bottom_up("NULLBG %d", gNumFindFloorMisses);
-    }
-
-    if (gUnknownWallCount) {
-        print_debug_bottom_up("WALL   %d", gUnknownWallCount);
     }
 }
 

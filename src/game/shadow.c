@@ -696,41 +696,6 @@ Gfx *create_shadow_circle_4_verts(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale,
 }
 
 /**
- * Create a circular shadow composed of 4 vertices and assume that the ground
- * underneath it is totally flat.
- */
-Gfx *create_shadow_circle_assuming_flat_ground(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale,
-                                               u8 solidity) {
-    Vtx *verts;
-    Gfx *displayList;
-    struct FloorGeometry *dummy; // only for calling find_floor_height_and_data
-    f32 distBelowFloor;
-    f32 floorHeight = find_floor_height_and_data(xPos, yPos, zPos, &dummy);
-    f32 radius = shadowScale / 2;
-
-    if (floorHeight < -10000.0) {
-        return NULL;
-    } else {
-        distBelowFloor = floorHeight - yPos;
-    }
-
-    verts = alloc_display_list(4 * sizeof(Vtx));
-    displayList = alloc_display_list(5 * sizeof(Gfx));
-
-    if (verts == NULL || displayList == NULL) {
-        return 0;
-    }
-
-    make_shadow_vertex_at_xyz(verts, 0, -radius, distBelowFloor, -radius, solidity, 1);
-    make_shadow_vertex_at_xyz(verts, 1, radius, distBelowFloor, -radius, solidity, 1);
-    make_shadow_vertex_at_xyz(verts, 2, -radius, distBelowFloor, radius, solidity, 1);
-    make_shadow_vertex_at_xyz(verts, 3, radius, distBelowFloor, radius, solidity, 1);
-
-    add_shadow_to_display_list(displayList, verts, SHADOW_WITH_4_VERTS, SHADOW_SHAPE_CIRCLE);
-    return displayList;
-}
-
-/**
  * Create a rectangular shadow composed of 4 vertices. This assumes the ground
  * underneath the shadow is totally flat.
  */
@@ -872,10 +837,6 @@ Gfx *create_shadow_below_xyz(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 s
             break;
         case SHADOW_CIRCLE_4_VERTS:
             displayList = create_shadow_circle_4_verts(xPos, yPos, zPos, shadowScale, shadowSolidity);
-            break;
-        case SHADOW_CIRCLE_4_VERTS_FLAT_UNUSED: // unused shadow type
-            displayList = create_shadow_circle_assuming_flat_ground(xPos, yPos, zPos, shadowScale,
-                                                                    shadowSolidity);
             break;
         case SHADOW_SQUARE_PERMANENT:
             displayList =

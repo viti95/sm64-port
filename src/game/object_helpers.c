@@ -795,16 +795,6 @@ void cur_obj_enable_rendering_2(void) {
     cur_obj_enable_rendering();
 }
 
-void cur_obj_unused_init_on_floor(void) {
-    cur_obj_enable_rendering();
-
-    o->oPosY = find_floor_height(o->oPosX, o->oPosY, o->oPosZ);
-    if (o->oPosY < -10000.0f) {
-        cur_obj_set_pos_relative_to_parent(0, 0, -70);
-        o->oPosY = find_floor_height(o->oPosX, o->oPosY, o->oPosZ);
-    }
-}
-
 void obj_set_face_angle_to_move_angle(struct Object *obj) {
     obj->oFaceAnglePitch = obj->oMoveAnglePitch;
     obj->oFaceAngleYaw = obj->oMoveAngleYaw;

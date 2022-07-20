@@ -32,13 +32,6 @@ s32 gDebugInfoFlags;
  */
 s32 gNumFindFloorMisses;
 
-UNUSED s32 unused_8033BEF8;
-
-/**
- * An unused debug counter with the label "WALL".
- */
-s32 gUnknownWallCount;
-
 /**
  * Roughly the number of objects that have been processed this frame so far.
  * A bug in update_terrain_objects makes this count inaccurate.
@@ -597,26 +590,6 @@ void unload_deactivated_objects(void) {
     // TIME_STOP_UNKNOWN_0 was most likely intended to be used to track whether
     // any objects had been deactivated
     gTimeStopState &= ~TIME_STOP_UNKNOWN_0;
-}
-
-/**
- * Unused profiling function.
- */
-static u16 unused_get_elapsed_time(u64 *cycleCounts, s32 index) {
-    u16 time;
-    f64 cycles;
-
-    cycles = cycleCounts[index] - cycleCounts[index - 1];
-    if (cycles < 0) {
-        cycles = 0;
-    }
-
-    time = (u16)(((u64) cycles * 1000000 / osClockRate) / 16667.0 * 1000.0);
-    if (time > 999) {
-        time = 999;
-    }
-
-    return time;
 }
 
 /**
