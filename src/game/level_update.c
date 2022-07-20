@@ -19,7 +19,6 @@
 #include "ingame_menu.h"
 #include "obj_behaviors.h"
 #include "save_file.h"
-#include "debug_course.h"
 #ifdef VERSION_EU
 #include "memory.h"
 #include "eu_translation.h"
@@ -1296,7 +1295,6 @@ s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
 
     if (gSavedCourseNum != gCurrCourseNum) {
         gSavedCourseNum = gCurrCourseNum;
-        nop_change_course();
         disable_warp_checkpoint();
     }
 

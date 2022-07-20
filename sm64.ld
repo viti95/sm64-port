@@ -117,7 +117,6 @@ SECTIONS
       BUILD_DIR/src/game/profiler.o(.text);
       BUILD_DIR/asm/decompress.o(.text);
       BUILD_DIR/src/game/camera.o(.text);
-      BUILD_DIR/src/game/debug_course.o(.text);
       BUILD_DIR/src/game/object_list_processor.o(.text);
 #ifndef VERSION_EU
       BUILD_DIR/src/game/object_helpers.o(.text);
