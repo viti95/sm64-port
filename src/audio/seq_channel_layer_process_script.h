@@ -494,7 +494,6 @@ l13cc:
                     }
                 }
             }
-            layer->delayUnused = layer->delay;
         }
     }
 

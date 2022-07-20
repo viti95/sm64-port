@@ -116,7 +116,6 @@ s32 seq_channel_set_layer(struct SequenceChannel *seqChannel, s32 layerIndex) {
     layer->transposition = 0;
     layer->delay = 0;
     layer->duration = 0;
-    layer->delayUnused = 0;
     layer->note = NULL;
     layer->instrument = NULL;
 #ifdef VERSION_EU
@@ -850,7 +849,6 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
                     }
                 }
             }
-            layer->delayUnused = layer->delay;
         }
     }
 

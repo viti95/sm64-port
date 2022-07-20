@@ -15,8 +15,6 @@
 #include "game/object_list_processor.h"
 #include "surface_load.h"
 
-s32 unused8038BE90;
-
 /**
  * Partitions for course and object surfaces. The arrays represent
  * the 16x16 cells that each level is split into.
@@ -594,7 +592,6 @@ void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects
 
     // Initialize the data for this.
     gEnvironmentRegions = NULL;
-    unused8038BE90 = 0;
     gSurfaceNodesAllocated = 0;
     gSurfacesAllocated = 0;
 
