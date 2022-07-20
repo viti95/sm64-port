@@ -3503,6 +3503,8 @@ void unused_object_angle_to_vec3s(Vec3s dst, struct Object *o) {
  * The spline is described at www2.cs.uregina.ca/~anima/408/Notes/Interpolation/UniformBSpline.htm
  */
 void evaluate_cubic_spline(f32 u, Vec3f Q, Vec3f a0, Vec3f a1, Vec3f a2, Vec3f a3) {
+    f32 B[4];
+    
     if (u > 1.f) {
         u = 1.f;
     }
