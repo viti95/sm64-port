@@ -70,9 +70,12 @@ static void gfx_dos_shutdown_impl(void) {
 #define PAL_LOAD            0x3C8     /* start loading palette */
 #define PAL_COLOR           0x3C9     /* load next palette color */
 
-#define SCREEN_WIDTH        320       /* width in pixels */
-#define SCREEN_HEIGHT       200       /* height in mode 13h, in pixels */
-#define SCREEN_HEIGHT_X     240       /* height in mode X, in pixels */
+#define SCREEN_WIDTH            320       /* width in pixels */
+#define SCREEN_HEIGHT_200       200       /* height in mode 13h, in pixels */
+#define SCREEN_HEIGHT_240       240       /* height in mode X, in pixels */
+#define SCREEN_WIDTH_2X         640
+#define SCREEN_HEIGHT_200_2X    400
+#define SCREEN_HEIGHT_240_2X    480
 
 // 7*9*4 regular palette (252 colors)
 #define PAL_RBITS 7
@@ -83,7 +86,8 @@ static void gfx_dos_shutdown_impl(void) {
 #define DIT_GAMMA (2.0 / PAL_GAMMA) // apply this gamma to dithering
 #define DIT_BITS 6                  // dithering strength
 
-#define VGA_BASE 0xA0000
+#define VGA_BASE        0xA0000
+#define HERCULES_BASE   0xB0000
 
 #define umin(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -91,7 +95,7 @@ typedef struct { uint8_t r, g, b, a; } RGBA;
 static uint8_t rgbconv[3][256][256];
 static uint8_t dit_kernel[8][8];
 static uint8_t dit_kernel_mode13h[320*200];
-
+uint8_t Graph_640x400[12] = {0x03, 0x34, 0x28, 0x2A, 0x47, 0x69, 0x00, 0x64, 0x65, 0x02, 0x03, 0x0A};
 
 #ifdef ENABLE_OSMESA
 #include <osmesa.h>
@@ -140,23 +144,46 @@ static void gfx_dos_init_impl(void) {
     switch (configVideomode){
         case VM_13H:
             configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT;
+            configScreenHeight = SCREEN_HEIGHT_200;
             set_color_depth(8);
-            set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+            set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT_200, 0, 0);
             ptrscreen = VGA_BASE + __djgpp_conventional_base;
             break;
         case VM_X:
             configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_X;
+            configScreenHeight = SCREEN_HEIGHT_240;
             set_color_depth(8);
-            set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
+            set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_240, 0, 0);
             ptrscreen = VGA_BASE + __djgpp_conventional_base;
             break;
         case VM_VESA:
             configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_X;
+            configScreenHeight = SCREEN_HEIGHT_240;
             set_color_depth(16);
-            set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH, SCREEN_HEIGHT_X, 0, 0);
+            set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH, SCREEN_HEIGHT_240, 0, 0);
+            __dpmi_get_segment_base_address(screen->seg, &ptrscreen);
+            ptrscreen -=__djgpp_base_address;
+            break;
+        case VM_HERCULES:
+            configScreenWidth = SCREEN_WIDTH_2X;
+            configScreenHeight = SCREEN_HEIGHT_200_2X;
+            ptrscreen = HERCULES_BASE + __djgpp_conventional_base;
+
+            outportb(0x03BF, Graph_640x400[0]);
+            for (int i = 0; i < 10; i++)
+            {
+                outportb(0x03B4, i);
+                outportb(0x03B5, Graph_640x400[i + 1]);
+            }
+            outportb(0x03B8, Graph_640x400[11]);
+
+            memset(ptrscreen, 0, 65536); // Clean 64kb
+            break;
+        case VM_VESA_HI:
+            configScreenWidth = SCREEN_WIDTH_2X;
+            configScreenHeight = SCREEN_HEIGHT_240_2X;
+            set_color_depth(16);
+            set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
             __dpmi_get_segment_base_address(screen->seg, &ptrscreen);
             ptrscreen -=__djgpp_base_address;
             break;
@@ -213,7 +240,7 @@ static inline void gfx_dos_swap_buffers_modex(void) {
             // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
             // calculate the x part and then just add 16 + 64 until bottom
             outp = VGA_BASE + (x >> 2);
-            for (register unsigned y = 0; y < SCREEN_HEIGHT_X; ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
+            for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
                 d = dit_kernel[y&7][x&7];
                 _farnspokeb(outp, rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d]);
             }
@@ -225,7 +252,7 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
     const RGBA *inp = (RGBA *)GFX_BUFFER;
     uint8_t *vram = ptrscreen;
 
-    for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++, inp++, vram++){
+    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200; i++, inp++, vram++){
         uint8_t d = dit_kernel_mode13h[i];
         *vram = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
     }
@@ -233,9 +260,133 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
 
 static inline void gfx_dos_swap_buffers_vesa(void) {
     uint32_t *inp = GFX_BUFFER;
-    uint16_t *vram = ptrscreen;
+    uint16_t *vram = (uint16_t *) ptrscreen;
 
-    for (unsigned i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT_X; i++, inp++, vram++){
+    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_240; i++, inp++, vram++){
+        *inp &= 0b00000000111111111111110011111000;
+        RGBA *inps = (RGBA *)inp;
+        *vram = (inps->r << 8) | (inps->g << 3) | (inps->b >> 3);
+    }
+}
+
+static inline void gfx_dos_swap_buffers_hercules(void) {
+    uint32_t *inp = GFX_BUFFER;
+    uint8_t *vram = (uint8_t *) ptrscreen;
+    uint8_t position = 0;
+
+    for (unsigned y = 0; y < SCREEN_HEIGHT_200_2X; y++){
+        for (unsigned x = 0; x < SCREEN_WIDTH_2X / 8; x++, vram++){
+            uint8_t value = 0;
+
+            RGBA *inps;
+
+            // Pixel 0
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x80;
+            }
+
+            inp++;
+
+            // Pixel 1
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x40;
+            }
+
+            inp++;
+
+            // Pixel 2
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x20;
+            }
+
+            inp++;
+
+            // Pixel 3
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x10;
+            }
+
+            inp++;
+
+            // Pixel 4
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x08;
+            }
+
+            inp++;
+
+            // Pixel 5
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x04;
+            }
+
+            inp++;
+
+            // Pixel 6
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x02;
+            }
+
+            inp++;
+
+            // Pixel 7
+
+            *inp &= 0b00000000100000001000000010000000;
+            inps = (RGBA *)inp;
+
+            if (inps->r + inps->g + inps->b > (rand() % 765)){
+                value |= 0x01;
+            }
+
+            inp++;
+
+            *vram = value;
+        }
+
+        position++;
+
+        if (position == 4){
+            vram -= 0x6000;
+            position=0;
+        }else{
+            vram += 0x2000 - 80;
+        }
+    }
+}
+
+static inline void gfx_dos_swap_buffers_vesa_hi(void) {
+    uint32_t *inp = GFX_BUFFER;
+    uint16_t *vram = (uint16_t *) ptrscreen;
+
+    for (unsigned i = 0; i < SCREEN_WIDTH_2X * SCREEN_HEIGHT_240_2X; i++, inp++, vram++){
         *inp &= 0b00000000111111111111110011111000;
         RGBA *inps = (RGBA *)inp;
         *vram = (inps->r << 8) | (inps->g << 3) | (inps->b >> 3);
@@ -327,6 +478,12 @@ static void gfx_dos_swap_buffers_begin(void) {
                 break;
             case VM_VESA:
                 gfx_dos_swap_buffers_vesa();
+                break;
+            case VM_HERCULES:
+                gfx_dos_swap_buffers_hercules();
+                break;
+            case VM_VESA_HI:
+                gfx_dos_swap_buffers_vesa_hi();
                 break;
         }
     }
