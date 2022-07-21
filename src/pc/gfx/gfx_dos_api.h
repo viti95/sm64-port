@@ -9,7 +9,7 @@ extern struct GfxWindowManagerAPI gfx_dos_api;
 #define VM_X                2
 #define VM_VESA_LFB_15      3
 #define VM_VESA_LFB_16      4
-#define VM_VESA_LFB_24      5
+#define VM_VESA_LFB_32      5
 #define VM_HERCULES         6
 
 #endif

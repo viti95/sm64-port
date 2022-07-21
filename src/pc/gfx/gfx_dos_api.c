@@ -189,7 +189,7 @@ static void gfx_dos_init_impl(void) {
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
             break;
 
-        case VM_VESA_LFB_24:
+        case VM_VESA_LFB_32:
 
             set_color_depth(32);
             set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
@@ -239,7 +239,7 @@ static void gfx_dos_init_impl(void) {
         abort();
     }
 
-    if (configVideomode == VM_VESA_LFB_24)
+    if (configVideomode == VM_VESA_LFB_32)
         ctx = OSMesaCreateContextExt(OSMESA_BGRA, 16, 0, 0, NULL);
     else
         ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
@@ -352,7 +352,7 @@ static inline void gfx_dos_swap_buffers_vesa_lfb_16(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa_lfb_24(void) {
+static inline void gfx_dos_swap_buffers_vesa_lfb_32(void) {
     uint32_t *inp = GFX_BUFFER;
     uint32_t *vram = (uint32_t *) ptrscreen;
 
@@ -458,8 +458,8 @@ static void gfx_dos_swap_buffers_begin(void) {
             case VM_VESA_LFB_16:
                 gfx_dos_swap_buffers_vesa_lfb_16();
                 break;
-            case VM_VESA_LFB_24:
-                gfx_dos_swap_buffers_vesa_lfb_24();
+            case VM_VESA_LFB_32:
+                gfx_dos_swap_buffers_vesa_lfb_32();
                 break;
             case VM_HERCULES:
                 gfx_dos_swap_buffers_hercules();
