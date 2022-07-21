@@ -157,10 +157,8 @@ static void gfx_dos_init_impl(void) {
             ptrscreen = VGA_BASE + __djgpp_conventional_base;
             break;
         case VM_VESA:
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_240;
             set_color_depth(16);
-            set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH, SCREEN_HEIGHT_240, 0, 0);
+            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
             __dpmi_get_segment_base_address(screen->seg, &ptrscreen);
             ptrscreen -=__djgpp_base_address;
             break;
@@ -178,14 +176,6 @@ static void gfx_dos_init_impl(void) {
             outportb(0x03B8, Graph_640x400[11]);
 
             memset(ptrscreen, 0, 65536); // Clean 64kb
-            break;
-        case VM_VESA_HI:
-            configScreenWidth = SCREEN_WIDTH_2X;
-            configScreenHeight = SCREEN_HEIGHT_240_2X;
-            set_color_depth(16);
-            set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
-            __dpmi_get_segment_base_address(screen->seg, &ptrscreen);
-            ptrscreen -=__djgpp_base_address;
             break;
     }
 
@@ -258,17 +248,6 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa(void) {
-    uint32_t *inp = GFX_BUFFER;
-    uint16_t *vram = (uint16_t *) ptrscreen;
-
-    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_240; i++, inp++, vram++){
-        *inp &= 0b00000000111111111111110011111000;
-        RGBA *inps = (RGBA *)inp;
-        *vram = (inps->r << 8) | (inps->g << 3) | (inps->b >> 3);
-    }
-}
-
 static inline void gfx_dos_swap_buffers_hercules(void) {
     uint32_t *inp = GFX_BUFFER;
     uint8_t *vram = (uint8_t *) ptrscreen;
@@ -278,95 +257,14 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
         for (unsigned x = 0; x < SCREEN_WIDTH_2X / 8; x++, vram++){
             uint8_t value = 0;
 
-            RGBA *inps;
-
-            // Pixel 0
-
+            for (unsigned i = 0; i < 8; i++, inp++){
             *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
+                RGBA *inps = (RGBA *)inp;
 
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x80;
+                if (inps->r + inps->g + inps->b > (rand() % 768)){
+                    value |= (0x80 >> i);
             }
-
-            inp++;
-
-            // Pixel 1
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x40;
             }
-
-            inp++;
-
-            // Pixel 2
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x20;
-            }
-
-            inp++;
-
-            // Pixel 3
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x10;
-            }
-
-            inp++;
-
-            // Pixel 4
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x08;
-            }
-
-            inp++;
-
-            // Pixel 5
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x04;
-            }
-
-            inp++;
-
-            // Pixel 6
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x02;
-            }
-
-            inp++;
-
-            // Pixel 7
-
-            *inp &= 0b00000000100000001000000010000000;
-            inps = (RGBA *)inp;
-
-            if (inps->r + inps->g + inps->b > (rand() % 765)){
-                value |= 0x01;
-            }
-
-            inp++;
 
             *vram = value;
         }
@@ -382,11 +280,11 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa_hi(void) {
+static inline void gfx_dos_swap_buffers_vesa(void) {
     uint32_t *inp = GFX_BUFFER;
     uint16_t *vram = (uint16_t *) ptrscreen;
 
-    for (unsigned i = 0; i < SCREEN_WIDTH_2X * SCREEN_HEIGHT_240_2X; i++, inp++, vram++){
+    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram++){
         *inp &= 0b00000000111111111111110011111000;
         RGBA *inps = (RGBA *)inp;
         *vram = (inps->r << 8) | (inps->g << 3) | (inps->b >> 3);
@@ -481,9 +379,6 @@ static void gfx_dos_swap_buffers_begin(void) {
                 break;
             case VM_HERCULES:
                 gfx_dos_swap_buffers_hercules();
-                break;
-            case VM_VESA_HI:
-                gfx_dos_swap_buffers_vesa_hi();
                 break;
         }
     }
