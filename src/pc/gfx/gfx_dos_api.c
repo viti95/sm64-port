@@ -373,10 +373,6 @@ static inline void gfx_dos_swap_buffers_vesa_lfb_24(void) {
         *(vram + 1) = inps->g;
         *(vram + 2) = inps->r;
     }
-
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram++) {
-        *vram = *inp;
-    }
 }
 
 static inline void gfx_dos_swap_buffers_vesa_lfb_32(void) {
