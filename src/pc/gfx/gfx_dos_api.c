@@ -189,6 +189,17 @@ static void gfx_dos_init_impl(void) {
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
             break;
 
+        case VM_VESA_LFB_24:
+
+            set_color_depth(24);
+            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
+            scroll_screen(0, 0);
+
+            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
+
+            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            break;
+
         case VM_VESA_LFB_32:
 
             set_color_depth(32);
@@ -352,6 +363,22 @@ static inline void gfx_dos_swap_buffers_vesa_lfb_16(void) {
     }
 }
 
+static inline void gfx_dos_swap_buffers_vesa_lfb_24(void) {
+    uint32_t *inp = GFX_BUFFER;
+    uint8_t *vram = (uint8_t *) ptrscreen;
+
+    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram+=3) {
+        RGBA *inps = (RGBA *) inp;
+        *vram = inps->b;
+        *(vram + 1) = inps->g;
+        *(vram + 2) = inps->r;
+    }
+
+    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram++) {
+        *vram = *inp;
+    }
+}
+
 static inline void gfx_dos_swap_buffers_vesa_lfb_32(void) {
     uint32_t *inp = GFX_BUFFER;
     uint32_t *vram = (uint32_t *) ptrscreen;
@@ -457,6 +484,9 @@ static void gfx_dos_swap_buffers_begin(void) {
                 break;
             case VM_VESA_LFB_16:
                 gfx_dos_swap_buffers_vesa_lfb_16();
+                break;
+            case VM_VESA_LFB_24:
+                gfx_dos_swap_buffers_vesa_lfb_24();
                 break;
             case VM_VESA_LFB_32:
                 gfx_dos_swap_buffers_vesa_lfb_32();
