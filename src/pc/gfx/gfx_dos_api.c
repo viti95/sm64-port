@@ -229,18 +229,47 @@ static void gfx_dos_init_impl(void) {
     }
 
     if (configVideomode == VM_13H || configVideomode == VM_X) {
-        // set up regular palette as configured above;
-        // however, bias the colors towards darker ones in an exponential curve
+
         outportb(PAL_LOAD, 0);
-        for (unsigned color = 0; color < PAL_RBITS * PAL_GBITS * PAL_BBITS; ++color) {
-            outportb(
-                PAL_COLOR,
-                pow(((color / (PAL_BBITS * PAL_GBITS)) % PAL_RBITS) * 1.0 / (PAL_RBITS - 1), PAL_GAMMA)
-                    * 63);
-            outportb(PAL_COLOR,
-                     pow(((color / (PAL_BBITS)) % PAL_GBITS) * 1.0 / (PAL_GBITS - 1), PAL_GAMMA) * 63);
-            outportb(PAL_COLOR, pow(((color) % PAL_BBITS) * 1.0 / (PAL_BBITS - 1), PAL_GAMMA) * 63);
+
+        if (configDither){
+            // set up regular palette as configured above;
+            // however, bias the colors towards darker ones in an exponential curve
+
+            for (unsigned color = 0; color < PAL_RBITS * PAL_GBITS * PAL_BBITS; ++color) {
+                outportb(PAL_COLOR,
+                         pow(((color / (PAL_BBITS * PAL_GBITS)) % PAL_RBITS) * 1.0 / (PAL_RBITS - 1), PAL_GAMMA) * 63);
+                outportb(PAL_COLOR,
+                         pow(((color / (PAL_BBITS)) % PAL_GBITS) * 1.0 / (PAL_GBITS - 1), PAL_GAMMA) * 63);
+                outportb(PAL_COLOR,
+                         pow(((color) % PAL_BBITS) * 1.0 / (PAL_BBITS - 1), PAL_GAMMA) * 63);
+            }
+        } else {
+
+            // set palette to RGB332
+
+            for (unsigned color = 0; color < 256; color++) {
+
+                unsigned int Rcolor;
+                unsigned int Gcolor;
+                unsigned int Bcolor;
+
+                Rcolor = color >> 5;
+                Gcolor = (color & 0x1C) >> 2;
+                Bcolor = (color & 0x03);
+
+                Rcolor = Rcolor << 3;
+                Gcolor = Gcolor << 3;
+                Bcolor = Bcolor << 4;
+
+                outportb(PAL_COLOR, Rcolor);
+                outportb(PAL_COLOR, Gcolor);
+                outportb(PAL_COLOR, Bcolor);
+
+            }
+
         }
+
     }
 
 #ifdef ENABLE_OSMESA
@@ -274,7 +303,7 @@ static void gfx_dos_shutdown_impl(void) {
     set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
 }
 
-static inline void gfx_dos_swap_buffers_modex(void) {
+static inline void gfx_dos_swap_buffers_modex_dither(void) {
     // we're gonna be only sending plane switch commands until the end of the function
     outportb(REG_SELECT, REG_MASK);
     register const RGBA *inp;
@@ -292,20 +321,54 @@ static inline void gfx_dos_swap_buffers_modex(void) {
             for (register unsigned y = 0; y < SCREEN_HEIGHT_240;
                  ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
                 d = dit_kernel[y & 7][x & 7];
-                _farnspokeb(outp,
-                            rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d]);
+                _farnspokeb(outp, rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d]);
             }
         }
     }
 }
 
-static inline void gfx_dos_swap_buffers_mode13(void) {
+static inline void gfx_dos_swap_buffers_modex(void) {
+    // we're gonna be only sending plane switch commands until the end of the function
+    outportb(REG_SELECT, REG_MASK);
+    uint32_t *inp = GFX_BUFFER;
+    register unsigned outp;
+    register unsigned d;
+    // the pixels go 0 1 2 3 0 1 2 3, so we can't afford switching planes every pixel
+    // instead we go (switch) 0 0 0 ... (switch) 1 1 1 ...
+    for (unsigned plane = 0; plane < 4; ++plane) {
+        outportb(REG_VALUE, 1 << plane);
+        for (register unsigned x = plane; x < SCREEN_WIDTH; x += 4) {
+            inp = (RGBA *) (GFX_BUFFER + x);
+            // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
+            // calculate the x part and then just add 16 + 64 until bottom
+            outp = VGA_BASE + (x >> 2);
+            for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
+                *inp &= 0b00000000110000001110000011100000;
+                RGBA *inps = (RGBA *) inp;
+                _farnspokeb(outp, inps->r | (inps->g >> 3) | (inps->b >> 6));
+            }
+        }
+    }
+}
+
+static inline void gfx_dos_swap_buffers_mode13_dither(void) {
     const RGBA *inp = (RGBA *) GFX_BUFFER;
     uint8_t *vram = ptrscreen;
 
     for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200; i++, inp++, vram++) {
         uint8_t d = dit_kernel_mode13h[i];
         *vram = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
+    }
+}
+
+static inline void gfx_dos_swap_buffers_mode13(void) {
+    uint32_t *inp = GFX_BUFFER;
+    uint8_t *vram = ptrscreen;
+
+    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200; i++, inp++, vram++) {
+        *inp &= 0b00000000110000001110000011100000;
+        RGBA *inps = (RGBA *) inp;
+        *vram = inps->r | (inps->g >> 3) | (inps->b >> 6);
     }
 }
 
@@ -470,10 +533,16 @@ static void gfx_dos_swap_buffers_begin(void) {
     if (GFX_BUFFER != NULL) {
         switch (configVideomode) {
             case VM_13H:
-                gfx_dos_swap_buffers_mode13();
+                if (configDither)
+                    gfx_dos_swap_buffers_mode13_dither();
+                else
+                    gfx_dos_swap_buffers_mode13();
                 break;
             case VM_X:
-                gfx_dos_swap_buffers_modex();
+                if (configDither)
+                    gfx_dos_swap_buffers_modex_dither();
+                else
+                    gfx_dos_swap_buffers_modex();
                 break;
             case VM_VESA_LFB_15:
                 gfx_dos_swap_buffers_vesa_lfb_15();
