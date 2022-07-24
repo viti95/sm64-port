@@ -97,10 +97,12 @@ static void gfx_dos_shutdown_impl(void) {
 typedef struct {
     uint8_t r, g, b, a;
 } RGBA;
+
 static uint8_t rgbconv[3][256][256];
 static uint8_t dit_kernel[8][8];
 static uint8_t dit_kernel_mode13h[320 * 200];
-uint8_t Graph_640x400[12] = { 0x03, 0x34, 0x28, 0x2A, 0x47, 0x69, 0x00, 0x64, 0x65, 0x02, 0x03, 0x0A };
+static uint8_t Graph_640x400[12] = { 0x03, 0x34, 0x28, 0x2A, 0x47, 0x69, 0x00, 0x64, 0x65, 0x02, 0x03, 0x0A };
+static uint16_t dit_kernel_hercules[4] = { 154, 461, 614, 307 };
 
 #ifdef ENABLE_OSMESA
 #include <osmesa.h>
@@ -284,8 +286,7 @@ static void gfx_dos_init_impl(void) {
     else
         ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
 
-    if (!OSMesaMakeCurrent(ctx, osmesa_buffer, GL_UNSIGNED_BYTE, configScreenWidth,
-                           configScreenHeight)) {
+    if (!OSMesaMakeCurrent(ctx, osmesa_buffer, GL_UNSIGNED_BYTE, configScreenWidth, configScreenHeight)) {
         fprintf(stderr, "OSMesaMakeCurrent failed!\n");
         abort();
     }
@@ -372,6 +373,8 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
     }
 }
 
+
+
 static inline void gfx_dos_swap_buffers_hercules(void) {
     uint32_t *inp = GFX_BUFFER;
     uint8_t *vram = (uint8_t *) ptrscreen;
@@ -382,10 +385,14 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
             uint8_t value = 0;
 
             for (unsigned i = 0; i < 8; i++, inp++) {
-                *inp &= 0b00000000100000001000000010000000;
+
+                uint8_t dither_pos = ((y & 1) << 1) | (i & 1);
+
                 RGBA *inps = (RGBA *) inp;
 
-                if (inps->r + inps->g + inps->b > (rand() % 768)) {
+                uint16_t sum = (uint16_t) inps->r + (uint16_t) inps->g + (uint16_t) inps->b;
+
+                if (sum > dit_kernel_hercules[dither_pos]) {
                     value |= (0x80 >> i);
                 }
             }
