@@ -1,41 +1,5 @@
 // Monty Mole
 
-// Unreferenced light group
-UNUSED static const Lights1 monty_mole_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 monty_mole_lights_unused2 = gdSPDefLights1(
-    0x30, 0x1f, 0x00,
-    0xc3, 0x7e, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 monty_mole_lights_unused3 = gdSPDefLights1(
-    0x05, 0x04, 0x05,
-    0x16, 0x13, 0x14, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 monty_mole_lights_unused4 = gdSPDefLights1(
-    0x07, 0x08, 0x07,
-    0x1f, 0x20, 0x1f, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 monty_mole_lights_unused5 = gdSPDefLights1(
-    0x14, 0x0b, 0x0a,
-    0x53, 0x2e, 0x28, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 monty_mole_lights_unused6 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
 // 0x05000970
 ALIGNED8 static const u8 monty_mole_seg5_texture_05000970[] = {
 #include "actors/monty_mole/monty_mole_cheek.rgba16.inc.c"

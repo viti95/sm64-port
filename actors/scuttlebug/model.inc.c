@@ -1,17 +1,5 @@
 // Scuttlebug
 
-// Unreferenced light group
-UNUSED static const Lights1 scuttlebug_lights_unused1 = gdSPDefLights1(
-    0x2c, 0x00, 0x00,
-    0xb2, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 scuttlebug_lights_unused2 = gdSPDefLights1(
-    0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x06010108
 ALIGNED8 static const u8 scuttlebug_seg6_texture_06010108[] = {
 #include "actors/scuttlebug/scuttlebug_eye.rgba16.inc.c"

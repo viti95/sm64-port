@@ -1,41 +1,5 @@
 // Skeeter
 
-// Unreferenced light group
-UNUSED static const Lights1 skeeter_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x20, 0x02,
-    0xfc, 0x80, 0x08, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 skeeter_lights_unused2 = gdSPDefLights1(
-    0x05, 0x05, 0x02,
-    0x15, 0x15, 0x08, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 skeeter_lights_unused3 = gdSPDefLights1(
-    0x03, 0x10, 0x29,
-    0x0e, 0x40, 0xa4, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 skeeter_lights_unused4 = gdSPDefLights1(
-    0x3b, 0x3a, 0x36,
-    0xef, 0xea, 0xd9, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 skeeter_lights_unused5 = gdSPDefLights1(
-    0x33, 0x0c, 0x00,
-    0xcf, 0x32, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 skeeter_lights_unused6 = gdSPDefLights1(
-    0x10, 0x29, 0x20,
-    0x42, 0xa5, 0x81, 0x28, 0x28, 0x28
-);
-
 // 0x06000090
 ALIGNED8 static const u8 skeeter_seg6_texture_06000090[] = {
 #include "actors/skeeter/skeeter_eye.rgba16.inc.c"

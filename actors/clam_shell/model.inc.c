@@ -1,17 +1,5 @@
 // Clam Shell
 
-// Unreferenced light group
-UNUSED static const Lights1 clam_shell_lights_unused1 = gdSPDefLights1(
-    0x1b, 0x23, 0x30,
-    0x6d, 0x8f, 0xc3, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 clam_shell_lights_unused2 = gdSPDefLights1(
-    0x18, 0x28, 0x38,
-    0x60, 0xa2, 0xe2, 0x28, 0x28, 0x28
-);
-
 // 0x05000030
 ALIGNED8 static const u8 clam_shell_seg5_texture_05000030[] = {
 #include "actors/clam_shell/clam_shell.rgba16.inc.c"

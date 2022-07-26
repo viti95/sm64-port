@@ -1,28 +1,10 @@
 // Lakitu Enemy
 
-// Unreferenced light group
-UNUSED static const Lights1 lakitu_enemy_lights_unused1 = gdSPDefLights1(
-	0x33, 0x1f, 0x0c,
-	0xcc, 0x7f, 0x33, 0x28, 0x28, 0x28
-);
-
 // 0x0500ECB0
 static const Lights1 lakitu_enemy_seg5_lights_0500ECB0 = gdSPDefLights1(
 	0x29, 0x13, 0x06,
 	0xa5, 0x4f, 0x1b, 0x28, 0x28, 0x28
 );
-
-// Unreferenced light group
-UNUSED static const Lights1 lakitu_enemy_lights_unused2 = gdSPDefLights1(
-	0x0d, 0x2c, 0x0b,
-	0x34, 0xb2, 0x2c, 0x28, 0x28, 0x28
-);
-
-// Unreferenced texture
-// 0x0500ECE0
-ALIGNED8 static const u8 lakitu_enemy_seg5_texture_0500ECE0[] = {
-#include "actors/lakitu_enemy/lakitu_enemy_cloud_face_unused.rgba16.inc.c"
-};
 
 // 0x0500F4E0
 ALIGNED8 static const u8 lakitu_enemy_seg5_texture_0500F4E0[] = {

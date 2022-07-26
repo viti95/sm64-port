@@ -1,29 +1,5 @@
 // Bookend
 
-// Unreferenced light group
-UNUSED static const Lights1 bookend_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 bookend_lights_unused2 = gdSPDefLights1(
-    0x03, 0x19, 0x09,
-    0x0c, 0x66, 0x26, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 bookend_lights_unused3 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 bookend_lights_unused4 = gdSPDefLights1(
-    0x3f, 0x00, 0x00,
-    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x05000060
 ALIGNED8 static const u8 bookend_seg5_texture_05000060[] = {
 #include "actors/bookend/bookend_spine.rgba16.inc.c"

@@ -1,35 +1,5 @@
 // King Bobomb
 
-// Unreferenced light group
-UNUSED static const Lights1 king_bobomb_lights_unused1 = gdSPDefLights1(
-    0x36, 0x1e, 0x00,
-    0xd9, 0x7a, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 king_bobomb_lights_unused2 = gdSPDefLights1(
-    0x00, 0x00, 0x3f,
-    0x00, 0x00, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 king_bobomb_lights_unused3 = gdSPDefLights1(
-    0x3c, 0x28, 0x00,
-    0xf1, 0xa2, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 king_bobomb_lights_unused4 = gdSPDefLights1(
-    0x2c, 0x2c, 0x2c,
-    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 king_bobomb_lights_unused5 = gdSPDefLights1(
-    0x06, 0x06, 0x06,
-    0x19, 0x19, 0x19, 0x28, 0x28, 0x28
-);
-
 // 0x05000078
 ALIGNED8 static const u8 king_bobomb_seg5_texture_05000078[] = {
 #include "actors/king_bobomb/bob-omb_buddy_left_side_unused.rgba16.inc.c"

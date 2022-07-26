@@ -1,32 +1,5 @@
 // Snowman
 
-// ???
-UNUSED static const u64 snowman_unused_1 = 1;
-
-// Unreferenced light group
-UNUSED static const Lights1 snowman_lights_unused1 = gdSPDefLights1(
-    0x0d, 0x0c, 0x28,
-    0x35, 0x32, 0xa2, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 snowman_lights_unused2 = gdSPDefLights1(
-    0x3f, 0x00, 0x00,
-    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 snowman_lights_unused3 = gdSPDefLights1(
-    0x08, 0x07, 0x04,
-    0x23, 0x1c, 0x12, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 snowman_lights_unused4 = gdSPDefLights1(
-    0x03, 0x03, 0x02,
-    0x0e, 0x0d, 0x0b, 0x28, 0x28, 0x28
-);
-
 // 0x05008C70
 ALIGNED8 static const u8 snowman_seg5_texture_05008C70[] = {
 #include "actors/snowman/mr_blizzard_mitten.rgba16.inc.c"

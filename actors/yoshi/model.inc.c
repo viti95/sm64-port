@@ -403,18 +403,6 @@ static const Lights1 yoshi_seg5_lights_0501D9F0 = gdSPDefLights1(
     0xff, 0x00, 0x00, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-UNUSED static const Lights1 yoshi_lights_unused1 = gdSPDefLights1(
-    0x59, 0x59, 0x59,
-    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 yoshi_lights_unused2 = gdSPDefLights1(
-    0x7f, 0x00, 0x00,
-    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x0501DA38
 static const Lights1 yoshi_seg5_lights_0501DA38 = gdSPDefLights1(
     0x45, 0x00, 0x00,

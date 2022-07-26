@@ -1,12 +1,5 @@
 // Koopa (Small Koopa, Big Koopa [Koopa the Quick])
 
-
-// Unreferenced light group
-UNUSED static const Lights1 koopa_lights_unused1 = gdSPDefLights1(
-    0x7f, 0x7f, 0x7f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
 // 0x060025A0
 static const Lights1 koopa_seg6_lights_060025A0 = gdSPDefLights1(
     0x00, 0x59, 0x00,
@@ -23,12 +16,6 @@ static const Lights1 koopa_seg6_lights_060025B8 = gdSPDefLights1(
 static const Lights1 koopa_seg6_lights_060025D0 = gdSPDefLights1(
     0x7f, 0x7f, 0x7f,
     0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 koopa_lights_unused2 = gdSPDefLights1(
-    0x59, 0x59, 0x59,
-    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
 );
 
 // 0x06002600

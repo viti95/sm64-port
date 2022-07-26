@@ -1,11 +1,5 @@
 // Blargg (Unused)
 
-// Unreferenced light group
-UNUSED static const Lights1 blargg_lights_unused = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
 // 0x05004740
 static const Lights1 blargg_seg5_lights_05004740 = gdSPDefLights1(
     0x3f, 0x0d, 0x05,

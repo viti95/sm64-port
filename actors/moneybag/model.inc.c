@@ -208,28 +208,10 @@ const Gfx moneybag_seg6_dl_06005750[] = {
     gsSPEndDisplayList(),
 };
 
-// Unreferenced light group
-UNUSED static const Lights1 moneybag_lights_unused1 = gdSPDefLights1(
-    0x0c, 0x20, 0x06,
-    0x30, 0x83, 0x1a, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 moneybag_lights_unused2 = gdSPDefLights1(
-    0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x060057F0
 static const Lights1 moneybag_seg6_lights_060057F0 = gdSPDefLights1(
     0x3f, 0x3f, 0x00,
     0xff, 0xff, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 moneybag_lights_unused3 = gdSPDefLights1(
-    0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x06005820

@@ -47,12 +47,6 @@ static const Lights1 wiggler_seg5_lights_0500B248 = gdSPDefLights1(
     0xe7, 0x47, 0x00, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-UNUSED static const Lights1 wiggler_body_lights_unused = gdSPDefLights1(
-    0x3a, 0x22, 0x05,
-    0xea, 0x8b, 0x16, 0x28, 0x28, 0x28
-);
-
 // 0x0500B278
 static const Vtx wiggler_seg5_vertex_0500B278[] = {
     {{{    19,      5,    -31}, 0, {     0,      0}, {0x40, 0x2b, 0x9d, 0x00}}},

@@ -179,12 +179,6 @@ static const Lights1 bobomb_seg8_lights_08022E00 = gdSPDefLights1(
     0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-static const Lights1 bobomb_lights_unused = gdSPDefLights1(
-    0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x08022E30
 static const Vtx bobomb_seg8_vertex_08022E30[] = {
     {{{    27,    -26,    -31}, 0, {     0,      0}, {0xeb, 0x96, 0xbf, 0x00}}},

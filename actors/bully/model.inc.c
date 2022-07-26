@@ -71,12 +71,6 @@ static const Lights1 bully_seg5_lights_05000420 = gdSPDefLights1(
     0x00, 0xff, 0x00, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-UNUSED static const Lights1 bully_lights_unused = gdSPDefLights1(
-    0x3f, 0x29, 0x00,
-    0xff, 0xa5, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x05000450
 static const Lights1 bully_seg5_lights_05000450 = gdSPDefLights1(
     0x00, 0x00, 0x00,

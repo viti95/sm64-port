@@ -6,12 +6,6 @@ static const Lights1 hoot_seg5_lights_05000900 = gdSPDefLights1(
     0xc0, 0x6e, 0x3d, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-UNUSED static const Lights1 hoot_lights_unused1 = gdSPDefLights1(
-    0x37, 0x27, 0x0b,
-    0xdd, 0x9d, 0x2d, 0x28, 0x28, 0x28
-);
-
 // 0x05000930
 static const Lights1 hoot_seg5_lights_05000930 = gdSPDefLights1(
     0x36, 0x26, 0x11,
@@ -34,24 +28,6 @@ static const Lights1 hoot_seg5_lights_05000960 = gdSPDefLights1(
 static const Lights1 hoot_seg5_lights_05000978 = gdSPDefLights1(
     0x06, 0x06, 0x06,
     0x19, 0x19, 0x19, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 hoot_lights_unused2 = gdSPDefLights1(
-    0x39, 0x27, 0x0a,
-    0xe6, 0x9d, 0x29, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 hoot_lights_unused3 = gdSPDefLights1(
-    0x1d, 0x06, 0x3b,
-    0x75, 0x18, 0xef, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 hoot_lights_unused4 = gdSPDefLights1(
-    0x3a, 0x29, 0x09,
-    0xeb, 0xa6, 0x27, 0x28, 0x28, 0x28
 );
 
 // 0x050009D8

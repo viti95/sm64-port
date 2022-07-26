@@ -1,11 +1,5 @@
 // Eyerok
 
-// Unreferenced light group
-UNUSED static const Lights1 eyerok_lights_unused = gdSPDefLights1(
-    0x3f, 0x2a, 0x16,
-    0xff, 0xa9, 0x5b, 0x28, 0x28, 0x28
-);
-
 // 0x05008D40
 ALIGNED8 static const u8 eyerok_seg5_texture_05008D40[] = {
 #include "actors/eyerok/eyerok_bricks.rgba16.inc.c"

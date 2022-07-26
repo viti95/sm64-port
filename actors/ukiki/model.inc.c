@@ -1,17 +1,5 @@
 // Ukiki
 
-// Unreferenced light group
-UNUSED static const Lights1 ukiki_lights_unused1 = gdSPDefLights1(
-    0x1d, 0x12, 0x07,
-    0x77, 0x48, 0x1f, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 ukiki_lights_unused2 = gdSPDefLights1(
-    0x39, 0x24, 0x18,
-    0xe7, 0x93, 0x61, 0x28, 0x28, 0x28
-);
-
 // 0x05007BA0
 static const Lights1 ukiki_seg5_lights_05007BA0 = gdSPDefLights1(
     0x39, 0x24, 0x18,

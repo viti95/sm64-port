@@ -18,12 +18,6 @@ static const Lights1 chilly_chief_seg6_lights_06000030 = gdSPDefLights1(
     0xff, 0xa5, 0x00, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-UNUSED static const Lights1 chillychief_lights_unused = gdSPDefLights1(
-    0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x06000060
 ALIGNED8 static const u8 chilly_chief_seg6_texture_06000060[] = {
 #include "actors/chillychief/chill_bully_left_side.rgba16.inc.c"

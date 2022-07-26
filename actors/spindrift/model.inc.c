@@ -1,17 +1,5 @@
 // Spindrift
 
-// Unreferenced light group
-UNUSED static const Lights1 spindrift_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x08, 0x1b,
-    0xff, 0x22, 0x6d, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 spindrift_lights_unused2 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xfd, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
 // 0x05000030
 static const Lights1 spindrift_seg5_lights_05000030 = gdSPDefLights1(
     0x12, 0x2c, 0x00,
@@ -24,12 +12,6 @@ static const Lights1 spindrift_seg5_lights_05000048 = gdSPDefLights1(
     0xdd, 0xff, 0x01, 0x28, 0x28, 0x28
 );
 
-// Unreferenced light group
-UNUSED static const Lights1 spindrift_lights_unused3 = gdSPDefLights1(
-    0x00, 0x15, 0x00,
-    0x00, 0x56, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x05000078
 static const Lights1 spindrift_seg5_lights_05000078 = gdSPDefLights1(
     0x3f, 0x38, 0x00,
@@ -40,12 +22,6 @@ static const Lights1 spindrift_seg5_lights_05000078 = gdSPDefLights1(
 static const Lights1 spindrift_seg5_lights_05000090 = gdSPDefLights1(
     0x00, 0x0f, 0x00,
     0x00, 0x3f, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 spindrift_lights_unused4 = gdSPDefLights1(
-    0x3f, 0x00, 0x00,
-    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x050000C0

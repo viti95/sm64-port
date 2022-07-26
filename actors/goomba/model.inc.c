@@ -1,17 +1,5 @@
 // Goomba
 
-// Unreferenced light group
-UNUSED static const Lights1 goomba_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 goomba_lights_unused2 = gdSPDefLights1(
-    0x2c, 0x2c, 0x2c,
-    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
-);
-
 // 0x080194D0
 static const Lights1 goomba_seg8_lights_080194D0 = gdSPDefLights1(
     0x15, 0x0b, 0x04,

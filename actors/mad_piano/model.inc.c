@@ -1,29 +1,5 @@
 // Mad Piano
 
-// Unreferenced light group
-UNUSED static const Lights1 mad_piano_lights_unused1 = gdSPDefLights1(
-    0x05, 0x04, 0x08,
-    0x14, 0x13, 0x20, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 mad_piano_lights_unused2 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 mad_piano_lights_unused3 = gdSPDefLights1(
-    0x2c, 0x2c, 0x2c,
-    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 mad_piano_lights_unused4 = gdSPDefLights1(
-    0x30, 0x00, 0x00,
-    0xc3, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x05006AF0
 ALIGNED8 static const u8 mad_piano_seg5_texture_05006AF0[] = {
 #include "actors/mad_piano/mad_piano_tooth.rgba16.inc.c"

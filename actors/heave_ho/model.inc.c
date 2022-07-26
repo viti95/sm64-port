@@ -1,23 +1,5 @@
 // Heave Ho
 
-// Unreferenced light group
-static const Lights1 heave_ho_lights_unused1 = gdSPDefLights1(
-    0x2c, 0x2c, 0x2c,
-    0xb2, 0xb2, 0xb2, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-static const Lights1 heave_ho_lights_unused2 = gdSPDefLights1(
-    0x3f, 0x38, 0x00,
-    0xff, 0xe3, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-static const Lights1 heave_ho_lights_unused3 = gdSPDefLights1(
-    0x3f, 0x00, 0x00,
-    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x0500E968
 static const Lights1 heave_ho_seg5_lights_0500E968 = gdSPDefLights1(
     0x14, 0x14, 0x15,
@@ -28,18 +10,6 @@ static const Lights1 heave_ho_seg5_lights_0500E968 = gdSPDefLights1(
 static const Lights1 heave_ho_seg5_lights_0500E980 = gdSPDefLights1(
     0x73, 0x3f, 0x32,
     0xff, 0xe0, 0x85, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-static const Lights1 heave_ho_lights_unused4 = gdSPDefLights1(
-    0x3b, 0x38, 0x21,
-    0xec, 0xe3, 0x84, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-static const Lights1 heave_ho_lights_unused5 = gdSPDefLights1(
-    0x32, 0x32, 0x32,
-    0xc8, 0xc8, 0xc8, 0x28, 0x28, 0x28
 );
 
 // 0x0500E9C8

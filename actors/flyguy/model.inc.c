@@ -1,8 +1,5 @@
 // Flyguy
 
-// ???
-UNUSED static const u64 flyguy_unused_1 = 0;
-
 // 0x0800E088
 ALIGNED8 static const u8 flyguy_seg8_texture_0800E088[] = {
 #include "actors/flyguy/flyguy_cloth_wrinkle.rgba16.inc.c"
@@ -18,12 +15,6 @@ ALIGNED8 static const u8 flyguy_seg8_texture_0800F888[] = {
 #include "actors/flyguy/flyguy_propeller.ia16.inc.c"
 };
 
-// Unreferenced light group
-UNUSED static const Lights1 flyguy_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
 // 0x080100A0
 static const Lights1 flyguy_seg8_lights_080100A0 = gdSPDefLights1(
     0x00, 0x1f, 0x33,
@@ -34,30 +25,6 @@ static const Lights1 flyguy_seg8_lights_080100A0 = gdSPDefLights1(
 static const Lights1 flyguy_seg8_lights_080100B8 = gdSPDefLights1(
     0x3f, 0x32, 0x08,
     0xff, 0xc8, 0x23, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 flyguy_lights_unused2 = gdSPDefLights1(
-    0x3a, 0x2f, 0x04,
-    0xe8, 0xbd, 0x13, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 flyguy_lights_unused3 = gdSPDefLights1(
-    0x2c, 0x00, 0x00,
-    0xb2, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 flyguy_lights_unused4 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 flyguy_lights_unused5 = gdSPDefLights1(
-    0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x08010130

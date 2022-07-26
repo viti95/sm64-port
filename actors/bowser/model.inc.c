@@ -50,18 +50,6 @@ ALIGNED8 static const u8 bowser_seg6_texture_06025C38[] = {
 #include "actors/bowser/bowser_shell_edge.rgba16.inc.c"
 };
 
-// unreferenced, seen in pre-Spaceworld 1995 B-roll footage build
-// 0x06026438
-ALIGNED8 static const u8 bowser_seg6_texture_06026438[] = {
-#include "actors/bowser/bowser_blue_eye_unused.rgba16.inc.c"
-};
-
-// unreferenced (stubbed texture? possibly original texture for mouth)
-// 0x06027438
-ALIGNED8 static const u8 bowser_seg6_texture_06027438[] = {
-#include "actors/bowser/bowser_mouth_unused.rgba16.inc.c"
-};
-
 // 0x06028438
 ALIGNED8 static const u8 bowser_seg6_texture_06028438[] = {
 #include "actors/bowser/bowser_upper_face.rgba16.inc.c"
@@ -151,18 +139,6 @@ ALIGNED8 static const u8 bowser_seg6_texture_06037C38[] = {
 static const Lights1 bowser_seg6_lights_06038C38 = gdSPDefLights1(
     0x3f, 0x3f, 0x3f,
     0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 bowser_lights_unused1 = gdSPDefLights1(
-    0x33, 0x31, 0x00,
-    0xce, 0xc7, 0x00, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 bowser_lights_unused2 = gdSPDefLights1(
-    0x34, 0x34, 0x00,
-    0xd2, 0xd2, 0x00, 0x28, 0x28, 0x28
 );
 
 // 0x06038C80

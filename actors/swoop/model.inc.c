@@ -1,17 +1,5 @@
 // Swoop
 
-// Unreferenced light group
-UNUSED static const Lights1 swoop_lights_unused1 = gdSPDefLights1(
-    0x0a, 0x00, 0x25,
-    0x2a, 0x00, 0x95, 0x28, 0x28, 0x28
-);
-
-// Unreferenced light group
-UNUSED static const Lights1 swoop_lights_unused2 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
 // 0x06004270
 ALIGNED8 static const u8 swoop_seg6_texture_06004270[] = {
 #include "actors/swoop/swoop_body.rgba16.inc.c"
