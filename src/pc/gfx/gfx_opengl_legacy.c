@@ -498,11 +498,11 @@ static inline bool gl_check_ext(const char *name) {
         extstr = (const char *)glGetString(GL_EXTENSIONS);
 
     if (!strstr(extstr, name)) {
-        printf("GL extension not supported: %s\n", name);
+        //printf("GL extension not supported: %s\n", name);
         return false;
     }
 
-    printf("GL extension detected: %s\n", name);
+    //printf("GL extension detected: %s\n", name);
     return true;
 }
 
@@ -527,7 +527,7 @@ static void gfx_opengl_init(void) {
 #if FOR_WINDOWS || defined(OSX_BUILD)
     GLenum err;
     if ((err = glewInit()) != GLEW_OK) {
-        printf("could not init GLEW:\n%s", glewGetErrorString(err));
+        //printf("could not init GLEW:\n%s", glewGetErrorString(err));
         abort();
     }
 #endif
@@ -537,7 +537,7 @@ static void gfx_opengl_init(void) {
     bool is_es = false;
     gl_get_version(&vmajor, &vminor, &is_es);
     if ((vmajor < 2 && vminor < 1) || is_es) {
-        printf("OpenGL 1.2+ is required.\nReported version: %s%d.%d\n", is_es ? "ES" : "", vmajor, vminor);
+        //printf("OpenGL 1.2+ is required.\nReported version: %s%d.%d\n", is_es ? "ES" : "", vmajor, vminor);
         abort();
     }
 
@@ -547,8 +547,8 @@ static void gfx_opengl_init(void) {
     // check if we support multitexturing
     gl_multitexture = vmajor > 1 || vminor > 3 || gl_check_ext("GL_ARB_multitexture");
 
-    printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
-    printf("GL_EXTENSIONS =\n%s\n", glGetString(GL_EXTENSIONS));
+   // printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
+   // printf("GL_EXTENSIONS =\n%s\n", glGetString(GL_EXTENSIONS));
 
     // these also never change
     glDisable(GL_LIGHTING);
