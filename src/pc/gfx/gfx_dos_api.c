@@ -213,7 +213,7 @@ static void gfx_dos_init_impl(void) {
         case VM_HERCULES:
 
             configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_200;
+            configScreenHeight = SCREEN_HEIGHT_240;
             ptrscreen = HERCULES_BASE + __djgpp_conventional_base;
 
             outportb(0x03BF, Graph_640x400[0]);
@@ -383,7 +383,7 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
 
             for (unsigned i = 0; i < 8; i++) {
 
-                uint32_t buffer_pos = (y / 2) * 320 + (x * 4) + (i / 2) ;
+                uint32_t buffer_pos = (y * 240 / 400) * 320 + (x * 4) + (i / 2) ;
 
                 RGBA *inps = inp + buffer_pos;
 
