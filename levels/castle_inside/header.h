@@ -55,7 +55,6 @@ extern const GeoLayout castle_geo_001BB0[];
 extern const GeoLayout castle_geo_001C10[];
 
 // leveldata
-extern const Gfx inside_castle_seg7_dl_070225D8[];
 extern const Gfx inside_castle_seg7_dl_07022610[];
 extern const Gfx inside_castle_seg7_dl_070234C0[];
 extern const Gfx inside_castle_seg7_dl_07023520[];

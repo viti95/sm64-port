@@ -406,10 +406,6 @@ u8 sCutsceneDialogResponse = 0;
 struct PlayerCameraState *sMarioCamState = &gPlayerCameraState[0];
 struct PlayerCameraState *sLuigiCamState = &gPlayerCameraState[1];
 Vec3f sFixedModeBasePosition    = { 646.0f, 143.0f, -1513.0f };
-Vec3f sUnusedModeBasePosition_2 = { 646.0f, 143.0f, -1513.0f };
-Vec3f sUnusedModeBasePosition_3 = { 646.0f, 143.0f, -1513.0f };
-Vec3f sUnusedModeBasePosition_4 = { 646.0f, 143.0f, -1513.0f };
-Vec3f sUnusedModeBasePosition_5 = { 646.0f, 143.0f, -1513.0f };
 
 s32 update_radial_camera(struct Camera *c, Vec3f, Vec3f);
 s32 update_outward_radial_camera(struct Camera *c, Vec3f, Vec3f);

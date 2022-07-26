@@ -312,14 +312,6 @@ static Vtx_t gd_vertex_star[] = {
     {{-64, 128, 0}, 0, {  0,   0}, {0x00, 0x00, 0x7F}},
 };
 
-//! no references to these vertices
-UNUSED static Vtx_t gd_unused_vertex[] = {
-    {{16384, 0,     0}, 0, {0, 16384}, {0x00, 0x00, 0x00}},
-    {{    0, 0, 16384}, 0, {0,     0}, {0x00, 0x00, 0x40}},
-    {{    0, 0,     0}, 0, {0,     0}, {0x00, 0x00, 0x00}},
-    {{    0, 0,     0}, 0, {0,     0}, {0x00, 0x00, 0x00}},
-};
-
 static Gfx gd_dl_star[] = {
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
     gsSPClearGeometryMode(G_TEXTURE_GEN | G_TEXTURE_GEN_LINEAR),
