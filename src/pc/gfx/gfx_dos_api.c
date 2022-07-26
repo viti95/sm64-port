@@ -102,7 +102,7 @@ static uint8_t rgbconv[3][256][256];
 static uint8_t dit_kernel[8][8];
 static uint8_t dit_kernel_mode13h[320 * 200];
 static uint8_t Graph_640x400[12] = { 0x03, 0x34, 0x28, 0x2A, 0x47, 0x69, 0x00, 0x64, 0x65, 0x02, 0x03, 0x0A };
-static uint16_t dit_kernel_hercules[4] = { 154, 461, 614, 307 };
+static uint16_t dit_kernel_hercules_4x4[16] = {  45, 405, 135, 495, 585, 225, 675, 315, 180, 540, 90, 450, 720, 360, 630, 270 };
 
 #ifdef ENABLE_OSMESA
 #include <osmesa.h>
@@ -121,8 +121,7 @@ static void gfx_dos_init_impl(void) {
     // create Bayer 8x8 dithering matrix
     for (unsigned y = 0; y < 8; ++y)
         for (unsigned x = 0; x < 8; ++x) {
-            dit_kernel[y][x] = ((x) &4) / 4u + ((x) &2) * 2u + ((x) &1) * 16u + ((x ^ y) & 4) / 2u
-                               + ((x ^ y) & 2) * 4u + ((x ^ y) & 1) * 32u;
+            dit_kernel[y][x] = ((x) &4) / 4u + ((x) &2) * 2u + ((x) &1) * 16u + ((x ^ y) & 4) / 2u + ((x ^ y) & 2) * 4u + ((x ^ y) & 1) * 32u;
             dit_kernel[y][x] = (dit_kernel[y][x] & (0x3F - (0x3F >> DIT_BITS))) << 2;
         }
 
@@ -141,10 +140,8 @@ static void gfx_dos_init_impl(void) {
     for (unsigned n = 0; n < 256; ++n) {
         for (unsigned d = 0; d < 256; ++d) {
             rgbconv[0][n][d] = umin(PAL_BBITS - 1, (unsigned) (ptab[n] * (PAL_BBITS - 1) + dtab[d]));
-            rgbconv[1][n][d] =
-                PAL_BBITS * umin(PAL_GBITS - 1, (unsigned) (ptab[n] * (PAL_GBITS - 1) + dtab[d]));
-            rgbconv[2][n][d] = PAL_GBITS * PAL_BBITS
-                               * umin(PAL_RBITS - 1, (unsigned) (ptab[n] * (PAL_RBITS - 1) + dtab[d]));
+            rgbconv[1][n][d] = PAL_BBITS * umin(PAL_GBITS - 1, (unsigned) (ptab[n] * (PAL_GBITS - 1) + dtab[d]));
+            rgbconv[2][n][d] = PAL_GBITS * PAL_BBITS * umin(PAL_RBITS - 1, (unsigned) (ptab[n] * (PAL_RBITS - 1) + dtab[d]));
         }
     }
 
@@ -386,13 +383,13 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
 
             for (unsigned i = 0; i < 8; i++, inp++) {
 
-                uint8_t dither_pos = ((y & 1) << 1) | (i & 1);
+                uint8_t dither_pos_4x4 = ((y & 3) << 2) | (i & 3);
 
                 RGBA *inps = (RGBA *) inp;
 
                 uint16_t sum = (uint16_t) inps->r + (uint16_t) inps->g + (uint16_t) inps->b;
 
-                if (sum > dit_kernel_hercules[dither_pos]) {
+                if (sum > dit_kernel_hercules_4x4[dither_pos_4x4]) {
                     value |= (0x80 >> i);
                 }
             }
