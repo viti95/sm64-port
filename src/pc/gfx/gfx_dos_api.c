@@ -104,6 +104,8 @@ static uint8_t dit_kernel_mode13h[320 * 200];
 static uint8_t Graph_640x400[12] = { 0x03, 0x34, 0x28, 0x2A, 0x47, 0x69, 0x00, 0x64, 0x65, 0x02, 0x03, 0x0A };
 static uint16_t dit_kernel_hercules_4x4[16] = {  45, 405, 135, 495, 585, 225, 675, 315, 180, 540, 90, 450, 720, 360, 630, 270 };
 
+static uint8_t hercules_backbuffer[640 * 400 / 8];
+
 #ifdef ENABLE_OSMESA
 #include <osmesa.h>
 OSMesaContext ctx;
@@ -224,6 +226,7 @@ static void gfx_dos_init_impl(void) {
             outportb(0x03B8, Graph_640x400[11]);
 
             memset(ptrscreen, 0, 65536); // Clean 64kb
+            memset(hercules_backbuffer, 0, 640 * 400 / 8);
             break;
     }
 
@@ -375,10 +378,11 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
 static inline void gfx_dos_swap_buffers_hercules(void) {
     const RGBA *inp = (RGBA *) GFX_BUFFER;
     uint8_t *vram = (uint8_t *) ptrscreen;
+    uint32_t backbuffer_position = 0;
     uint8_t position = 0;
 
     for (unsigned y = 0; y < SCREEN_HEIGHT_200_2X; y++) {
-        for (unsigned x = 0; x < SCREEN_WIDTH_2X / 8; x++, vram++) {
+        for (unsigned x = 0; x < SCREEN_WIDTH_2X / 8; x++, vram++, backbuffer_position++) {
             uint8_t value = 0;
 
             for (unsigned i = 0; i < 8; i++) {
@@ -396,7 +400,11 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
                 }
             }
 
-            *vram = value;
+            if (hercules_backbuffer[backbuffer_position] != value){
+                    *vram = value;
+                    hercules_backbuffer[backbuffer_position] = value;
+            }
+
         }
 
         position++;
