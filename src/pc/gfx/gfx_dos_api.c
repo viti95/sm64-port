@@ -212,8 +212,8 @@ static void gfx_dos_init_impl(void) {
 
         case VM_HERCULES:
 
-            configScreenWidth = SCREEN_WIDTH_2X;
-            configScreenHeight = SCREEN_HEIGHT_200_2X;
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT_200;
             ptrscreen = HERCULES_BASE + __djgpp_conventional_base;
 
             outportb(0x03BF, Graph_640x400[0]);
@@ -373,7 +373,7 @@ static inline void gfx_dos_swap_buffers_mode13(void) {
 
 
 static inline void gfx_dos_swap_buffers_hercules(void) {
-    uint32_t *inp = GFX_BUFFER;
+    const RGBA *inp = (RGBA *) GFX_BUFFER;
     uint8_t *vram = (uint8_t *) ptrscreen;
     uint8_t position = 0;
 
@@ -381,11 +381,13 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
         for (unsigned x = 0; x < SCREEN_WIDTH_2X / 8; x++, vram++) {
             uint8_t value = 0;
 
-            for (unsigned i = 0; i < 8; i++, inp++) {
+            for (unsigned i = 0; i < 8; i++) {
+
+                uint32_t buffer_pos = (y / 2) * 320 + (x * 4) + (i / 2) ;
+
+                RGBA *inps = inp + buffer_pos;
 
                 uint8_t dither_pos_4x4 = ((y & 3) << 2) | (i & 3);
-
-                RGBA *inps = (RGBA *) inp;
 
                 uint16_t sum = (uint16_t) inps->r + (uint16_t) inps->g + (uint16_t) inps->b;
 
