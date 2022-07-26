@@ -124,7 +124,6 @@ static s32 D_801BB060[0x10];            // gd_dl indices
 static s16 sVtxCvrtTCBuf[2];            // @ 801BB0A0
 static s32 sCarGdDlNum;                 // @ 801BB0A4
 static struct ObjGroup *sYoshiSceneGrp; // @ 801BB0A8
-static s32 D_801BB0AC;                  // unused DL number
 static struct ObjGroup *sMarioSceneGrp; // @ 801BB0B0
 static s32 D_801BB0B4;                  // second offset into D_801BAF30
 static struct ObjGroup *sCarSceneGrp;   // @ 801BB0B8
@@ -3194,7 +3193,7 @@ void gd_init(void) {
     gGdCtrl.csrX = 160;
     gGdCtrl.csrY = 120;
     gGdCtrl.frameAbtnPressed = -1000;
-    D_801BB0AC = create_mtl_gddl(4);
+    create_mtl_gddl(4);
     imout();
 }
 

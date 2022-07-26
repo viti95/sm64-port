@@ -904,11 +904,6 @@ void audio_init() {
     gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
 
 #ifndef VERSION_EU
-    lim1 = gUnusedCount80333EE8;
-    for (i = 0; i < lim1; i++) {
-        gUnused80226E58[i] = 0;
-        gUnused80226E98[i] = 0;
-    }
 
     lim2 = gAudioHeapSize;
     for (i = 0; i <= lim2 / 8 - 1; i++) {

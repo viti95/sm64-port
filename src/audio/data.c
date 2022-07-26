@@ -582,7 +582,6 @@ f32 gVolRampingRhs128[128] = {
 #endif
 
 s16 gTatumsPerBeat = TATUMS_PER_BEAT;
-s8 gUnusedCount80333EE8 = UNUSED_COUNT_80333EE8;
 s32 gAudioHeapSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_HEAP_SIZE);
 s32 D_80333EF0 = DOUBLE_SIZE_ON_64_BIT(D_80333EF0_VAL);
 volatile s32 gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
@@ -622,11 +621,6 @@ s32 gRefreshRate;
 
 s16 *gAiBuffers[NUMAIBUFFERS];
 s16 gAiBufferLengths[NUMAIBUFFERS];
-
-#ifndef VERSION_EU
-u32 gUnused80226E58[0x10];
-u16 gUnused80226E98[0x10];
-#endif
 
 u32 gAudioRandom;
 

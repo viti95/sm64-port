@@ -61,7 +61,6 @@ extern f32 gVolRampingRhs128[128];
 
 // non-constant .data
 extern s16 gTatumsPerBeat;
-extern s8 gUnusedCount80333EE8;
 extern s32 gAudioHeapSize;
 extern s32 D_80333EF0; // amount of heap designated to gAudioInitPool, 0x2500
 extern volatile s32 gAudioLoadLock;
@@ -97,9 +96,6 @@ extern s16 gAiBufferLengths[NUMAIBUFFERS];
 #else
 #define AIBUFFER_LEN (0xa0 * 16)
 #endif
-
-extern u32 gUnused80226E58[0x10];
-extern u16 gUnused80226E98[0x10];
 
 extern u32 gAudioRandom;
 

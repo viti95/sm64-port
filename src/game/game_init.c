@@ -43,9 +43,7 @@ void *D_80339CF0;
 void *D_80339CF4;
 struct MarioAnimation D_80339D10;
 struct MarioAnimation gDemo;
-UNUSED u8 filler80339D30[0x90];
 
-int unused8032C690 = 0;
 u32 gGlobalTimer = 0;
 
 static u16 sCurrFBNum = 0;
