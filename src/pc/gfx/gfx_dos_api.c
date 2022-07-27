@@ -117,6 +117,7 @@ uint32_t *osmesa_buffer; // 320x240x3 bytes (RGB)
 #endif
 
 uint8_t *ptrscreen;
+uint32_t numLoops;
 
 static void gfx_dos_init_impl(void) {
 
@@ -177,6 +178,8 @@ static void gfx_dos_init_impl(void) {
             __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = (configScreenWidth * configScreenHeight) / 2;
+
             break;
 
         case VM_VESA_LFB_16:
@@ -188,6 +191,8 @@ static void gfx_dos_init_impl(void) {
             __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = (configScreenWidth * configScreenHeight) / 2;
+
             break;
 
         case VM_VESA_LFB_24:
@@ -199,6 +204,8 @@ static void gfx_dos_init_impl(void) {
             __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = (configScreenWidth * configScreenHeight * 3) / 4;
+
             break;
 
         case VM_VESA_LFB_32:
@@ -210,6 +217,8 @@ static void gfx_dos_init_impl(void) {
             __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = configScreenWidth * configScreenHeight;
+
             break;
 
         case VM_HERCULES:
@@ -335,7 +344,7 @@ static void gfx_dos_shutdown_impl(void) {
     set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
 }
 
-static inline void gfx_dos_swap_buffers_modex_dither(void) {
+static void gfx_dos_swap_buffers_modex_dither(void) {
     // we're gonna be only sending plane switch commands until the end of the function
     outportb(REG_SELECT, REG_MASK);
     register const RGBA *inp;
@@ -359,7 +368,7 @@ static inline void gfx_dos_swap_buffers_modex_dither(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_modex(void) {
+static void gfx_dos_swap_buffers_modex(void) {
     // we're gonna be only sending plane switch commands until the end of the function
     outportb(REG_SELECT, REG_MASK);
     uint8_t *inp = GFX_BUFFER;
@@ -383,7 +392,7 @@ static inline void gfx_dos_swap_buffers_modex(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_mode13_dither(void) {
+static void gfx_dos_swap_buffers_mode13_dither(void) {
     const RGBA *inp = (RGBA *) GFX_BUFFER;
     uint8_t *vram = ptrscreen;
 
@@ -393,21 +402,25 @@ static inline void gfx_dos_swap_buffers_mode13_dither(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_mode13(void) {
+static void gfx_dos_swap_buffers_mode13(void) {
 
     uint8_t *inp = GFX_BUFFER;
-    uint8_t *vram = ptrscreen;
+    uint16_t *vram = ptrscreen;
 
-    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200; i++, inp += 3, vram++) {
-        uint8_t R = (*(inp) & 0b11100000);
-        uint8_t G = (*(inp + 1) & 0b11100000) >> 3;
-        uint8_t B = *(inp + 2) >> 6;
-        *vram = R | G | B;
+    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200 / 2; i++, inp += 6, vram++) {
+        uint16_t R1 = (*(inp) & 0b11100000);
+        uint16_t G1 = (*(inp + 1) & 0b11100000) >> 3;
+        uint16_t B1 = *(inp + 2) >> 6;
+        uint16_t R2 = (*(inp + 3) & 0b11100000) << 8;
+        uint16_t G2 = (*(inp + 4) & 0b11100000) << 5;
+        uint16_t B2 = (*(inp + 5) & 0b11000000) << 2;
+
+        *vram = R1 | G1 | B1 | R2 | G2 | B2;
     }
 
 }
 
-static inline void gfx_dos_swap_buffers_hercules(void) {
+static void gfx_dos_swap_buffers_hercules(void) {
     const RGBA *inp = (RGBA *) GFX_BUFFER;
     uint8_t *vram = (uint8_t *) ptrscreen;
     uint32_t backbuffer_position = 0;
@@ -450,44 +463,51 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa_lfb_15(void) {
+static void gfx_dos_swap_buffers_vesa_lfb_15(void) {
     uint8_t *inp = GFX_BUFFER;
-    uint16_t *vram = (uint16_t *) ptrscreen;
+    uint32_t *vram = (uint32_t *) ptrscreen;
 
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp += 3, vram++) {
-        uint16_t R = (*(inp) & 0b11111000) << 7;
-        uint16_t G = (*(inp + 1) & 0b11111000) << 2;
-        uint16_t B = *(inp + 2) >> 3;
-        *vram = R | G | B;
+    for (unsigned i = 0; i < numLoops; i++, inp += 6, vram++) {
+        uint32_t R1 = (*(inp) & 0b11111000) << 7;
+        uint32_t G1 = (*(inp + 1) & 0b11111000) << 2;
+        uint32_t B1 = *(inp + 2) >> 3;
+        uint32_t R2 = (*(inp + 3) & 0b11111000) << 23;
+        uint32_t G2 = (*(inp + 4) & 0b11111000) << 18;
+        uint32_t B2 = (*(inp + 5) & 0b11111000) << 13;
+
+        *vram = R1 | G1 | B1 | R2 | G2 | B2;
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa_lfb_16(void) {
+static void gfx_dos_swap_buffers_vesa_lfb_16(void) {
     uint8_t *inp = GFX_BUFFER;
-    uint16_t *vram = (uint16_t *) ptrscreen;
+    uint32_t *vram = (uint32_t *) ptrscreen;
 
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp += 3, vram++) {
-        uint16_t R = (*(inp) & 0b11111000) << 8;
-        uint16_t G = (*(inp + 1) & 0b11111100) << 3;
-        uint16_t B = *(inp + 2) >> 3;
-        *vram = R | G | B;
+    for (unsigned i = 0; i < numLoops; i++, inp += 6, vram++) {
+        uint32_t R1 = (*(inp) & 0b11111000) << 8;
+        uint32_t G1 = (*(inp + 1) & 0b11111100) << 3;
+        uint32_t B1 = *(inp + 2) >> 3;
+        uint32_t R2 = (*(inp + 3) & 0b11111000) << 24;
+        uint32_t G2 = (*(inp + 4) & 0b11111100) << 19;
+        uint32_t B2 = (*(inp + 5) & 0b11111000) << 13;
+        *vram = R1 | G1 | B1 | R2 | G2 | B2;
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa_lfb_24(void) {
+static void gfx_dos_swap_buffers_vesa_lfb_24(void) {
     uint32_t *inp = GFX_BUFFER;
     uint32_t *vram = (uint32_t *) ptrscreen;
 
-    for (unsigned i = 0; i < (configScreenWidth * configScreenHeight * 3) / 4; i++, inp++, vram++) {
+    for (unsigned i = 0; i < numLoops; i++, inp++, vram++) {
         *vram = *inp;
     }
 }
 
-static inline void gfx_dos_swap_buffers_vesa_lfb_32(void) {
+static void gfx_dos_swap_buffers_vesa_lfb_32(void) {
     uint32_t *inp = GFX_BUFFER;
     uint32_t *vram = (uint32_t *) ptrscreen;
 
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram++) {
+    for (unsigned i = 0; i < numLoops; i++, inp++, vram++) {
         *vram = *inp;
     }
 }
