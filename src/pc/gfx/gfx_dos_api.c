@@ -364,7 +364,6 @@ static inline void gfx_dos_swap_buffers_modex(void) {
     outportb(REG_SELECT, REG_MASK);
     uint8_t *inp = GFX_BUFFER;
     uint8_t *outp;
-    register unsigned d;
     // the pixels go 0 1 2 3 0 1 2 3, so we can't afford switching planes every pixel
     // instead we go (switch) 0 0 0 ... (switch) 1 1 1 ...
     for (unsigned plane = 0; plane < 4; ++plane) {
