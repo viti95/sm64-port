@@ -275,16 +275,33 @@ static void gfx_dos_init_impl(void) {
     }
 
 #ifdef ENABLE_OSMESA
+
+    switch (configVideomode){
+        case VM_VESA_LFB_24:
+            osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 3 * sizeof(GLubyte));
+            break;
+        default:
+            osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
+            break;
+    }
+
     osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
     if (!osmesa_buffer) {
         fprintf(stderr, "osmesa_buffer malloc failed!\n");
         abort();
     }
 
-    if (configVideomode == VM_VESA_LFB_32)
-        ctx = OSMesaCreateContextExt(OSMESA_BGRA, 16, 0, 0, NULL);
-    else
-        ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
+    switch (configVideomode){
+        case VM_VESA_LFB_24:
+            ctx = OSMesaCreateContextExt(OSMESA_BGR, 16, 0, 0, NULL);
+            break;
+        case VM_VESA_LFB_32:
+            ctx = OSMesaCreateContextExt(OSMESA_BGRA, 16, 0, 0, NULL);
+            break;
+        default:
+            ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
+            break;
+    }
 
     if (!OSMesaMakeCurrent(ctx, osmesa_buffer, GL_UNSIGNED_BYTE, configScreenWidth, configScreenHeight)) {
         fprintf(stderr, "OSMesaMakeCurrent failed!\n");
@@ -442,13 +459,10 @@ static inline void gfx_dos_swap_buffers_vesa_lfb_16(void) {
 
 static inline void gfx_dos_swap_buffers_vesa_lfb_24(void) {
     uint32_t *inp = GFX_BUFFER;
-    uint8_t *vram = (uint8_t *) ptrscreen;
+    uint32_t *vram = (uint32_t *) ptrscreen;
 
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram+=3) {
-        RGBA *inps = (RGBA *) inp;
-        *vram = inps->b;
-        *(vram + 1) = inps->g;
-        *(vram + 2) = inps->r;
+    for (unsigned i = 0; i < (configScreenWidth * configScreenHeight * 3) / 4; i++, inp++, vram++) {
+        *vram = *inp;
     }
 }
 
