@@ -36,6 +36,7 @@ bool configFiltering             = true;
 bool configEnableSound           = false;
 bool configEnableFog             = true;
 bool configDither                = true;
+bool configNativeResolution = false;
 unsigned int configScreenWidth   = 640;
 unsigned int configScreenHeight  = 480;
 unsigned int configFrameskip     = 30;
@@ -80,6 +81,7 @@ static const struct ConfigOption options[] = {
     {.name = "enable_fog",        .type = CONFIG_TYPE_BOOL, .boolValue = &configEnableFog},
     {.name = "enable_sound",      .type = CONFIG_TYPE_BOOL, .boolValue = &configEnableSound},
     {.name = "dither",            .type = CONFIG_TYPE_BOOL, .boolValue = &configDither},
+    {.name = "native_resolution", .type = CONFIG_TYPE_BOOL, .boolValue = &configNativeResolution},
     {.name = "screen_width",      .type = CONFIG_TYPE_UINT, .uintValue = &configScreenWidth},
     {.name = "screen_height",     .type = CONFIG_TYPE_UINT, .uintValue = &configScreenHeight},
     {.name = "frameskip",         .type = CONFIG_TYPE_UINT, .uintValue = &configFrameskip},
