@@ -118,231 +118,7 @@ uint32_t *osmesa_buffer; // 320x240x3 bytes (RGB)
 
 uint8_t *ptrscreen;
 uint32_t numLoops;
-
-static void gfx_dos_init_impl(void) {
-
-    // create Bayer 8x8 dithering matrix
-    for (unsigned y = 0; y < 8; ++y)
-        for (unsigned x = 0; x < 8; ++x) {
-            dit_kernel[y][x] = ((x) &4) / 4u + ((x) &2) * 2u + ((x) &1) * 16u + ((x ^ y) & 4) / 2u + ((x ^ y) & 2) * 4u + ((x ^ y) & 1) * 32u;
-            dit_kernel[y][x] = (dit_kernel[y][x] & (0x3F - (0x3F >> DIT_BITS))) << 2;
-        }
-
-    // optimize Bayer 8x8 dithering matrix access (mode 13H)
-    for (unsigned i = 0; i < 320 * 200; i++) {
-        dit_kernel_mode13h[i] = dit_kernel[(i / 320) & 7][i & 7];
-    }
-
-    // create gamma-corrected look-up tables for dithering
-    double dtab[256], ptab[256];
-    for (unsigned n = 0; n < 256; ++n) {
-        dtab[n] = (255.0 / 256.0) - pow(n / 256.0, 1.0 / DIT_GAMMA);
-        ptab[n] = pow(n / 255.0, 1.0 / PAL_GAMMA);
-    }
-
-    for (unsigned n = 0; n < 256; ++n) {
-        for (unsigned d = 0; d < 256; ++d) {
-            rgbconv[0][n][d] = umin(PAL_BBITS - 1, (unsigned) (ptab[n] * (PAL_BBITS - 1) + dtab[d]));
-            rgbconv[1][n][d] = PAL_BBITS * umin(PAL_GBITS - 1, (unsigned) (ptab[n] * (PAL_GBITS - 1) + dtab[d]));
-            rgbconv[2][n][d] = PAL_GBITS * PAL_BBITS * umin(PAL_RBITS - 1, (unsigned) (ptab[n] * (PAL_RBITS - 1) + dtab[d]));
-        }
-    }
-
-    unsigned long screen_base_addr;
-
-    switch (configVideomode) {
-        case VM_13H:
-
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_200;
-            set_color_depth(8);
-            set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT_200, 0, 0);
-            ptrscreen = VGA_BASE + __djgpp_conventional_base;
-            break;
-
-        case VM_X:
-
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_240;
-            set_color_depth(8);
-            set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_240, 0, 0);
-            ptrscreen = VGA_BASE + __djgpp_conventional_base;
-            break;
-
-        case VM_VESA_LFB_15:
-
-            set_color_depth(15);
-            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
-            scroll_screen(0, 0);
-
-            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
-
-            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
-            numLoops = (configScreenWidth * configScreenHeight) / 2;
-
-            break;
-
-        case VM_VESA_LFB_16:
-
-            set_color_depth(16);
-            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
-            scroll_screen(0, 0);
-
-            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
-
-            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
-            numLoops = (configScreenWidth * configScreenHeight) / 2;
-
-            break;
-
-        case VM_VESA_LFB_24:
-
-            set_color_depth(24);
-            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
-            scroll_screen(0, 0);
-
-            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
-
-            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
-            numLoops = (configScreenWidth * configScreenHeight * 3) / 4;
-
-            break;
-
-        case VM_VESA_LFB_32:
-
-            set_color_depth(32);
-            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
-            scroll_screen(0, 0);
-
-            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
-
-            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
-            numLoops = configScreenWidth * configScreenHeight;
-
-            break;
-
-        case VM_HERCULES:
-
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_240;
-            ptrscreen = HERCULES_BASE + __djgpp_conventional_base;
-
-            outportb(0x03BF, Graph_640x400[0]);
-            for (int i = 0; i < 10; i++) {
-                outportb(0x03B4, i);
-                outportb(0x03B5, Graph_640x400[i + 1]);
-            }
-            outportb(0x03B8, Graph_640x400[11]);
-
-            memset(ptrscreen, 0, 65536); // Clean 64kb
-            memset(hercules_backbuffer, 0, 640 * 400 / 8);
-            break;
-    }
-
-    if (configVideomode == VM_13H || configVideomode == VM_X) {
-
-        outportb(PAL_LOAD, 0);
-
-        if (configDither){
-            // set up regular palette as configured above;
-            // however, bias the colors towards darker ones in an exponential curve
-
-            for (unsigned color = 0; color < PAL_RBITS * PAL_GBITS * PAL_BBITS; ++color) {
-                outportb(PAL_COLOR,
-                         pow(((color / (PAL_BBITS * PAL_GBITS)) % PAL_RBITS) * 1.0 / (PAL_RBITS - 1), PAL_GAMMA) * 63);
-                outportb(PAL_COLOR,
-                         pow(((color / (PAL_BBITS)) % PAL_GBITS) * 1.0 / (PAL_GBITS - 1), PAL_GAMMA) * 63);
-                outportb(PAL_COLOR,
-                         pow(((color) % PAL_BBITS) * 1.0 / (PAL_BBITS - 1), PAL_GAMMA) * 63);
-            }
-        } else {
-
-            // set palette to RGB332
-
-            for (unsigned color = 0; color < 256; color++) {
-
-                unsigned int Rcolor;
-                unsigned int Gcolor;
-                unsigned int Bcolor;
-
-                Rcolor = color >> 5;
-                Gcolor = (color & 0x1C) >> 2;
-                Bcolor = (color & 0x03);
-
-                Rcolor = Rcolor << 3;
-                Gcolor = Gcolor << 3;
-                Bcolor = Bcolor << 4;
-
-                outportb(PAL_COLOR, Rcolor);
-                outportb(PAL_COLOR, Gcolor);
-                outportb(PAL_COLOR, Bcolor);
-
-            }
-
-        }
-
-    }
-
-#ifdef ENABLE_OSMESA
-
-    switch (configVideomode){
-        case VM_13H:
-        case VM_VESA_LFB_15:
-        case VM_VESA_LFB_16:
-        case VM_VESA_LFB_24:
-            osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 3 * sizeof(GLubyte));
-            break;
-        default:
-            osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
-            break;
-    }
-
-    if (!osmesa_buffer) {
-        fprintf(stderr, "osmesa_buffer malloc failed!\n");
-        abort();
-    }
-
-    switch (configVideomode){
-        case VM_X:
-            if (configDither){
-                    ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
-            }else{
-                    ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
-            }
-            break;
-        case VM_13H:
-        case VM_VESA_LFB_15:
-        case VM_VESA_LFB_16:
-            ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
-            break;
-        case VM_VESA_LFB_24:
-            ctx = OSMesaCreateContextExt(OSMESA_BGR, 16, 0, 0, NULL);
-            break;
-        case VM_VESA_LFB_32:
-            ctx = OSMesaCreateContextExt(OSMESA_BGRA, 16, 0, 0, NULL);
-            break;
-        default:
-            ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
-            break;
-    }
-
-    if (!OSMesaMakeCurrent(ctx, osmesa_buffer, GL_UNSIGNED_BYTE, configScreenWidth, configScreenHeight)) {
-        fprintf(stderr, "OSMesaMakeCurrent failed!\n");
-        abort();
-    }
-    OSMesaPixelStore(OSMESA_Y_UP, GL_FALSE);
-#endif
-}
-
-static void gfx_dos_shutdown_impl(void) {
-#ifdef ENABLE_OSMESA
-    OSMesaDestroyContext(ctx);
-    free(osmesa_buffer);
-    osmesa_buffer = NULL;
-#endif
-    // go back to default text mode
-    set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-}
+void (*backbuffer_function)(void);
 
 static void gfx_dos_swap_buffers_modex_dither(void) {
     // we're gonna be only sending plane switch commands until the end of the function
@@ -512,6 +288,254 @@ static void gfx_dos_swap_buffers_vesa_lfb_32(void) {
     }
 }
 
+static void gfx_dos_init_impl(void) {
+
+    // create Bayer 8x8 dithering matrix
+    for (unsigned y = 0; y < 8; ++y)
+        for (unsigned x = 0; x < 8; ++x) {
+            dit_kernel[y][x] = ((x) &4) / 4u + ((x) &2) * 2u + ((x) &1) * 16u + ((x ^ y) & 4) / 2u + ((x ^ y) & 2) * 4u + ((x ^ y) & 1) * 32u;
+            dit_kernel[y][x] = (dit_kernel[y][x] & (0x3F - (0x3F >> DIT_BITS))) << 2;
+        }
+
+    // optimize Bayer 8x8 dithering matrix access (mode 13H)
+    for (unsigned i = 0; i < 320 * 200; i++) {
+        dit_kernel_mode13h[i] = dit_kernel[(i / 320) & 7][i & 7];
+    }
+
+    // create gamma-corrected look-up tables for dithering
+    double dtab[256], ptab[256];
+    for (unsigned n = 0; n < 256; ++n) {
+        dtab[n] = (255.0 / 256.0) - pow(n / 256.0, 1.0 / DIT_GAMMA);
+        ptab[n] = pow(n / 255.0, 1.0 / PAL_GAMMA);
+    }
+
+    for (unsigned n = 0; n < 256; ++n) {
+        for (unsigned d = 0; d < 256; ++d) {
+            rgbconv[0][n][d] = umin(PAL_BBITS - 1, (unsigned) (ptab[n] * (PAL_BBITS - 1) + dtab[d]));
+            rgbconv[1][n][d] = PAL_BBITS * umin(PAL_GBITS - 1, (unsigned) (ptab[n] * (PAL_GBITS - 1) + dtab[d]));
+            rgbconv[2][n][d] = PAL_GBITS * PAL_BBITS * umin(PAL_RBITS - 1, (unsigned) (ptab[n] * (PAL_RBITS - 1) + dtab[d]));
+        }
+    }
+
+    unsigned long screen_base_addr;
+
+    switch (configVideomode) {
+        case VM_13H:
+
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT_200;
+            set_color_depth(8);
+            set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT_200, 0, 0);
+            ptrscreen = VGA_BASE + __djgpp_conventional_base;
+
+            if (configDither)
+                backbuffer_function = gfx_dos_swap_buffers_mode13_dither;
+            else
+                backbuffer_function = gfx_dos_swap_buffers_mode13;
+
+            break;
+
+        case VM_X:
+
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT_240;
+            set_color_depth(8);
+            set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_240, 0, 0);
+            ptrscreen = VGA_BASE + __djgpp_conventional_base;
+
+            if (configDither)
+                backbuffer_function = gfx_dos_swap_buffers_modex_dither;
+            else
+                backbuffer_function = gfx_dos_swap_buffers_modex;
+
+            break;
+
+        case VM_VESA_LFB_15:
+
+            set_color_depth(15);
+            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
+            scroll_screen(0, 0);
+
+            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
+
+            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = (configScreenWidth * configScreenHeight) / 2;
+
+            backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_15;
+
+            break;
+
+        case VM_VESA_LFB_16:
+
+            set_color_depth(16);
+            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
+            scroll_screen(0, 0);
+
+            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
+
+            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = (configScreenWidth * configScreenHeight) / 2;
+
+            backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_16;
+
+            break;
+
+        case VM_VESA_LFB_24:
+
+            set_color_depth(24);
+            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
+            scroll_screen(0, 0);
+
+            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
+
+            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = (configScreenWidth * configScreenHeight * 3) / 4;
+
+            backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_24;
+
+            break;
+
+        case VM_VESA_LFB_32:
+
+            set_color_depth(32);
+            set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
+            scroll_screen(0, 0);
+
+            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
+
+            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+            numLoops = configScreenWidth * configScreenHeight;
+
+            backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_32;
+
+            break;
+
+        case VM_HERCULES:
+
+            configScreenWidth = SCREEN_WIDTH;
+            configScreenHeight = SCREEN_HEIGHT_240;
+            ptrscreen = HERCULES_BASE + __djgpp_conventional_base;
+
+            outportb(0x03BF, Graph_640x400[0]);
+            for (int i = 0; i < 10; i++) {
+                outportb(0x03B4, i);
+                outportb(0x03B5, Graph_640x400[i + 1]);
+            }
+            outportb(0x03B8, Graph_640x400[11]);
+
+            memset(ptrscreen, 0, 65536); // Clean 64kb
+            memset(hercules_backbuffer, 0, 640 * 400 / 8);
+
+            backbuffer_function = gfx_dos_swap_buffers_hercules;
+
+            break;
+    }
+
+    if (configVideomode == VM_13H || configVideomode == VM_X) {
+
+        outportb(PAL_LOAD, 0);
+
+        if (configDither){
+            // set up regular palette as configured above;
+            // however, bias the colors towards darker ones in an exponential curve
+
+            for (unsigned color = 0; color < PAL_RBITS * PAL_GBITS * PAL_BBITS; ++color) {
+                outportb(PAL_COLOR,
+                         pow(((color / (PAL_BBITS * PAL_GBITS)) % PAL_RBITS) * 1.0 / (PAL_RBITS - 1), PAL_GAMMA) * 63);
+                outportb(PAL_COLOR,
+                         pow(((color / (PAL_BBITS)) % PAL_GBITS) * 1.0 / (PAL_GBITS - 1), PAL_GAMMA) * 63);
+                outportb(PAL_COLOR,
+                         pow(((color) % PAL_BBITS) * 1.0 / (PAL_BBITS - 1), PAL_GAMMA) * 63);
+            }
+        } else {
+
+            // set palette to RGB332
+
+            for (unsigned color = 0; color < 256; color++) {
+
+                unsigned int Rcolor;
+                unsigned int Gcolor;
+                unsigned int Bcolor;
+
+                Rcolor = color >> 5;
+                Gcolor = (color & 0x1C) >> 2;
+                Bcolor = (color & 0x03);
+
+                Rcolor = Rcolor << 3;
+                Gcolor = Gcolor << 3;
+                Bcolor = Bcolor << 4;
+
+                outportb(PAL_COLOR, Rcolor);
+                outportb(PAL_COLOR, Gcolor);
+                outportb(PAL_COLOR, Bcolor);
+
+            }
+
+        }
+
+    }
+
+#ifdef ENABLE_OSMESA
+
+    switch (configVideomode){
+        case VM_13H:
+        case VM_VESA_LFB_15:
+        case VM_VESA_LFB_16:
+        case VM_VESA_LFB_24:
+            osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 3 * sizeof(GLubyte));
+            break;
+        default:
+            osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
+            break;
+    }
+
+    if (!osmesa_buffer) {
+        fprintf(stderr, "osmesa_buffer malloc failed!\n");
+        abort();
+    }
+
+    switch (configVideomode){
+        case VM_X:
+            if (configDither){
+                    ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
+            }else{
+                    ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
+            }
+            break;
+        case VM_13H:
+        case VM_VESA_LFB_15:
+        case VM_VESA_LFB_16:
+            ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
+            break;
+        case VM_VESA_LFB_24:
+            ctx = OSMesaCreateContextExt(OSMESA_BGR, 16, 0, 0, NULL);
+            break;
+        case VM_VESA_LFB_32:
+            ctx = OSMesaCreateContextExt(OSMESA_BGRA, 16, 0, 0, NULL);
+            break;
+        default:
+            ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
+            break;
+    }
+
+    if (!OSMesaMakeCurrent(ctx, osmesa_buffer, GL_UNSIGNED_BYTE, configScreenWidth, configScreenHeight)) {
+        fprintf(stderr, "OSMesaMakeCurrent failed!\n");
+        abort();
+    }
+    OSMesaPixelStore(OSMESA_Y_UP, GL_FALSE);
+#endif
+}
+
+static void gfx_dos_shutdown_impl(void) {
+#ifdef ENABLE_OSMESA
+    OSMesaDestroyContext(ctx);
+    free(osmesa_buffer);
+    osmesa_buffer = NULL;
+#endif
+    // go back to default text mode
+    set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+}
+
 #endif // ENABLE_FXMESA
 
 #ifdef VERSION_EU
@@ -595,37 +619,7 @@ static void gfx_dos_swap_buffers_begin(void) {
 #ifdef ENABLE_DMESA
     DMesaSwapBuffers(db);
 #else
-    if (GFX_BUFFER != NULL) {
-        switch (configVideomode) {
-            case VM_13H:
-                if (configDither)
-                    gfx_dos_swap_buffers_mode13_dither();
-                else
-                    gfx_dos_swap_buffers_mode13();
-                break;
-            case VM_X:
-                if (configDither)
-                    gfx_dos_swap_buffers_modex_dither();
-                else
-                    gfx_dos_swap_buffers_modex();
-                break;
-            case VM_VESA_LFB_15:
-                gfx_dos_swap_buffers_vesa_lfb_15();
-                break;
-            case VM_VESA_LFB_16:
-                gfx_dos_swap_buffers_vesa_lfb_16();
-                break;
-            case VM_VESA_LFB_24:
-                gfx_dos_swap_buffers_vesa_lfb_24();
-                break;
-            case VM_VESA_LFB_32:
-                gfx_dos_swap_buffers_vesa_lfb_32();
-                break;
-            case VM_HERCULES:
-                gfx_dos_swap_buffers_hercules();
-                break;
-        }
-    }
+    backbuffer_function();
 #endif
 }
 

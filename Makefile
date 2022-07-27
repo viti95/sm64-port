@@ -512,7 +512,7 @@ ifeq ($(TARGET_WEB),1)
   PLATFORM_LDFLAGS := -lm -no-pie -s TOTAL_MEMORY=20MB -g4 --source-map-base http://localhost:8080/ -s "EXTRA_EXPORTED_RUNTIME_METHODS=['callMain']"
 endif
 ifeq ($(TARGET_DOS),1)
-  PLATFORM_CFLAGS  := -DTARGET_DOS -std=gnu99 -nostdlib -m32 -march=i486 -ffreestanding -fgnu89-inline
+  PLATFORM_CFLAGS  := -DTARGET_DOS -std=gnu99 -nostdlib -m32 -march=i486 -ffreestanding -fgnu89-inline -fno-stack-protector
   PLATFORM_LDFLAGS := -lm -no-pie -Llib/allegro -lalleg
 endif
 
