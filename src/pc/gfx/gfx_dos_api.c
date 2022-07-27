@@ -342,11 +342,11 @@ static inline void gfx_dos_swap_buffers_modex_dither(void) {
             inp = (RGBA *) (GFX_BUFFER + x);
             // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
             // calculate the x part and then just add 16 + 64 until bottom
-            outp = VGA_BASE + (x >> 2);
+            outp = ptrscreen + (x >> 2);
             for (register unsigned y = 0; y < SCREEN_HEIGHT_240;
                  ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
                 d = dit_kernel[y & 7][x & 7];
-                _farnspokeb(outp, rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d]);
+                *outp = rgbconv[2][inp->r][d] + rgbconv[1][inp->g][d] + rgbconv[0][inp->b][d];
             }
         }
     }
@@ -366,11 +366,11 @@ static inline void gfx_dos_swap_buffers_modex(void) {
             inp = (RGBA *) (GFX_BUFFER + x);
             // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
             // calculate the x part and then just add 16 + 64 until bottom
-            outp = VGA_BASE + (x >> 2);
+            outp = ptrscreen + (x >> 2);
             for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
                 *inp &= 0b00000000110000001110000011100000;
                 RGBA *inps = (RGBA *) inp;
-                _farnspokeb(outp, inps->r | (inps->g >> 3) | (inps->b >> 6));
+                *outp = inps->r | (inps->g >> 3) | (inps->b >> 6);
             }
         }
     }
