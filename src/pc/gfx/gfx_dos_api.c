@@ -294,6 +294,13 @@ static void gfx_dos_init_impl(void) {
     }
 
     switch (configVideomode){
+        case VM_X:
+            if (configDither){
+                    ctx = OSMesaCreateContextExt(OSMESA_RGBA, 16, 0, 0, NULL);
+            }else{
+                    ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
+            }
+            break;
         case VM_13H:
         case VM_VESA_LFB_15:
         case VM_VESA_LFB_16:
@@ -332,7 +339,7 @@ static inline void gfx_dos_swap_buffers_modex_dither(void) {
     // we're gonna be only sending plane switch commands until the end of the function
     outportb(REG_SELECT, REG_MASK);
     register const RGBA *inp;
-    register unsigned outp;
+    uint8_t *outp;
     register unsigned d;
     // the pixels go 0 1 2 3 0 1 2 3, so we can't afford switching planes every pixel
     // instead we go (switch) 0 0 0 ... (switch) 1 1 1 ...
@@ -355,22 +362,23 @@ static inline void gfx_dos_swap_buffers_modex_dither(void) {
 static inline void gfx_dos_swap_buffers_modex(void) {
     // we're gonna be only sending plane switch commands until the end of the function
     outportb(REG_SELECT, REG_MASK);
-    uint32_t *inp = GFX_BUFFER;
-    register unsigned outp;
+    uint8_t *inp = GFX_BUFFER;
+    uint8_t *outp;
     register unsigned d;
     // the pixels go 0 1 2 3 0 1 2 3, so we can't afford switching planes every pixel
     // instead we go (switch) 0 0 0 ... (switch) 1 1 1 ...
     for (unsigned plane = 0; plane < 4; ++plane) {
         outportb(REG_VALUE, 1 << plane);
         for (register unsigned x = plane; x < SCREEN_WIDTH; x += 4) {
-            inp = (RGBA *) (GFX_BUFFER + x);
+            inp = (uint8_t *) (GFX_BUFFER) + 3*x;
             // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
             // calculate the x part and then just add 16 + 64 until bottom
             outp = ptrscreen + (x >> 2);
-            for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH, outp += (1 << 4) + (1 << 6)) {
-                *inp &= 0b00000000110000001110000011100000;
-                RGBA *inps = (RGBA *) inp;
-                *outp = inps->r | (inps->g >> 3) | (inps->b >> 6);
+            for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH * 3, outp += (1 << 4) + (1 << 6)) {
+                uint8_t R = (*(inp) & 0b11100000);
+                uint8_t G = (*(inp + 1) & 0b11100000) >> 3;
+                uint8_t B = *(inp + 2) >> 6;
+                *outp = R | G | B;
             }
         }
     }
