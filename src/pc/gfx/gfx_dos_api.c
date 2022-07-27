@@ -277,6 +277,9 @@ static void gfx_dos_init_impl(void) {
 #ifdef ENABLE_OSMESA
 
     switch (configVideomode){
+        case VM_13H:
+        case VM_VESA_LFB_15:
+        case VM_VESA_LFB_16:
         case VM_VESA_LFB_24:
             osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 3 * sizeof(GLubyte));
             break;
@@ -285,13 +288,17 @@ static void gfx_dos_init_impl(void) {
             break;
     }
 
-    osmesa_buffer = (void *) malloc(configScreenWidth * configScreenHeight * 4 * sizeof(GLubyte));
     if (!osmesa_buffer) {
         fprintf(stderr, "osmesa_buffer malloc failed!\n");
         abort();
     }
 
     switch (configVideomode){
+        case VM_13H:
+        case VM_VESA_LFB_15:
+        case VM_VESA_LFB_16:
+            ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
+            break;
         case VM_VESA_LFB_24:
             ctx = OSMesaCreateContextExt(OSMESA_BGR, 16, 0, 0, NULL);
             break;
@@ -380,17 +387,18 @@ static inline void gfx_dos_swap_buffers_mode13_dither(void) {
 }
 
 static inline void gfx_dos_swap_buffers_mode13(void) {
-    uint32_t *inp = GFX_BUFFER;
+
+    uint8_t *inp = GFX_BUFFER;
     uint8_t *vram = ptrscreen;
 
-    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200; i++, inp++, vram++) {
-        *inp &= 0b00000000110000001110000011100000;
-        RGBA *inps = (RGBA *) inp;
-        *vram = inps->r | (inps->g >> 3) | (inps->b >> 6);
+    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200; i++, inp += 3, vram++) {
+        uint8_t R = (*(inp) & 0b11100000);
+        uint8_t G = (*(inp + 1) & 0b11100000) >> 3;
+        uint8_t B = *(inp + 2) >> 6;
+        *vram = R | G | B;
     }
+
 }
-
-
 
 static inline void gfx_dos_swap_buffers_hercules(void) {
     const RGBA *inp = (RGBA *) GFX_BUFFER;
@@ -436,24 +444,26 @@ static inline void gfx_dos_swap_buffers_hercules(void) {
 }
 
 static inline void gfx_dos_swap_buffers_vesa_lfb_15(void) {
-    uint32_t *inp = GFX_BUFFER;
+    uint8_t *inp = GFX_BUFFER;
     uint16_t *vram = (uint16_t *) ptrscreen;
 
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram++) {
-        *inp &= 0b00000000111111111111100011111000;
-        RGBA *inps = (RGBA *) inp;
-        *vram = (inps->r << 7) | (inps->g << 2) | (inps->b >> 3);
+    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp += 3, vram++) {
+        uint16_t R = (*(inp) & 0b11111000) << 7;
+        uint16_t G = (*(inp + 1) & 0b11111000) << 2;
+        uint16_t B = *(inp + 2) >> 3;
+        *vram = R | G | B;
     }
 }
 
 static inline void gfx_dos_swap_buffers_vesa_lfb_16(void) {
-    uint32_t *inp = GFX_BUFFER;
+    uint8_t *inp = GFX_BUFFER;
     uint16_t *vram = (uint16_t *) ptrscreen;
 
-    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp++, vram++) {
-        *inp &= 0b00000000111111111111110011111000;
-        RGBA *inps = (RGBA *) inp;
-        *vram = (inps->r << 8) | (inps->g << 3) | (inps->b >> 3);
+    for (unsigned i = 0; i < configScreenWidth * configScreenHeight; i++, inp += 3, vram++) {
+        uint16_t R = (*(inp) & 0b11111000) << 8;
+        uint16_t G = (*(inp + 1) & 0b11111100) << 3;
+        uint16_t B = *(inp + 2) >> 3;
+        *vram = R | G | B;
     }
 }
 
