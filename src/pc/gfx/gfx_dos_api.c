@@ -202,6 +202,51 @@ static void gfx_dos_swap_buffers_hercules(void) {
     }
 }
 
+static void gfx_dos_swap_buffers_vesa_lfb_8_native(void) {
+    uint8_t *inp = GFX_BUFFER;
+    uint16_t *vram = (uint16_t *) ptrscreen;
+
+    uint16_t position = 0;
+
+    for (unsigned i = 0; i < numLoops; i++, inp += 3, vram++) {
+        uint16_t R = (*(inp) & 0b11100000);
+        uint16_t G = (*(inp + 1) & 0b11100000) >> 3;
+        uint16_t B = *(inp + 2) >> 6;
+
+        R |= R << 8;
+        G |= G << 8;
+        B |= B << 8;
+
+        uint32_t value = R | G | B;
+
+        *vram = value;
+        *(vram + 320) = value;
+
+        position++;
+
+        if (position == 320){
+            position = 0;
+            vram += 320;
+        }
+    }
+}
+
+static void gfx_dos_swap_buffers_vesa_lfb_8(void) {
+    uint8_t *inp = GFX_BUFFER;
+    uint16_t *vram = (uint16_t *) ptrscreen;
+
+    for (unsigned i = 0; i < numLoops; i++, inp += 6, vram++) {
+        uint16_t R1 = (*(inp) & 0b11100000);
+        uint16_t G1 = (*(inp + 1) & 0b11100000) >> 3;
+        uint16_t B1 = *(inp + 2) >> 6;
+        uint16_t R2 = (*(inp + 3) & 0b11100000) << 8;
+        uint16_t G2 = (*(inp + 4) & 0b11100000) << 5;
+        uint16_t B2 = (*(inp + 5) & 0b11000000) << 2;
+
+        *vram = R1 | G1 | B1 | R2 | G2 | B2;
+    }
+}
+
 static void gfx_dos_swap_buffers_vesa_lfb_15_native(void) {
     uint8_t *inp = GFX_BUFFER;
     uint32_t *vram = (uint32_t *) ptrscreen;
@@ -393,6 +438,34 @@ static void gfx_dos_init_impl(void) {
 
             break;
 
+        case VM_VESA_LFB_8:
+
+            set_color_depth(8);
+
+            if (configNativeResolution) {
+                configScreenWidth = SCREEN_WIDTH;
+                configScreenHeight = SCREEN_HEIGHT_240;
+                set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
+            }else{
+                set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
+            }
+
+            scroll_screen(0, 0);
+
+            __dpmi_get_segment_base_address(screen->seg, &screen_base_addr);
+
+            ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
+
+            if (configNativeResolution){
+                numLoops = configScreenWidth * configScreenHeight;
+                backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_8_native;
+            }else{
+                numLoops = (configScreenWidth * configScreenHeight) / 2;
+                backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_8;
+            }
+
+            break;
+
         case VM_VESA_LFB_15:
 
             set_color_depth(15);
@@ -526,7 +599,7 @@ static void gfx_dos_init_impl(void) {
             break;
     }
 
-    if (configVideomode == VM_13H || configVideomode == VM_X) {
+    if (configVideomode == VM_13H || configVideomode == VM_X || configVideomode == VM_VESA_LFB_8) {
 
             // set palette to RGB332
 
@@ -556,6 +629,8 @@ static void gfx_dos_init_impl(void) {
 
     switch (configVideomode){
         case VM_13H:
+        case VM_X:
+        case VM_VESA_LFB_8:
         case VM_VESA_LFB_15:
         case VM_VESA_LFB_16:
         case VM_VESA_LFB_24:
@@ -574,6 +649,7 @@ static void gfx_dos_init_impl(void) {
     switch (configVideomode){
         case VM_13H:
         case VM_X:
+        case VM_VESA_LFB_8:
         case VM_VESA_LFB_15:
         case VM_VESA_LFB_16:
             ctx = OSMesaCreateContextExt(OSMESA_RGB, 16, 0, 0, NULL);
