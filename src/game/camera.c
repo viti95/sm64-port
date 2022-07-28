@@ -662,29 +662,6 @@ void focus_on_mario(Vec3f focus, Vec3f pos, f32 posYOff, f32 focYOff, f32 dist, 
     focus[2] = sMarioCamState->pos[2];
 }
 
-static UNUSED void set_pos_to_mario(Vec3f foc, Vec3f pos, f32 yOff, f32 focYOff, f32 dist, s16 pitch, s16 yaw) {
-    Vec3f marioPos;
-    f32 posDist;
-    f32 focDist;
-
-    s16 posPitch;
-    s16 posYaw;
-    s16 focPitch;
-    s16 focYaw;
-
-    vec3f_copy(marioPos, sMarioCamState->pos);
-    marioPos[1] += yOff;
-
-    vec3f_set_dist_and_angle(marioPos, pos, dist, pitch + sLakituPitch, yaw);
-    vec3f_get_dist_and_angle(pos, sMarioCamState->pos, &posDist, &posPitch, &posYaw);
-
-    //! Useless get and set
-    vec3f_get_dist_and_angle(pos, foc, &focDist, &focPitch, &focYaw);
-    vec3f_set_dist_and_angle(pos, foc, focDist, focPitch, focYaw);
-
-    foc[1] = sMarioCamState->pos[1] + focYOff;
-}
-
 /**
  * Set the camera's y coordinate to goalHeight, respecting floors and ceilings in the way
  */
@@ -1073,7 +1050,7 @@ void radial_camera_input_default(struct Camera *c) {
  * Makes Lakitu cam's yaw match the angle turned towards in C-Up mode, and makes Lakitu slowly fly back
  * to the distance he was at before C-Up
  */
-void update_yaw_and_dist_from_c_up(UNUSED struct Camera *c) {
+void update_yaw_and_dist_from_c_up() {
     f32 dist = 1000.f;
 
     sModeOffsetYaw = sModeInfo.transitionStart.yaw - sAreaYaw;
@@ -1092,7 +1069,7 @@ void mode_radial_camera(struct Camera *c) {
     UNUSED u8 unused2[4];
 
     if (gCameraMovementFlags & CAM_MOVING_INTO_MODE) {
-        update_yaw_and_dist_from_c_up(c);
+        update_yaw_and_dist_from_c_up();
     }
 
     radial_camera_input_default(c);
@@ -1169,7 +1146,7 @@ void mode_outward_radial_camera(struct Camera *c) {
     s16 oldAreaYaw = sAreaYaw;
 
     if (gCameraMovementFlags & CAM_MOVING_INTO_MODE) {
-        update_yaw_and_dist_from_c_up(c);
+        update_yaw_and_dist_from_c_up();
     }
     radial_camera_input_default(c);
     radial_camera_move(c);

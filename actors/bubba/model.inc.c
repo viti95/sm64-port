@@ -2,20 +2,11 @@
 // It's possible that bubba and bub used to be 2 "actors" in
 // one actor file.
 
-// Bin ID? What is this?
-UNUSED static const u64 bubba_unused_1 = 0;
-
 // Bubba
 
 // 0x05000008
 ALIGNED8 static const u8 bubba_seg5_texture_05000008[] = {
 #include "actors/bubba/bubba_sunglasses.rgba16.inc.c"
-};
-
-// unused eye texture, assumed leftover from when actor file was copied from bub
-// 0x05000408
-ALIGNED8 static const u8 bubba_seg5_texture_05000408[] = {
-#include "actors/bubba/bubba_eyes_unused.rgba16.inc.c"
 };
 
 // 0x05001408

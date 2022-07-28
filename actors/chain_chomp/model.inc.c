@@ -1,23 +1,5 @@
 // Chain Chomp
 
-// 0x06021388
-UNUSED static const Lights1 chain_chomp_lights_unused1 = gdSPDefLights1(
-    0x3f, 0x3f, 0x3f,
-    0xff, 0xff, 0xff, 0x28, 0x28, 0x28
-);
-
-// 0x060213A0
-UNUSED static const Lights1 chain_chomp_lights_unused2 = gdSPDefLights1(
-    0x03, 0x03, 0x05,
-    0x0d, 0x0f, 0x16, 0x28, 0x28, 0x28
-);
-
-// 0x060213B8
-UNUSED static const Lights1 chain_chomp_lights_unused3 = gdSPDefLights1(
-    0x25, 0x00, 0x00,
-    0x96, 0x00, 0x00, 0x28, 0x28, 0x28
-);
-
 // 0x060213D0
 ALIGNED8 static const u8 chain_chomp_seg6_texture_060213D0[] = {
 #include "actors/chain_chomp/chain_chomp_bright_shine.rgba16.inc.c"
