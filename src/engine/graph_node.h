@@ -366,7 +366,7 @@ struct GraphNodeRoot *init_graph_node_root(struct AllocOnlyPool *pool, struct Gr
                                            s16 areaIndex, s16 x, s16 y, s16 width, s16 height);
 struct GraphNodeOrthoProjection *init_graph_node_ortho_projection(struct AllocOnlyPool *pool, struct GraphNodeOrthoProjection *graphNode, f32 scale);
 struct GraphNodePerspective *init_graph_node_perspective(struct AllocOnlyPool *pool, struct GraphNodePerspective *graphNode,
-                                                         f32 fov, s16 near, s16 far, GraphNodeFunc nodeFunc, s32 unused);
+                                                         f32 fov, s16 near, s16 far, GraphNodeFunc nodeFunc);
 struct GraphNodeStart *init_graph_node_start(struct AllocOnlyPool *pool, struct GraphNodeStart *graphNode);
 struct GraphNodeMasterList *init_graph_node_master_list(struct AllocOnlyPool *pool, struct GraphNodeMasterList *graphNode, s16 on);
 struct GraphNodeLevelOfDetail *init_graph_node_render_range(struct AllocOnlyPool *pool, struct GraphNodeLevelOfDetail *graphNode,

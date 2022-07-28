@@ -9,10 +9,6 @@
 #include "game/area.h"
 #include "geo_layout.h"
 
-// unused Mtx(s)
-s16 identityMtx[4][4] = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-s16 zeroMtx[4][4] = { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-
 Vec3f gVec3fZero = { 0.0f, 0.0f, 0.0f };
 Vec3s gVec3sZero = { 0, 0, 0 };
 Vec3f gVec3fOne = { 1.0f, 1.0f, 1.0f };
@@ -79,7 +75,7 @@ init_graph_node_ortho_projection(struct AllocOnlyPool *pool, struct GraphNodeOrt
 struct GraphNodePerspective *init_graph_node_perspective(struct AllocOnlyPool *pool,
                                                          struct GraphNodePerspective *graphNode,
                                                          f32 fov, s16 near, s16 far,
-                                                         GraphNodeFunc nodeFunc, s32 unused) {
+                                                         GraphNodeFunc nodeFunc) {
     if (pool != NULL) {
         graphNode = alloc_only_pool_alloc(pool, sizeof(struct GraphNodePerspective));
     }

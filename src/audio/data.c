@@ -591,8 +591,6 @@ u8 bufferDelete2[12] = { 0 };
 u8 D_EU_80302010 = 0;
 u8 D_EU_80302014 = 0;
 struct OSMesgQueue *OSMesgQueues[4] = { &OSMesgQueue0, &OSMesgQueue1, &OSMesgQueue2, &OSMesgQueue3 };
-#else
-s8 sUnused8033EF8 = 24;
 #endif
 
 // .bss

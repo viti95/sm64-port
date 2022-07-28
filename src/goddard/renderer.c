@@ -3783,9 +3783,7 @@ void func_801A71CC(struct ObjNet *net) {
             }
         }
 
-        if (sp80 == 0) {
-            func_8017BED0(net->unk21C, &linkedZone->header); // stubbed fatal function?
-        } else {
+        if (sp80 != 0) {
             gd_printf("%d/%d planes in zone %d\n", sp80, sp7C, i++);
         }
     }

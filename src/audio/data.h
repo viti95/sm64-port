@@ -18,7 +18,6 @@ extern struct AudioSessionSettingsEU gAudioSessionPresets[];
 #else
 extern struct AudioSessionSettings gAudioSessionPresets[18];
 #endif
-extern u16 D_80332388[128]; // unused
 
 #ifdef VERSION_EU
 extern f32 gPitchBendFrequencyScale[256];

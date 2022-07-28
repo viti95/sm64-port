@@ -51,7 +51,6 @@ extern struct ObjGroup* gGdViewsGroup;
 void func_8017BCB0(void);
 void func_8017BD20(void *a0);
 void func_8017BE60(struct GdPlaneF *a0);
-void func_8017BED0(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1);
 const char *get_obj_name_str(enum ObjTypeFlag objFlag);
 struct GdObj *make_object(enum ObjTypeFlag objFlag);
 struct ObjZone *make_zone(struct ObjGroup *a0, struct GdPlaneF *a1, struct ObjGroup *a2);

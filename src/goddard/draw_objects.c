@@ -1087,25 +1087,6 @@ void create_shape_mtl_gddls(struct ObjShape *shape) {
 }
 
 /**
- * Uncalled function that calls a stubbed function (`func_8017BED0()`) for all
- * `GdObj`s in @p grp
- *
- * @param grp Unknown group of objects
- * @return void
- * @note Not called
- */
-void unref_8017AEDC(struct ObjGroup *grp) {
-    register struct Links *link = grp->link1C;
-
-    while (link != NULL) {
-        struct GdObj *obj = link->obj;
-
-        func_8017BED0(grp, obj);
-        link = link->next;
-    }
-}
-
-/**
  * Start a new `GdDisplayList` struct and store its reference index
  * in the input `ObjShape`.
  *

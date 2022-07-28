@@ -46,7 +46,6 @@ OSIoMesg gAudioDmaIoMesg;
 struct SharedDma sSampleDmas[0x60];
 u32 gSampleDmaNumListItems;
 u32 sSampleDmaListSize1;
-u32 sUnused80226B40; // set to 0, never read
 
 // Circular buffer of DMAs with ttl = 0. tail <= head, wrapping around mod 256.
 u8 sSampleDmaReuseQueue1[256];
@@ -178,8 +177,6 @@ void decrease_sample_dma_ttls() {
             }
         }
     }
-
-    sUnused80226B40 = 0;
 }
 
 void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *arg3) {

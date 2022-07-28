@@ -783,7 +783,7 @@ f32 atan2f(f32 y, f32 x) {
  * [0, 0, 0, 0, 1, 2, ... n-1, n, n, n, n]
  * TODO: verify the classification of the spline / figure out how polynomials were computed
  */
-void spline_get_weights(Vec4f result, f32 t, UNUSED s32 c) {
+void spline_get_weights(Vec4f result, f32 t) {
     f32 tinv = 1 - t;
     f32 tinv2 = tinv * tinv;
     f32 tinv3 = tinv2 * tinv;
@@ -849,7 +849,7 @@ s32 anim_spline_poll(Vec3f result) {
     s32 hasEnded = FALSE;
 
     vec3f_copy(result, gVec3fZero);
-    spline_get_weights(weights, gSplineKeyframeFraction, gSplineState);
+    spline_get_weights(weights, gSplineKeyframeFraction);
     for (i = 0; i < 4; i++) {
         result[0] += weights[i] * gSplineKeyframe[i][1];
         result[1] += weights[i] * gSplineKeyframe[i][2];

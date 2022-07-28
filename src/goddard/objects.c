@@ -121,13 +121,6 @@ void func_8017BE60(struct GdPlaneF *a0) {
     a0->p1.z = D_801B9DA0.p1.z;
 }
 
-/* @ 22A6A0 for 0x24 */
-void func_8017BED0(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1) {
-    UNUSED u8 sp00[8];
-    /* Debug stub? */
-    return;
-}
-
 /* @ 22A6C4 for 0x2CC; orig. name: func_8017BEF4 */
 const char *get_obj_name_str(enum ObjTypeFlag objFlag) {
     /* sp04 */ const char *objName;
