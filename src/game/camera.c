@@ -7038,20 +7038,6 @@ void retrieve_info_star(struct Camera *c) {
     vec3f_copy(c->focus, sCameraStoreCutscene.focus);
 }
 
-static UNUSED void unused_vec3s_to_vec3f(Vec3f dst, Vec3s src) {
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-}
-
-static UNUSED void unused_vec3f_to_vec3s(Vec3s dst, Vec3f src) {
-    // note: unlike vec3f_to_vec3s(), this function doesn't round the numbers and instead simply
-    // truncates them
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-}
-
 /**
  * Rotate the camera's focus around the camera's position by incYaw and incPitch
  */
@@ -7068,10 +7054,6 @@ void pan_camera(struct Camera *c, s16 incPitch, s16 incYaw) {
 BAD_RETURN(s32) cutscene_shake_explosion(UNUSED struct Camera *c) {
     set_environmental_camera_shake(SHAKE_ENV_EXPLOSION);
     cutscene_set_fov_shake_preset(1);
-}
-
-static UNUSED void unused_start_bowser_bounce_shake(UNUSED struct Camera *c) {
-    set_environmental_camera_shake(SHAKE_ENV_BOWSER_THROW_BOUNCE);
 }
 
 /**

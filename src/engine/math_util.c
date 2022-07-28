@@ -120,14 +120,20 @@ void vec3f_cross(Vec3f dest, Vec3f a, Vec3f b) {
     dest[2] = a[0] * b[1] - b[0] * a[1];
 }
 
-/// Scale vector 'dest' so it has length 1
-void vec3f_normalize(Vec3f dest) {
-    //! Possible division by zero
-    f32 invsqrt = 1.0f / sqrtf(dest[0] * dest[0] + dest[1] * dest[1] + dest[2] * dest[2]);
+static inline float Q_rsqrt( float number )
+{
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
 
-    dest[0] *= invsqrt;
-    dest[1] *= invsqrt;
-    dest[2] *= invsqrt;
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+
+    return y;
 }
 
 /// Copy matrix 'src' to 'dest'
@@ -342,6 +348,16 @@ void mtxf_billboard(Mat4 dest, Mat4 mtx, Vec3f position, s16 angle) {
     dest[3][2] =
         mtx[0][2] * position[0] + mtx[1][2] * position[1] + mtx[2][2] * position[2] + mtx[3][2];
     dest[3][3] = 1;
+}
+
+/// Scale vector 'dest' so it has length 1
+static inline void vec3f_normalize(Vec3f dest) {
+    //! Possible division by zero
+    f32 invsqrt = Q_rsqrt(dest[0] * dest[0] + dest[1] * dest[1] + dest[2] * dest[2]);
+
+    dest[0] *= invsqrt;
+    dest[1] *= invsqrt;
+    dest[2] *= invsqrt;
 }
 
 /**
