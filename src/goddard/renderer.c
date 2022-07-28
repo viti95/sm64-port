@@ -686,39 +686,10 @@ static Gfx gd_dl_rdp_init[] = {
     gsSPEndDisplayList(),
 };
 
-static u32 gd_unused_pad1 = 0;
-
 float sGdPerspTimer = 1.0;
-
-static u32 gd_unused_pad2 = 0;
 
 static Gfx gd_texture4_dummy_aligner1[] = {
     gsDPPipeSync(),
-    gsSPEndDisplayList(),
-};
-
-static Vtx_t gd_unused_mesh_vertex_group1[] = {
-    {{-8,  8,  0}, 0, {  0,  0}, {  0x00, 0x00, 0x00, 0xFF}},
-    {{ 8, -2,  0}, 0, {  0,  0}, {  0x00, 0x00, 0x00, 0xFF}},
-    {{ 2, -8,  0}, 0, {  0,  0}, {  0x00, 0x00, 0x00, 0xFF}},
-};
-
-static Vtx_t gd_unused_mesh_vertex_group2[] = {
-    {{-6,  6,  0}, 0, {  0,  0}, {  0xFF, 0xFF, 0xFF, 0xFF}},
-    {{ 7, -3,  0}, 0, {  0,  0}, {  0xFF, 0x00, 0x00, 0xFF}},
-    {{ 3, -7,  0}, 0, {  0,  0}, {  0xFF, 0x00, 0x00, 0xFF}},
-};
-
-static Gfx gd_dl_unused_mesh[] = {
-    gsDPPipeSync(),
-    gsDPSetRenderMode(G_RM_OPA_SURF, G_RM_OPA_SURF2),
-    gsSPClearGeometryMode(0xFFFFFFFF),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_SHADE),
-    gsDPPipeSync(),
-    gsSPVertex(gd_unused_mesh_vertex_group1, 3, 0),
-    gsSP1Triangle(0,  1,  2, 0x0),
-    gsSPVertex(gd_unused_mesh_vertex_group2, 3, 0),
-    gsSP1Triangle(0,  1,  2, 0x0),
     gsSPEndDisplayList(),
 };
 
@@ -740,7 +711,7 @@ extern u8 _gd_dynlistsSegmentRomStart[];
 extern u8 _gd_dynlistsSegmentRomEnd[];
 
 // forward declarations
-u32 new_gddl_from(Gfx *, s32);
+u32 new_gddl_from();
 void gd_setup_cursor(struct ObjGroup *);
 void parse_p1_controller(void);
 void update_cursor(void);
@@ -837,22 +808,14 @@ f64 gd_sqrt_d(f64 x) {
     return sqrtf(x);
 }
 
-/* 249BA4 -> 249BCC */
-f64 Unknown8019B3D4(UNUSED f64 x) {
-    return 0.0;
-}
-
 /* 249BCC -> 24A19C */
 void gd_printf(const char *format, ...) {
     s32 i; // 15c
-    UNUSED u32 pad158;
     char c; // 157
     char f; // 156
-    UNUSED u32 pad150;
     char buf[0x100]; // 50
     char *csr = buf; // 4c
     char spec[8];    // 44; goddard specifier string
-    UNUSED u32 pad40;
     union PrintVal val; // 38;
     va_list args;       // 34
 
@@ -1026,7 +989,6 @@ void func_8019BD0C(s32 dlNum, s32 gfxIdx) {
 /* 24A598 -> 24A610; orig name: func_8019BDC8 */
 void branch_cur_dl_to_num(s32 dlNum) {
     Gfx *dl; // 24
-    UNUSED u32 pad[2];
 
     dl = sGdDLArray[dlNum]->gfx;
     gSPDisplayList(next_gfx(), GD_VIRTUAL_TO_PHYSICAL(dl));
@@ -1040,13 +1002,13 @@ Gfx *Unknown8019BE40(s32 num) {
 /* 24A640 -> 24A8D0; orig name: func_8019BE70 */
 void setup_stars(void) {
     gShapeRedStar = make_shape(0, "redstar");
-    gShapeRedStar->gdDls[0] = new_gddl_from(NULL, 0);
+    gShapeRedStar->gdDls[0] = new_gddl_from();
     gShapeRedStar->gdDls[1] = gShapeRedStar->gdDls[0];
     sGdDLArray[gShapeRedStar->gdDls[0]]->dlptr = gd_red_star_dl_array;
     sGdDLArray[gShapeRedStar->gdDls[1]]->dlptr = gd_red_star_dl_array;
 
     gShapeSilverStar = make_shape(0, "silverstar");
-    gShapeSilverStar->gdDls[0] = new_gddl_from(NULL, 0);
+    gShapeSilverStar->gdDls[0] = new_gddl_from();
     gShapeSilverStar->gdDls[1] = gShapeSilverStar->gdDls[0];
     sGdDLArray[gShapeSilverStar->gdDls[0]]->dlptr = gd_silver_star_dl_array;
     sGdDLArray[gShapeSilverStar->gdDls[1]]->dlptr = gd_silver_star_dl_array;
@@ -1054,13 +1016,13 @@ void setup_stars(void) {
     // make_shape names of the dl array they call are misnamed (swapped)
     // "sspark" calls red sparkles and "rspark" calls silver sparkles
     gShapeRedSpark = make_shape(0, "sspark");
-    gShapeRedSpark->gdDls[0] = new_gddl_from(NULL, 0);
+    gShapeRedSpark->gdDls[0] = new_gddl_from();
     gShapeRedSpark->gdDls[1] = gShapeRedSpark->gdDls[0];
     sGdDLArray[gShapeRedSpark->gdDls[0]]->dlptr = gd_red_sparkle_dl_array;
     sGdDLArray[gShapeRedSpark->gdDls[1]]->dlptr = gd_red_sparkle_dl_array;
 
     gShapeSilverSpark = make_shape(0, "rspark");
-    gShapeSilverSpark->gdDls[0] = new_gddl_from(NULL, 0);
+    gShapeSilverSpark->gdDls[0] = new_gddl_from();
     gShapeSilverSpark->gdDls[1] = gShapeSilverSpark->gdDls[0];
     sGdDLArray[gShapeSilverSpark->gdDls[0]]->dlptr = gd_silver_sparkle_dl_array;
     sGdDLArray[gShapeSilverSpark->gdDls[1]]->dlptr = gd_silver_sparkle_dl_array;
@@ -1121,7 +1083,6 @@ void gd_add_to_heap(void *addr, u32 size) {
 
 /* 24AAE0 -> 24AB7C */
 void gdm_init(void *blockpool, u32 size) {
-    UNUSED u32 pad;
 
     add_to_stacktrace("gdm_init");
     // Align downwards?
@@ -1139,7 +1100,6 @@ void gdm_init(void *blockpool, u32 size) {
 
 /* 24AB7C -> 24AC18 */
 void gdm_setup(void) {
-    UNUSED u32 pad;
 
     add_to_stacktrace("gdm_setup");
     sYoshiSceneGrp = NULL;
@@ -1156,10 +1116,6 @@ void gdm_setup(void) {
     imout();
 }
 
-/* 24AC18 -> 24AC2C */
-void Unknown8019C448(UNUSED u32 a0) {
-}
-
 /* 24AC2C -> 24AC80; not called; orig name: Unknown8019C45C */
 void print_gdm_stats(void) {
     stop_memtracker("total");
@@ -1172,10 +1128,9 @@ void print_gdm_stats(void) {
 /* 24AC80 -> 24AD14; orig name: func_8019C4B0 */
 struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
     struct ObjView *view;            // 2c
-    UNUSED struct ObjGroup *viewgrp; // 28
 
     view = make_view(name, (VIEW_DRAW | VIEW_ALLOC_ZBUF | VIEW_MOVEMENT), 1, 0, 0, 320, 240, grp);
-    viewgrp = make_group(2, grp, view);
+    make_group(2, grp, view);
     view->lights = gGdLightGroup;
 
     return view;
@@ -1183,7 +1138,6 @@ struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
 
 /* 24AD14 -> 24AEB8 */
 void gdm_maketestdl(s32 id) {
-    UNUSED u32 pad[3];
 
     add_to_stacktrace("gdm_maketestdl");
     switch (id) {
@@ -1273,7 +1227,6 @@ s32 gd_sfx_to_play(void) {
 void *gdm_gettestdl(s32 id) {
     struct GdObj *dobj;
     struct GdDisplayList *gddl;
-    UNUSED u32 pad28[2];
     struct GdVec3f vec;
 
     start_timer("dlgen");
@@ -1660,11 +1613,11 @@ void Unknown8019EBCC(s32 num, uintptr_t gfxptr) {
 }
 
 /* 24D3D8 -> 24D458; orig name: func_8019EC08 */
-u32 new_gddl_from(Gfx *dl, UNUSED s32 arg1) {
+u32 new_gddl_from() {
     struct GdDisplayList *gddl;
 
     gddl = new_gd_dl(0, 0, 0, 0, 0, 0);
-    gddl->gfx = (Gfx *) (GD_LOWER_24((uintptr_t) dl) + D_801BAF28);
+    gddl->gfx = (Gfx *) (GD_LOWER_24((uintptr_t) NULL) + D_801BAF28);
     return gddl->number;
 }
 
@@ -3608,14 +3561,6 @@ void make_timer_gadgets(void) {
     return;
 }
 
-/* 255600 -> 255614 */
-void Unknown801A6E30(UNUSED u32 a0) {
-}
-
-/* 255614 -> 255628 */
-void Unknown801A6E44(UNUSED u32 a0) {
-}
-
 #ifndef NO_SEGMENTED_MEMORY
 /* 255628 -> 255704; orig name: func_801A6E58 */
 void gd_block_dma(u32 devAddr, void *vAddr, s32 size) {
@@ -3699,105 +3644,3 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
     return proc_dynlist(dynlist);
 }
 #endif
-
-/* 255988 -> 25599C */
-void stub_801A71B8(UNUSED u32 a0) {
-}
-
-/* 25599C -> 255EB0; not called */
-void func_801A71CC(struct ObjNet *net) {
-    s32 i; // spB4
-    s32 j; // spB0
-    f32 spAC;
-    f32 spA8;
-    struct GdPlaneF sp90;
-    UNUSED u32 pad8C;
-    struct ObjZone *sp88;
-    register struct Links *link;  // s0 (84)
-    s32 sp80;                     // linked planes contained in zone?
-    s32 sp7C;                     // linked planes in net count?
-    register struct Links *link1; // s1 (78)
-    register struct Links *link2; // s2 (74)
-    register struct Links *link3; // s3 (70)
-    struct GdVec3f sp64;
-    UNUSED u32 pad60;
-    struct ObjPlane *plane; // 5c
-    UNUSED u32 pad58;
-    struct ObjZone *linkedZone; // 54
-    UNUSED u32 pad50;
-    struct ObjPlane *planeL2; // 4c
-    UNUSED u32 pad48;
-    struct ObjPlane *planeL3; // 44
-
-    if (net->unk21C == NULL) {
-        net->unk21C = make_group(0);
-    }
-
-    gd_print_plane("making zones for net=", &net->unkBC);
-
-    sp64.x = (ABS(net->unkBC.p0.x) + ABS(net->unkBC.p1.x)) / 16.0f;
-    sp64.z = (ABS(net->unkBC.p0.z) + ABS(net->unkBC.p1.z)) / 16.0f;
-
-    spA8 = net->unkBC.p0.z + sp64.z / 2.0f;
-
-    for (i = 0; i < 16; i++) {
-        spAC = net->unkBC.p0.x + sp64.x / 2.0f;
-
-        for (j = 0; j < 16; j++) {
-            sp90.p0.x = spAC - (sp64.x / 2.0f);
-            sp90.p0.y = 0.0f;
-            sp90.p0.z = spA8 - (sp64.z / 2.0f);
-
-            sp90.p1.x = spAC + (sp64.x / 2.0f);
-            sp90.p1.y = 0.0f;
-            sp90.p1.z = spA8 + (sp64.z / 2.0f);
-
-            sp88 = make_zone(NULL, &sp90, NULL);
-            addto_group(net->unk21C, &sp88->header);
-            sp88->unk2C = make_group(0);
-
-            spAC += sp64.x;
-        }
-        spA8 += sp64.z;
-    }
-
-    for (link = net->unk1CC->link1C; link != NULL; link = link->next) {
-        plane = (struct ObjPlane *) link->obj;
-        plane->unk18 = FALSE;
-    }
-
-    i = 0; // acts as Zone N here... kinda
-    for (link1 = net->unk21C->link1C; link1 != NULL; link1 = link1->next) {
-        linkedZone = (struct ObjZone *) link1->obj;
-        sp88 = linkedZone;
-        sp7C = 0;
-        sp80 = 0;
-
-        for (link2 = net->unk1CC->link1C; link2 != NULL; link2 = link2->next) {
-            planeL2 = (struct ObjPlane *) link2->obj;
-            sp7C += 1;
-            if (gd_plane_point_within(&planeL2->plane28, &sp88->unk14)) {
-                planeL2->unk18 = TRUE;
-                addto_group(sp88->unk2C, &planeL2->header);
-                sp80 += 1;
-            }
-        }
-
-        if (sp80 != 0) {
-            gd_printf("%d/%d planes in zone %d\n", sp80, sp7C, i++);
-        }
-    }
-
-    for (link3 = net->unk1CC->link1C; link3 != NULL; link3 = link3->next) {
-        planeL3 = (struct ObjPlane *) link3->obj;
-
-        if (!planeL3->unk18) {
-            gd_print_plane("plane=", &planeL3->plane28);
-            fatal_printf("plane not in any zones\n");
-        }
-    }
-}
-
-/* 255EB0 -> 255EC0 */
-void stub_801A76E0(void) {
-}

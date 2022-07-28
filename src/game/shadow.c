@@ -782,8 +782,7 @@ Gfx *create_shadow_square(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 soli
  * Create a rectangular shadow whose parameters have been hardcoded in the
  * `rectangles` array.
  */
-Gfx *create_shadow_hardcoded_rectangle(f32 xPos, f32 yPos, f32 zPos, UNUSED s16 shadowScale,
-                                       u8 solidity, s8 shadowType) {
+Gfx *create_shadow_hardcoded_rectangle(f32 xPos, f32 yPos, f32 zPos, u8 solidity, s8 shadowType) {
     f32 shadowHeight;
     f32 distFromShadow;
     f32 halfWidth;
@@ -855,8 +854,7 @@ Gfx *create_shadow_below_xyz(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 s
                                                /* isLuigi */ FALSE);
             break;
         default:
-            displayList = create_shadow_hardcoded_rectangle(xPos, yPos, zPos, shadowScale,
-                                                            shadowSolidity, shadowType);
+            displayList = create_shadow_hardcoded_rectangle(xPos, yPos, zPos, shadowSolidity, shadowType);
             break;
     }
     return displayList;

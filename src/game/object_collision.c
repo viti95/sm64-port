@@ -11,7 +11,6 @@ int detect_object_hitbox_overlap(struct Object *a, struct Object *b) {
     f32 sp3C = a->oPosY - a->hitboxDownOffset;
     f32 sp38 = b->oPosY - b->hitboxDownOffset;
     f32 dx = a->oPosX - b->oPosX;
-    UNUSED f32 sp30 = sp3C - sp38;
     f32 dz = a->oPosZ - b->oPosZ;
     f32 collisionRadius = a->hitboxRadius + b->hitboxRadius;
     f32 distance = sqrtf(dx * dx + dz * dz);
@@ -48,7 +47,6 @@ int detect_object_hurtbox_overlap(struct Object *a, struct Object *b) {
     f32 sp3C = a->oPosY - a->hitboxDownOffset;
     f32 sp38 = b->oPosY - b->hitboxDownOffset;
     f32 sp34 = a->oPosX - b->oPosX;
-    UNUSED f32 sp30 = sp3C - sp38;
     f32 sp2C = a->oPosZ - b->oPosZ;
     f32 sp28 = a->hurtboxRadius + b->hurtboxRadius;
     f32 sp24 = sqrtf(sp34 * sp34 + sp2C * sp2C);
