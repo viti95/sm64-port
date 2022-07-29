@@ -544,12 +544,3 @@ void debug_print_obj_move_flags(void) {
     }
 #endif
 }
-
-// unused, what is this?
-void debug_enemy_unknown(s16 *enemyArr) {
-    // copy b1-b4 over to an unknown s16 array
-    enemyArr[4] = gDebugInfo[DEBUG_PAGE_ENEMYINFO][1];
-    enemyArr[5] = gDebugInfo[DEBUG_PAGE_ENEMYINFO][2];
-    enemyArr[6] = gDebugInfo[DEBUG_PAGE_ENEMYINFO][3];
-    enemyArr[7] = gDebugInfo[DEBUG_PAGE_ENEMYINFO][4];
-}
