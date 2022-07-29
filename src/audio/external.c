@@ -2453,7 +2453,6 @@ void sound_reset(u8 presetId) {
 #else
     audio_reset_session_eu(presetId);
 #endif
-    osWritebackDCacheAll();
     if (presetId != 7) {
         preload_sequence(SEQ_EVENT_SOLVE_PUZZLE, PRELOAD_BANKS | PRELOAD_SEQUENCE);
         preload_sequence(SEQ_EVENT_PEACH_MESSAGE, PRELOAD_BANKS | PRELOAD_SEQUENCE);

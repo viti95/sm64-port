@@ -106,7 +106,6 @@ extern u8 gBankSetsData[];  // bank_sets.s
  * Performs an immediate DMA copy
  */
 void audio_dma_copy_immediate(uintptr_t devAddr, void *vAddr, size_t nbytes) {
-    osInvalDCache(vAddr, nbytes);
     osPiStartDma(&gAudioDmaIoMesg, OS_MESG_PRI_HIGH, OS_READ, devAddr, vAddr, nbytes,
                  &gAudioDmaMesgQueue);
     osRecvMesg(&gAudioDmaMesgQueue, NULL, OS_MESG_BLOCK);
@@ -116,7 +115,6 @@ void audio_dma_copy_immediate(uintptr_t devAddr, void *vAddr, size_t nbytes) {
  * Performs an asynchronus (normal priority) DMA copy
  */
 void audio_dma_copy_async(uintptr_t devAddr, void *vAddr, size_t nbytes, OSMesgQueue *queue, OSIoMesg *mesg) {
-    osInvalDCache(vAddr, nbytes);
     osPiStartDma(mesg, OS_MESG_PRI_NORMAL, OS_READ, devAddr, vAddr, nbytes, queue);
 }
 
@@ -139,7 +137,6 @@ void audio_dma_partial_copy_async(uintptr_t *devAddr, u8 **vAddr, size_t *remain
 #endif
 #endif
     *remaining -= transfer;
-    osInvalDCache(*vAddr, transfer);
     osPiStartDma(mesg, OS_MESG_PRI_NORMAL, OS_READ, *devAddr, *vAddr, transfer, queue);
     *devAddr += transfer;
     *vAddr += transfer;
@@ -279,9 +276,6 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *arg3) {
     dma->ttl = 2;
     dma->source = dmaDevAddr;
     dma->sizeUnused = transfer;
-#ifdef VERSION_US
-    osInvalDCache(dma->buffer, transfer);
-#endif
 #ifdef VERSION_EU
     osPiStartDma(&gCurrAudioFrameDmaIoMesgBufs[gCurrAudioFrameDmaCount++], OS_MESG_PRI_NORMAL,
                  OS_READ, dmaDevAddr, dma->buffer, transfer, &gCurrAudioFrameDmaQueue);

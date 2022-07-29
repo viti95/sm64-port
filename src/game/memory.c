@@ -247,7 +247,6 @@ u32 main_pool_pop_state(void) {
 static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
 #ifdef TARGET_N64
     u32 size = ALIGN16(srcEnd - srcStart);
-    osInvalDCache(dest, size);
     while (size != 0) {
         u32 copySize = (size >= 0x1000) ? 0x1000 : size;
 
@@ -308,10 +307,8 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
         dest = main_pool_alloc(destSize, MEMORY_POOL_RIGHT);
         if (dest != NULL) {
             bzero(dest, destSize);
-            osWritebackDCacheAll();
             dma_read(dest, srcStart, srcEnd);
             osInvalICache(dest, destSize);
-            osInvalDCache(dest, destSize);
         }
     } else {
     }
@@ -365,10 +362,8 @@ void load_engine_code_segment(void) {
     u32 totalSize = SEG_FRAMEBUFFERS - SEG_ENGINE;
 
     bzero(startAddr, totalSize);
-    osWritebackDCacheAll();
     dma_read(startAddr, _engineSegmentRomStart, _engineSegmentRomEnd);
     osInvalICache(startAddr, totalSize);
-    osInvalDCache(startAddr, totalSize);
 }
 #endif
 

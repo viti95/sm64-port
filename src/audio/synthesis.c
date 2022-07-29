@@ -100,7 +100,6 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex, s32 reverbIndex) 
             item = &reverb->items[reverb->curFrame][updateIndex];
 
             // Touches both left and right since they are adjacent in memory
-            osInvalDCache(item->toDownsampleLeft, DEFAULT_LEN_2CH);
 
             for (srcPos = 0, dstPos = 0; dstPos < item->lengthA / 2;
                  srcPos += reverb->downsampleRate, dstPos++) {
@@ -151,7 +150,6 @@ void prepare_reverb_ring_buffer(s32 chunkLen, u32 updateIndex) {
             item = &gSynthesisReverb.items[gSynthesisReverb.curFrame][updateIndex];
 
             // Touches both left and right since they are adjacent in memory
-            osInvalDCache(item->toDownsampleLeft, DEFAULT_LEN_2CH);
 
             for (srcPos = 0, dstPos = 0; dstPos < item->lengthA / 2;
                  srcPos += gReverbDownsampleRate, dstPos++) {

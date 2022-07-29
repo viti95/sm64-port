@@ -583,8 +583,6 @@ void build_synthetic_wave(struct Note *note, struct SequenceChannelLayer *seqLay
             }
         }
     }
-
-    osWritebackDCache(note->synthesisBuffers->samples, sizeof(note->synthesisBuffers->samples));
 }
 #endif
 

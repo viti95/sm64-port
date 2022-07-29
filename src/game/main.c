@@ -388,20 +388,17 @@ void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *q
 }
 
 void send_sp_task_message(OSMesg *msg) {
-    osWritebackDCacheAll();
     osSendMesg(&gSPTaskMesgQueue, msg, OS_MESG_NOBLOCK);
 }
 
 void dispatch_audio_sptask(struct SPTask *spTask) {
     if (sAudioEnabled != 0 && spTask != NULL) {
-        osWritebackDCacheAll();
         osSendMesg(&gSPTaskMesgQueue, spTask, OS_MESG_NOBLOCK);
     }
 }
 
 void send_display_list(struct SPTask *spTask) {
     if (spTask != NULL) {
-        osWritebackDCacheAll();
         spTask->state = SPTASK_STATE_NOT_STARTED;
         if (sCurrentDisplaySPTask == NULL) {
             sCurrentDisplaySPTask = spTask;

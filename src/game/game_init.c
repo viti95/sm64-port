@@ -284,7 +284,6 @@ void draw_reset_bars(void) {
         }
     }
 
-    osWritebackDCacheAll();
     osRecvMesg(&gGameVblankQueue, &D_80339BEC, OS_MESG_BLOCK);
     osRecvMesg(&gGameVblankQueue, &D_80339BEC, OS_MESG_BLOCK);
 }

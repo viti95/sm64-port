@@ -922,8 +922,6 @@ void audio_reset_session(void) {
     build_vol_rampings_table(0, gAudioBufferParameters.samplesPerUpdate);
 #endif
 
-    osWritebackDCacheAll();
-
 #ifndef VERSION_EU
     if (gAudioLoadLock != AUDIO_LOCK_UNINITIALIZED) {
         gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;

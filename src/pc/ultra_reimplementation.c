@@ -78,15 +78,6 @@ OSTime osGetTime(void) {
     return 0;
 }
 
-void osWritebackDCacheAll(void) {
-}
-
-void osWritebackDCache(UNUSED void *a, UNUSED size_t b) {
-}
-
-void osInvalDCache(UNUSED void *a, UNUSED size_t b) {
-}
-
 u32 osGetCount(void) {
     static u32 counter;
     return counter++;
