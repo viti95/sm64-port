@@ -523,27 +523,12 @@ void linearly_interpolate_solidity_negative(struct Shadow *s, u8 initialSolidity
 /**
  * Change a shadow's solidity based on the player's current animation frame.
  */
-s8 correct_shadow_solidity_for_animations(s32 isLuigi, u8 initialSolidity, struct Shadow *shadow) {
+s8 correct_shadow_solidity_for_animations(u8 initialSolidity, struct Shadow *shadow) {
     struct Object *player;
     s8 ret;
     s16 animFrame;
 
-    switch (isLuigi) {
-        case 0:
-            player = gMarioObject;
-            break;
-        case 1:
-            /**
-             * This is evidence of a removed second player, likely Luigi.
-             * This variable lies in memory just after the gMarioObject and
-             * has the same type of shadow that Mario does. The `isLuigi`
-             * variable is never 1 in the game. Note that since this was a
-             * switch-case, not an if-statement, the programmers possibly
-             * intended there to be even more than 2 characters.
-             */
-            player = gLuigiObject;
-            break;
-    }
+    player = gMarioObject;
 
     animFrame = player->header.gfx.unk38.animFrame;
     switch (player->header.gfx.unk38.animID) {
@@ -592,7 +577,7 @@ void correct_lava_shadow_height(struct Shadow *s) {
  * Create a shadow under a player, correcting that shadow's opacity during
  * appropriate animations and other states.
  */
-Gfx *create_shadow_player(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 solidity, s32 isLuigi) {
+Gfx *create_shadow_player(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 solidity) {
     Vtx *verts;
     Gfx *displayList;
     struct Shadow shadow;
@@ -612,7 +597,7 @@ Gfx *create_shadow_player(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 soli
         }
     }
 
-    switch (correct_shadow_solidity_for_animations(isLuigi, solidity, &shadow)) {
+    switch (correct_shadow_solidity_for_animations(solidity, &shadow)) {
         case SHADOW_SOLIDITY_NO_SHADOW:
             return NULL;
             break;
@@ -850,8 +835,7 @@ Gfx *create_shadow_below_xyz(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 s
                 create_shadow_square(xPos, yPos, zPos, shadowScale, shadowSolidity, shadowType);
             break;
         case SHADOW_CIRCLE_PLAYER:
-            displayList = create_shadow_player(xPos, yPos, zPos, shadowScale, shadowSolidity,
-                                               /* isLuigi */ FALSE);
+            displayList = create_shadow_player(xPos, yPos, zPos, shadowScale, shadowSolidity);
             break;
         default:
             displayList = create_shadow_hardcoded_rectangle(xPos, yPos, zPos, shadowSolidity, shadowType);
