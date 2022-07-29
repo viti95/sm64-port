@@ -81,12 +81,6 @@ s64 get_current_clock(void) {
     return wtf;
 }
 
-s64 get_clock_difference(UNUSED s64 arg0) {
-    s64 wtf = 0;
-
-    return wtf;
-}
-
 /*
  * Set the print state info given a pointer to a print state and the relevent
  * information. Note the reset of the printing boolean. For all intenses and
@@ -436,10 +430,6 @@ void try_modify_debug_controls(void) {
             gDebugInfo[sDebugPage][sDebugSysCursor] = gDebugInfo[sDebugPage][sDebugSysCursor] + sp4;
         }
     }
-}
-
-// possibly a removed debug control (TODO: check DD)
-void stub_debug_5(void) {
 }
 
 /*

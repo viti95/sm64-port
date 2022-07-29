@@ -180,15 +180,11 @@
 #define SHAKE_ENV_EXPLOSION           1
 #define SHAKE_ENV_BOWSER_THROW_BOUNCE 2
 #define SHAKE_ENV_BOWSER_JUMP         3
-#define SHAKE_ENV_UNUSED_5            5
-#define SHAKE_ENV_UNUSED_6            6
-#define SHAKE_ENV_UNUSED_7            7
 #define SHAKE_ENV_PYRAMID_EXPLODE     8
 #define SHAKE_ENV_JRB_SHIP_DRAIN      9
 #define SHAKE_ENV_FALLING_BITS_PLAT   10
 
 #define SHAKE_FOV_SMALL     1
-#define SHAKE_FOV_UNUSED    2
 #define SHAKE_FOV_MEDIUM    3
 #define SHAKE_FOV_LARGE     4
 
@@ -208,7 +204,6 @@
 #define CUTSCENE_INTRO_PEACH          142
 #define CUTSCENE_DANCE_ROTATE         143
 #define CUTSCENE_ENTER_BOWSER_ARENA   144
-#define CUTSCENE_0F_UNUSED            145 // Never activated, stub cutscene functions
 #define CUTSCENE_SLIDING_DOORS_OPEN   149
 #define CUTSCENE_PREPARE_CANNON       150
 #define CUTSCENE_UNLOCK_KEY_DOOR      151
@@ -254,7 +249,6 @@
 
 #define HAND_CAM_SHAKE_OFF                  0
 #define HAND_CAM_SHAKE_CUTSCENE             1
-#define HAND_CAM_SHAKE_UNUSED               2
 #define HAND_CAM_SHAKE_HANG_OWL             3
 #define HAND_CAM_SHAKE_HIGH                 4
 #define HAND_CAM_SHAKE_STAR_DANCE           5
@@ -279,7 +273,6 @@
 
 #define CAM_EVENT_CANNON              1
 #define CAM_EVENT_SHOT_FROM_CANNON    2
-#define CAM_EVENT_UNUSED_3            3
 #define CAM_EVENT_BOWSER_INIT         4
 #define CAM_EVENT_DOOR_WARP           5
 #define CAM_EVENT_DOOR                6
@@ -409,8 +402,6 @@ struct CameraFOVStatus
 
     /// The amount to change the current fov by in the fov shake effect.
     /*0x08*/ f32 fovOffset;
-    /// A bool set in fov_default() but unused otherwise
-    /*0x0C*/ u32 unusedIsSleeping;
     /// The range in degrees to shake fov
     /*0x10*/ f32 shakeAmplitude;
     /// Used to calculate fovOffset, the phase through the shake's period.
@@ -453,8 +444,6 @@ struct PlayerGeometry
     /*0x24*/ struct Surface *prevCeil;
     /*0x28*/ f32 prevCeilHeight;
     /*0x2C*/ s16 prevCeilType;
-    /// Unused, but recalculated every frame
-    /*0x30*/ f32 waterHeight;
 };
 
 /**

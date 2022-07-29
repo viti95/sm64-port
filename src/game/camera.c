@@ -542,14 +542,6 @@ void set_environmental_camera_shake(s16 shake) {
             set_camera_pitch_shake(0x100, 0x8, 0x3000);
             break;
 
-        case SHAKE_ENV_UNUSED_6:
-            set_camera_roll_shake(0x80, 0x10, 0x3000);
-            break;
-
-        case SHAKE_ENV_UNUSED_7:
-            set_camera_pitch_shake(0x20, 0x8, 0x8000);
-            break;
-
         case SHAKE_ENV_PYRAMID_EXPLODE:
             set_camera_pitch_shake(0x40, 0x8, 0x8000);
             break;
@@ -561,10 +553,6 @@ void set_environmental_camera_shake(s16 shake) {
 
         case SHAKE_ENV_FALLING_BITS_PLAT:
             set_camera_pitch_shake(0x40, 0x2, 0x8000);
-            break;
-
-        case SHAKE_ENV_UNUSED_5:
-            set_camera_yaw_shake(-0x200, 0x80, 0x200);
             break;
     }
 }
@@ -3166,7 +3154,6 @@ void reset_camera(struct Camera *c) {
     set_fov_function(CAM_FOV_DEFAULT);
     sFOVState.fov = 45.f;
     sFOVState.fovOffset = 0.f;
-    sFOVState.unusedIsSleeping = 0;
     sFOVState.shakeAmplitude = 0.f;
     sFOVState.shakePhase = 0;
     sObjectCutscene = 0;
@@ -3630,10 +3617,6 @@ void set_handheld_shake(u8 mode) {
         case HAND_CAM_SHAKE_HIGH: // Highest mag and inc
             sHandheldShakeMag = 0x1000;
             sHandheldShakeInc = 0.1f;
-            break;
-        case HAND_CAM_SHAKE_UNUSED: // Never used
-            sHandheldShakeMag = 0x600;
-            sHandheldShakeInc = 0.07f;
             break;
         case HAND_CAM_SHAKE_HANG_OWL: // exactly the same as UNUSED...
             sHandheldShakeMag = 0x600;
@@ -6709,7 +6692,6 @@ void find_mario_floor_and_ceil(struct PlayerGeometry *pg) {
     pg->currCeilHeight = find_ceil(sMarioCamState->pos[0],
                                    sMarioCamState->pos[1] - 10.f,
                                    sMarioCamState->pos[2], &pg->currCeil);
-    pg->waterHeight = find_water_level(sMarioCamState->pos[0], sMarioCamState->pos[2]);
     gCheckingSurfaceCollisionsForCamera = tempCheckingSurfaceCollisionsForCamera;
 }
 
@@ -6810,8 +6792,7 @@ void stop_cutscene_and_retrieve_stored_info(struct Camera *c) {
     vec3f_copy(c->pos, sCameraStoreCutscene.pos);
 }
 
-void cap_switch_save(s16 dummy) {
-    UNUSED s16 unused = dummy;
+void cap_switch_save(void) {
     save_file_do_save(gCurrSaveFileNum - 1);
 }
 
@@ -9223,7 +9204,7 @@ BAD_RETURN(s32) cutscene_cap_switch_press(struct Camera *c) {
     if ((get_dialog_id() == -1) && (sCutsceneVars[4].angle[0] != 0)) {
         sCutsceneDialogResponse = sCutsceneVars[4].angle[0];
         if (sCutsceneVars[4].angle[0] == 1) {
-            cap_switch_save(gCutsceneFocus->oBehParams2ndByte);
+            cap_switch_save();
         }
         stop_cutscene_and_retrieve_stored_info(c);
         transition_next_state(c, 30);
@@ -11122,7 +11103,6 @@ void fov_default(struct MarioState *m) {
         sStatusFlags |= CAM_FLAG_SLEEPING;
     } else {
         camera_approach_f32_symmetric_bool(&sFOVState.fov, 45.f, (45.f - sFOVState.fov) / 30.f);
-        sFOVState.unusedIsSleeping = 0;
     }
 }
 
@@ -11262,9 +11242,6 @@ void set_fov_shake_from_point_preset(u8 preset, f32 posX, f32 posY, f32 posZ) {
             break;
         case SHAKE_FOV_LARGE:
             set_fov_shake_from_point(0x300, 0x30, 0x8000, 6000.f, posX, posY, posZ);
-            break;
-        case SHAKE_FOV_UNUSED:
-            set_fov_shake_from_point(0x800, 0x20, 0x4000, 3000.f, posX, posY, posZ);
             break;
     }
 }
