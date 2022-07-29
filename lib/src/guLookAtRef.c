@@ -22,6 +22,22 @@
 #include <ultra64.h>
 #define FTOFRAC8(x) ((int) MIN(((x) * (128.0)), 127.0) & 0xff)
 
+static inline float Q_rsqrt( float number )
+{
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f375a86 - ( i >> 1 );               // what the fuck?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+
+    return y;
+}
+
 void guLookAtReflectF(float mf[4][4], LookAt *l, float xEye, float yEye, float zEye, float xAt,
                       float yAt, float zAt, float xUp, float yUp, float zUp) {
     float len, xLook, yLook, zLook, xRight, yRight, zRight;
@@ -33,7 +49,7 @@ void guLookAtReflectF(float mf[4][4], LookAt *l, float xEye, float yEye, float z
     zLook = zAt - zEye;
 
     /* Negate because positive Z is behind us: */
-    len = -1.0 / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    len = -Q_rsqrt(xLook * xLook + yLook * yLook + zLook * zLook);
     xLook *= len;
     yLook *= len;
     zLook *= len;
@@ -43,7 +59,7 @@ void guLookAtReflectF(float mf[4][4], LookAt *l, float xEye, float yEye, float z
     xRight = yUp * zLook - zUp * yLook;
     yRight = zUp * xLook - xUp * zLook;
     zRight = xUp * yLook - yUp * xLook;
-    len = 1.0 / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    len = Q_rsqrt(xRight * xRight + yRight * yRight + zRight * zRight);
     xRight *= len;
     yRight *= len;
     zRight *= len;
@@ -53,7 +69,7 @@ void guLookAtReflectF(float mf[4][4], LookAt *l, float xEye, float yEye, float z
     xUp = yLook * zRight - zLook * yRight;
     yUp = zLook * xRight - xLook * zRight;
     zUp = xLook * yRight - yLook * xRight;
-    len = 1.0 / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    len = Q_rsqrt(xUp * xUp + yUp * yUp + zUp * zUp);
     xUp *= len;
     yUp *= len;
     zUp *= len;

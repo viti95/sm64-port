@@ -542,7 +542,7 @@ static inline float rsqrtf(const float x) {
     const float x2 = x * 0.5f;
     float y = x;
     int32_t i = *(int32_t *)&y;
-    i = 0x5f3759df - (i >> 1);
+    i = 0x5f375a86 - (i >> 1);
     y = *(float *)&i;
     y = y * (1.5f - (x2 * y * y));
     return y;
