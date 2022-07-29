@@ -404,7 +404,6 @@ u8 sFramesSinceCutsceneEnded = 0;
  */
 u8 sCutsceneDialogResponse = 0;
 struct PlayerCameraState *sMarioCamState = &gPlayerCameraState[0];
-struct PlayerCameraState *sLuigiCamState = &gPlayerCameraState[1];
 Vec3f sFixedModeBasePosition    = { 646.0f, 143.0f, -1513.0f };
 
 s32 update_radial_camera(struct Camera *c, Vec3f, Vec3f);
@@ -2926,8 +2925,6 @@ void update_lakitu(struct Camera *c) {
  * Gets controller input, checks for cutscenes, handles mode changes, and moves the camera
  */
 void update_camera(struct Camera *c) {
-    UNUSED u8 unused[24];
-
     gCamera = c;
     update_camera_hud_status(c);
     if (c->cutscene == 0) {
@@ -2971,7 +2968,6 @@ void update_camera(struct Camera *c) {
     c->defMode = gLakituState.defMode;
 
     camera_course_processing(c);
-    stub_camera_3(c);
     sCButtonsPressed = find_c_buttons_pressed(sCButtonsPressed, gPlayer1Controller->buttonPressed,
                                               gPlayer1Controller->buttonDown);
 
@@ -3075,7 +3071,6 @@ void update_camera(struct Camera *c) {
     }
     // Start any Mario-related cutscenes
     start_cutscene(c, get_cutscene_from_mario_status(c));
-    stub_camera_2(c);
     gCheckingSurfaceCollisionsForCamera = FALSE;
     if (gCurrLevelNum != LEVEL_CASTLE) {
         // If fixed camera is selected as the alternate mode, then fix the camera as long as the right
@@ -3162,19 +3157,11 @@ void reset_camera(struct Camera *c) {
     c->doorStatus = DOOR_DEFAULT;
     sMarioCamState->headRotation[0] = 0;
     sMarioCamState->headRotation[1] = 0;
-    sLuigiCamState->headRotation[0] = 0;
-    sLuigiCamState->headRotation[1] = 0;
     sMarioCamState->cameraEvent = 0;
     sMarioCamState->usedObj = NULL;
     gLakituState.shakeMagnitude[0] = 0;
     gLakituState.shakeMagnitude[1] = 0;
     gLakituState.shakeMagnitude[2] = 0;
-    gLakituState.unusedVec2[0] = 0;
-    gLakituState.unusedVec2[1] = 0;
-    gLakituState.unusedVec2[2] = 0;
-    gLakituState.unusedVec1[0] = 0.f;
-    gLakituState.unusedVec1[1] = 0.f;
-    gLakituState.unusedVec1[2] = 0.f;
     gLakituState.lastFrameAction = 0;
     set_fov_function(CAM_FOV_DEFAULT);
     sFOVState.fov = 45.f;
@@ -3205,7 +3192,6 @@ void init_camera(struct Camera *c) {
     gLakituState.focHSpeed = 0.3f; // @bug set focHSpeed back-to-back
     gLakituState.roll = 0;
     gLakituState.keyDanceRoll = 0;
-    gLakituState.unused = 0;
     sStatusFlags &= ~CAM_FLAG_SMOOTH_MOVEMENT;
     vec3f_set(sCastleEntranceOffset, 0.f, 0.f, 0.f);
     vec3f_set(sPlayer2FocusOffset, 0.f, 0.f, 0.f);
@@ -3353,11 +3339,9 @@ void init_camera(struct Camera *c) {
  *      modulo-4's the result, because each 8-bit mask only has 4 area bits for each level
  */
 void zoom_out_if_paused_and_outside(struct GraphNodeCamera *camera) {
-    UNUSED u8 unused1[8];
     UNUSED f32 dist;
     UNUSED s16 pitch;
     s16 yaw;
-    UNUSED u8 unused2[4];
     s32 areaMaskIndex = gCurrLevelArea / 32;
     s32 areaBit = 1 << (((gCurrLevelArea & 0x10) / 4) + (((gCurrLevelArea & 0xF) - 1) & 3));
 
@@ -3414,9 +3398,6 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
  * Copy Lakitu's pos and foc into `gc`
  */
 void update_graph_node_camera(struct GraphNodeCamera *gc) {
-    UNUSED u8 unused[8];
-    UNUSED struct Camera *c = gc->config.camera;
-
     gc->rollScreen = gLakituState.roll;
     vec3f_copy(gc->pos, gLakituState.pos);
     vec3f_copy(gc->focus, gLakituState.focus);
@@ -3425,7 +3406,6 @@ void update_graph_node_camera(struct GraphNodeCamera *gc) {
 
 Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context) {
     struct GraphNodeCamera *gc = (struct GraphNodeCamera *) g;
-    UNUSED Mat4 *unusedMat = context;
 
     switch (callContext) {
         case GEO_CONTEXT_CREATE:
@@ -3436,12 +3416,6 @@ Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context) {
             break;
     }
     return NULL;
-}
-
-void stub_camera_2(UNUSED struct Camera *c) {
-}
-
-void stub_camera_3(UNUSED struct Camera *c) {
 }
 
 void vec3f_sub(Vec3f dst, Vec3f src) {
@@ -5174,9 +5148,6 @@ void approach_camera_height(struct Camera *c, f32 goal, f32 inc) {
     } else {
         c->pos[1] = goal;
     }
-}
-
-void stub_camera_4(UNUSED s32 a, UNUSED s32 b, UNUSED s32 c, UNUSED s32 d) {
 }
 
 /**
@@ -7061,15 +7032,6 @@ void cutscene_soften_music(UNUSED struct Camera *c) {
 
 void cutscene_unsoften_music(UNUSED struct Camera *c) {
     sequence_player_unlower(SEQ_PLAYER_LEVEL, 60);
-}
-
-static void stub_camera_5(UNUSED struct Camera *c) {
-}
-
-BAD_RETURN(s32) cutscene_unused_start(UNUSED struct Camera *c) {
-}
-
-BAD_RETURN(s32) cutscene_unused_loop(UNUSED struct Camera *c) {
 }
 
 /**
@@ -9979,33 +9941,6 @@ BAD_RETURN(s32) cutscene_exit_painting(struct Camera *c) {
 }
 
 /**
- * Unused. Warp the camera to Mario.
- */
-BAD_RETURN(s32) cutscene_unused_exit_start(struct Camera *c) {
-    UNUSED Vec3f unused1;
-    UNUSED Vec3s unused2;
-    Vec3f offset;
-    Vec3s marioAngle;
-
-    vec3f_set(offset, 200.f, 300.f, 200.f);
-    vec3s_set(marioAngle, 0, sMarioCamState->faceAngle[1], 0);
-    offset_rotated(c->pos, sMarioCamState->pos, offset, marioAngle);
-    set_focus_rel_mario(c, 0.f, 125.f, 0.f, 0);
-}
-
-/**
- * Unused. Focus on Mario as he exits.
- */
-BAD_RETURN(s32) cutscene_unused_exit_focus_mario(struct Camera *c) {
-    Vec3f focus;
-
-    vec3f_set(focus, sMarioCamState->pos[0], sMarioCamState->pos[1] + 125.f, sMarioCamState->pos[2]);
-    set_focus_rel_mario(c, 0.f, 125.f, 0.f, 0);
-    approach_vec3f_asymptotic(c->focus, focus, 0.02f, 0.001f, 0.02f);
-    update_camera_yaw(c);
-}
-
-/**
  * Give control back to the player.
  */
 BAD_RETURN(s32) cutscene_exit_painting_end(struct Camera *c) {
@@ -10251,11 +10186,6 @@ struct Cutscene sCutsceneGrandStar[] = {
     { cutscene_grand_star_fly, CUTSCENE_LOOP }
 };
 
-struct Cutscene sCutsceneUnused[] = {
-    { cutscene_unused_start, 1 },
-    { cutscene_unused_loop, CUTSCENE_LOOP }
-};
-
 /**
  * Cutscene that plays when Mario enters a door that warps to another area.
  */
@@ -10367,12 +10297,6 @@ struct Cutscene sCutsceneDeathExit[] = {
  */
 struct Cutscene sCutsceneExitPaintingSuccess[] = {
     { cutscene_exit_painting, 180 },
-    { cutscene_exit_painting_end, 0 }
-};
-
-struct Cutscene sCutsceneUnusedExit[] = {
-    { cutscene_unused_exit_start, 1 },
-    { cutscene_unused_exit_focus_mario, 60 },
     { cutscene_exit_painting_end, 0 }
 };
 
@@ -11032,7 +10956,6 @@ void play_cutscene(struct Camera *c) {
         CUTSCENE(CUTSCENE_ENTER_PAINTING, sCutsceneEnterPainting)
         CUTSCENE(CUTSCENE_DEATH_EXIT, sCutsceneDeathExit)
         CUTSCENE(CUTSCENE_EXIT_PAINTING_SUCC, sCutsceneExitPaintingSuccess)
-        CUTSCENE(CUTSCENE_UNUSED_EXIT, sCutsceneUnusedExit)
         CUTSCENE(CUTSCENE_INTRO_PEACH, sCutsceneIntroPeach)
         CUTSCENE(CUTSCENE_ENTER_BOWSER_ARENA, sCutsceneEnterBowserArena)
         CUTSCENE(CUTSCENE_DANCE_ROTATE, sCutsceneDanceDefaultRotate)
@@ -11040,7 +10963,6 @@ void play_cutscene(struct Camera *c) {
         CUTSCENE(CUTSCENE_DANCE_FLY_AWAY, sCutsceneDanceFlyAway)
         CUTSCENE(CUTSCENE_DANCE_CLOSEUP, sCutsceneDanceCloseup)
         CUTSCENE(CUTSCENE_KEY_DANCE, sCutsceneKeyDance)
-        CUTSCENE(CUTSCENE_0F_UNUSED, sCutsceneUnused)
         CUTSCENE(CUTSCENE_END_WAVING, sCutsceneEndWaving)
         CUTSCENE(CUTSCENE_CREDITS, sCutsceneCredits)
         CUTSCENE(CUTSCENE_CAP_SWITCH_PRESS, sCutsceneCapSwitchPress)
@@ -11201,9 +11123,6 @@ void fov_default(struct MarioState *m) {
     } else {
         camera_approach_f32_symmetric_bool(&sFOVState.fov, 45.f, (45.f - sFOVState.fov) / 30.f);
         sFOVState.unusedIsSleeping = 0;
-    }
-    if (m->area->camera->cutscene == CUTSCENE_0F_UNUSED) {
-        sFOVState.fov = 45.f;
     }
 }
 

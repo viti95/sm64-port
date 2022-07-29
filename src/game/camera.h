@@ -209,7 +209,6 @@
 #define CUTSCENE_DANCE_ROTATE         143
 #define CUTSCENE_ENTER_BOWSER_ARENA   144
 #define CUTSCENE_0F_UNUSED            145 // Never activated, stub cutscene functions
-#define CUTSCENE_UNUSED_EXIT          147 // Never activated
 #define CUTSCENE_SLIDING_DOORS_OPEN   149
 #define CUTSCENE_PREPARE_CANNON       150
 #define CUTSCENE_UNLOCK_KEY_DOOR      151
@@ -545,7 +544,6 @@ struct Camera
     /*0x02*/ s16 yaw;
     /*0x04*/ Vec3f focus;
     /*0x10*/ Vec3f pos;
-    /*0x1C*/ Vec3f unusedVec1;
     /// The x coordinate of the "center" of the area. The camera will rotate around this point.
     /// For example, this is what makes the camera rotate around the hill in BoB
     /*0x28*/ f32 areaCenX;
@@ -591,14 +589,10 @@ struct LakituState
      */
     /*0x24*/ Vec3f goalPos;
 
-    /*0x30*/ u8 filler30[12]; // extra unused Vec3f?
-
     /// Copy of the active camera mode
     /*0x3C*/ u8 mode;
     /// Copy of the default camera mode
     /*0x3D*/ u8 defMode;
-
-    /*0x3E*/ u8 filler3E[10];
 
     /*0x48*/ f32 focusDistance; // unused
     /*0x4C*/ s16 oldPitch; // unused
@@ -615,8 +609,6 @@ struct LakituState
     /*0x5A*/ s16 shakePitchVel;
     /*0x5C*/ s16 shakePitchDecay;
 
-    /*0x60*/ Vec3f unusedVec1;
-    /*0x6C*/ Vec3s unusedVec2;
     /*0x72*/ u8 filler72[8];
 
     /// Used to rotate the screen when rendering.
@@ -653,7 +645,6 @@ struct LakituState
     /*0xB4*/ s16 keyDanceRoll;
     /// Mario's action from the previous frame. Only used to determine if Mario just finished a dive.
     /*0xB8*/ u32 lastFrameAction;
-    /*0xBC*/ s16 unused;
 };
 
 // bss order hack to not affect BSS order. if possible, remove me, but it will be hard to match otherwise
@@ -686,8 +677,6 @@ void reset_camera(struct Camera *c);
 void init_camera(struct Camera *c);
 void select_mario_cam_mode(void);
 Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context);
-void stub_camera_2(UNUSED struct Camera *c);
-void stub_camera_3(UNUSED struct Camera *c);
 void vec3f_sub(Vec3f dst, Vec3f src);
 void object_pos_to_vec3f(Vec3f dst, struct Object *o);
 void vec3f_to_object_pos(struct Object *o, Vec3f src);
