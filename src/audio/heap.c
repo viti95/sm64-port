@@ -30,7 +30,6 @@ u8 sReverbDownsampleRateLog; // never read
 struct SoundAllocPool gAudioSessionPool;
 struct SoundAllocPool gAudioInitPool;
 struct SoundAllocPool gNotesAndBuffersPool;
-u8 sAudioHeapPad[0x20]; // probably two unused pools
 struct SoundAllocPool gSeqAndBankPool;
 struct SoundAllocPool gPersistentCommonPool;
 struct SoundAllocPool gTemporaryCommonPool;
@@ -52,8 +51,6 @@ volatile u8 gAudioResetStatus;
 u8 gAudioResetPresetIdToLoad;
 s32 gAudioResetFadeOutFramesLeft;
 #endif
-
-u8 gAudioUnusedBuffer[0x1000];
 
 extern s32 gMaxAudioCmds;
 
