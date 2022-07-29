@@ -2468,11 +2468,3 @@ void audio_set_sound_mode(u8 soundMode) {
     D_80332108 = (D_80332108 & 0xf) + (soundMode << 4);
     gSoundMode = soundMode;
 }
-
-#ifndef VERSION_EU
-void unused_80321460(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2, UNUSED s32 arg3) {
-}
-
-void unused_80321474(UNUSED s32 arg0) {
-}
-#endif
