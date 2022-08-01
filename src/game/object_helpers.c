@@ -1207,7 +1207,7 @@ static s32 cur_obj_move_xz(f32 steepSlopeNormalY, s32 careAboutEdgesAndSteepSlop
     f32 intendedFloorHeight = find_floor(intendedX, o->oPosY, intendedZ, &intendedFloor);
     f32 deltaFloorHeight = intendedFloorHeight - o->oFloorHeight;
 
-    UNUSED f32 unused;
+
     UNUSED f32 ny;
 
     o->oMoveFlags &= ~OBJ_MOVE_HIT_EDGE;

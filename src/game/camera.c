@@ -651,7 +651,7 @@ void set_camera_height(struct Camera *c, f32 goalHeight) {
     f32 marioFloorHeight;
     f32 marioCeilHeight;
     f32 camFloorHeight;
-    UNUSED u8 filler[8];
+
     UNUSED s16 action = sMarioCamState->action;
     f32 baseOff = 125.f;
     f32 camCeilHeight = find_ceil(c->pos[0], gLakituState.goalPos[1] - 50.f, c->pos[2], &surface);

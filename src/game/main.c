@@ -190,7 +190,7 @@ void receive_new_tasks(void) {
 }
 
 void start_sptask(s32 taskType) {
-    UNUSED s32 pad; // needed to pad the stack
+
 
     if (taskType == M_AUDTASK) {
         gActiveSPTask = sCurrentAudioSPTask;
@@ -225,7 +225,7 @@ void pretend_audio_sptask_done(void) {
 }
 
 void handle_vblank(void) {
-    UNUSED s32 pad; // needed to pad the stack
+
 
     stub_main_3();
     sNumVblanks++;

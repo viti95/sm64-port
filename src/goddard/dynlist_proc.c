@@ -435,7 +435,7 @@ struct DynObjInfo *get_dynobj_info(DynId id) {
  * @note Not called
  */
 void reset_dynamic_objs(void) {
-    UNUSED s32 pad;
+
 
     if (sLoadedDynObjs == 0) {
         return;

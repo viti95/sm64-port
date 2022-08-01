@@ -90,7 +90,7 @@ Gfx UNUSED *geo_obj_transparency_something(s32 callContext, struct GraphNode *no
     struct Object *heldObject;
     struct Object *obj;
     UNUSED struct Object *unusedObject;
-    UNUSED s32 pad;
+
 
     gfxHead = NULL;
 
