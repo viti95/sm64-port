@@ -50,14 +50,12 @@ typedef union Vector2 {
 } Vector2;
 
 typedef union Vector3 {
-    struct { float r, g, b; };
     struct { float x, y, z; };
     Vector2 xy;
     float v[3];
 } Vector3;
 
 typedef union Vector4 {
-    struct { float r, g, b, a; };
     struct { float x, y, z, w; };
     Vector2 xy;
     Vector3 xyz;
@@ -149,9 +147,9 @@ static bool z_write;       // whether to write into the Z buffer
 static float z_offset;     // offset for decal mode
 static uint16_t *z_buffer;
 
-static int scr_width;
-static int scr_height;
-static int scr_size; // scr_width * scr_height
+#define scr_width 320
+#define scr_height 240
+#define scr_size 76800
 
 // color component interpolation table:
 // lerp(x, y, t) = x + (y - x) * t
@@ -159,17 +157,8 @@ static int scr_size; // scr_width * scr_height
 static uint8_t lerp_tab[256][256 * 2 + 1];
 // color component multiplication table: [x][y] = (x * y) / 256;
 static uint8_t mult_tab[256][256];
-// dither kernel for unreal texture filtering
-static const Vector2 dither_tab[2][2] = {
-    { {{ 0.25f, 0.00f }}, {{ 0.50f, 0.75f }} },
-    { {{ 0.75f, 0.50f }}, {{ 0.00f, 0.25f }} },
-};
 
 /* math shit */
-
-static inline float fclamp01(const float v) {
-    return (v < 0.f) ? 0.f : (v > 1.f) ? 1.f : v;
-}
 
 static inline uint16_t u16clamp(const int v) {
     return (v < 0) ? (uint16_t)0 : (v > 0xFFFF) ? (uint16_t)0xFFFF : (uint16_t)v;
@@ -185,27 +174,6 @@ static inline int iclamp0w(const int x, const int wrap) {
 
 static inline int imirror0w(const int x, const int wrap) {
     return iclamp0w(abs(x), wrap); // NOTE: this is not a universal solution
-}
-
-static inline float flerp(const float v0, const float v1, const float t) {
-    return v0 + t * (v1 - v0);
-}
-
-static inline bool vec2_cmp(const Vector2 v1, const Vector2 v2) {
-    return (v1.y == v2.y) ? (v1.x > v2.x) : (v1.y > v2.y);
-}
-
-static inline Vector4 vec4_sub(const Vector4 *v1, const Vector4 *v2) {
-    return (Vector4) {{ v1->x - v2->x, v1->y - v2->y, v1->z - v2->z, 1.f }};
-}
-
-static inline Vector4 vec4_lerp(const Vector4 *v1, const Vector4 *v2, const float t) {
-    return (Vector4) {{
-        flerp(v1->x, v2->x, t),
-        flerp(v1->y, v2->y, t),
-        flerp(v1->z, v2->z, t),
-        flerp(v1->w, v2->w, t),
-    }};
 }
 
 static inline Color4 rgba_modulate(const Color4 c1, const Color4 c2) {
@@ -291,12 +259,6 @@ static Color4 tex_sample_nearest_mc(const struct Texture * const tex, const int 
 
 static Color4 tex_sample_nearest_mr(const struct Texture * const tex, const int x, const int y) {
     return tex_get(tex, imirror0w(x, tex->wrap_w), iwrap0w(y, tex->wrap_h));
-}
-
-static inline Color4 tex_sample_linear(const struct Texture * const tex, const float u, const float v, const Vector2 d) {
-    const int x = d.u + u * tex->fw;
-    const int y = d.v + v * tex->fh;
-    return tex->sample(tex, x, y);
 }
 
 static inline Color4 tex_sample_nearest(const struct Texture * const tex, const float u, const float v) {
@@ -956,17 +918,13 @@ static void gfx_soft_set_resolution(const int width, const int height) {
     if (z_buffer) free(z_buffer);
     if (gfx_output) free(gfx_output);
 
-    scr_width = width;
-    scr_height = height;
-    scr_size = scr_width * scr_height;
-
-    z_buffer = calloc(scr_width * scr_height, sizeof(int16_t));
+    z_buffer = calloc(scr_size, sizeof(int16_t));
     if (!z_buffer) {
         printf("gfx_soft: could not alloc zbuffer for %dx%d\n", scr_width, scr_height);
         abort();
     }
 
-    gfx_output = calloc(scr_width * scr_height, sizeof(uint32_t));
+    gfx_output = calloc(scr_size, sizeof(uint32_t));
     if (!gfx_output) {
         printf("gfx_soft: could not alloc color buffer for %dx%d\n", scr_width, scr_height);
         abort();

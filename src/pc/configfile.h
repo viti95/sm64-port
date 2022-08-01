@@ -10,7 +10,7 @@ extern bool         configFiltering;
 extern bool         configEnableSound;
 extern bool         configEnableFog;
 extern unsigned int configFrameskip;
-extern bool         configNativeResolution;
+extern bool         configDoubleResolution;
 extern unsigned int configScreenWidth;
 extern unsigned int configScreenHeight;
 extern unsigned int configKeyA;

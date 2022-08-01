@@ -141,24 +141,6 @@ static void gfx_dos_swap_buffers_modex(void) {
     }
 }
 
-static void gfx_dos_swap_buffers_mode13(void) {
-
-    uint8_t *inp = GFX_BUFFER;
-    uint16_t *vram = ptrscreen;
-
-    for (unsigned i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT_200 / 2; i++, inp += 8, vram++) {
-        uint16_t B1 = (*(inp) & 0b11100000);
-        uint16_t G1 = (*(inp + 1) & 0b11100000) >> 3;
-        uint16_t R1 = *(inp + 2) >> 6;
-        uint16_t B2 = (*(inp + 4) & 0b11100000) << 8;
-        uint16_t G2 = (*(inp + 5) & 0b11100000) << 5;
-        uint16_t R2 = (*(inp + 6) & 0b11000000) << 2;
-
-        *vram = R1 | G1 | B1 | R2 | G2 | B2;
-    }
-
-}
-
 static void gfx_dos_swap_buffers_hercules(void) {
     const RGBA *inp = (RGBA *) GFX_BUFFER;
     uint8_t *vram = (uint8_t *) ptrscreen;
@@ -429,25 +411,15 @@ static void gfx_dos_init_impl(void) {
 
     unsigned long screen_base_addr;
 
+    configScreenWidth = SCREEN_WIDTH;
+    configScreenHeight = SCREEN_HEIGHT_240;
+
     switch (configVideomode) {
-        case VM_13H:
-
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_200;
-            set_color_depth(8);
-            set_gfx_mode(GFX_VGA, SCREEN_WIDTH, SCREEN_HEIGHT_200, 0, 0);
-            ptrscreen = VGA_BASE + __djgpp_conventional_base;
-
-            backbuffer_function = gfx_dos_swap_buffers_mode13;
-
-            break;
 
         case VM_X:
 
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_240;
             set_color_depth(8);
-            set_gfx_mode(GFX_MODEX, SCREEN_WIDTH, SCREEN_HEIGHT_240, 0, 0);
+            set_gfx_mode(GFX_MODEX, configScreenWidth, configScreenHeight, 0, 0);
             ptrscreen = VGA_BASE + __djgpp_conventional_base;
 
             backbuffer_function = gfx_dos_swap_buffers_modex;
@@ -458,9 +430,7 @@ static void gfx_dos_init_impl(void) {
 
             set_color_depth(8);
 
-            if (configNativeResolution) {
-                configScreenWidth = SCREEN_WIDTH;
-                configScreenHeight = SCREEN_HEIGHT_240;
+            if (configDoubleResolution) {
                 set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
             }else{
                 set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
@@ -472,7 +442,7 @@ static void gfx_dos_init_impl(void) {
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
 
-            if (configNativeResolution){
+            if (configDoubleResolution){
                 numLoops = configScreenWidth * configScreenHeight;
                 backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_8_native;
             }else{
@@ -486,9 +456,7 @@ static void gfx_dos_init_impl(void) {
 
             set_color_depth(15);
 
-            if (configNativeResolution) {
-                configScreenWidth = SCREEN_WIDTH;
-                configScreenHeight = SCREEN_HEIGHT_240;
+            if (configDoubleResolution) {
                 set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
             }else{
                 set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
@@ -500,7 +468,7 @@ static void gfx_dos_init_impl(void) {
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
 
-            if (configNativeResolution){
+            if (configDoubleResolution){
                 numLoops = configScreenWidth * configScreenHeight;
                 backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_15_native;
             }else{
@@ -514,9 +482,7 @@ static void gfx_dos_init_impl(void) {
 
             set_color_depth(16);
 
-            if (configNativeResolution) {
-                configScreenWidth = SCREEN_WIDTH;
-                configScreenHeight = SCREEN_HEIGHT_240;
+            if (configDoubleResolution) {
                 set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
             }else{
                 set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
@@ -528,7 +494,7 @@ static void gfx_dos_init_impl(void) {
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
 
-            if (configNativeResolution){
+            if (configDoubleResolution){
                 numLoops = configScreenWidth * configScreenHeight;
                 backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_16_native;
             }else{
@@ -542,9 +508,7 @@ static void gfx_dos_init_impl(void) {
 
             set_color_depth(24);
 
-            if (configNativeResolution) {
-                configScreenWidth = SCREEN_WIDTH;
-                configScreenHeight = SCREEN_HEIGHT_240;
+            if (configDoubleResolution) {
                 set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
             }else{
                 set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
@@ -556,7 +520,7 @@ static void gfx_dos_init_impl(void) {
 
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
 
-            if (configNativeResolution){
+            if (configDoubleResolution){
                 numLoops = configScreenWidth * configScreenHeight;
                 backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_24_native;
             }else{
@@ -570,9 +534,7 @@ static void gfx_dos_init_impl(void) {
 
             set_color_depth(32);
 
-            if (configNativeResolution) {
-                configScreenWidth = SCREEN_WIDTH;
-                configScreenHeight = SCREEN_HEIGHT_240;
+            if (configDoubleResolution) {
                 set_gfx_mode(GFX_VESA2L, SCREEN_WIDTH_2X, SCREEN_HEIGHT_240_2X, 0, 0);
             }else{
                 set_gfx_mode(GFX_VESA2L, configScreenWidth, configScreenHeight, 0, 0);
@@ -585,7 +547,7 @@ static void gfx_dos_init_impl(void) {
             ptrscreen = (uint8_t *) (screen_base_addr + screen->line[0] - __djgpp_base_address);
 
 
-            if (configNativeResolution){
+            if (configDoubleResolution){
                 numLoops = configScreenWidth * configScreenHeight;
                 backbuffer_function = gfx_dos_swap_buffers_vesa_lfb_32_native;
             }else{
@@ -597,8 +559,6 @@ static void gfx_dos_init_impl(void) {
 
         case VM_HERCULES:
 
-            configScreenWidth = SCREEN_WIDTH;
-            configScreenHeight = SCREEN_HEIGHT_240;
             ptrscreen = HERCULES_BASE + __djgpp_conventional_base;
 
             outportb(0x03BF, Graph_640x400[0]);
@@ -615,7 +575,7 @@ static void gfx_dos_init_impl(void) {
             break;
     }
 
-    if (configVideomode == VM_13H || configVideomode == VM_X || configVideomode == VM_VESA_LFB_8) {
+    if (configVideomode == VM_X || configVideomode == VM_VESA_LFB_8) {
 
             // set palette to RGB332
 
