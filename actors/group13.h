@@ -88,10 +88,8 @@ extern const Gfx treasure_chest_seg6_dl_06017810[];
 extern const Gfx treasure_chest_seg6_dl_060178C0[];
 
 // water_mine
-extern const GeoLayout water_mine_geo[];
 extern const Gfx water_mine_seg6_dl_0600D1F8[];
 extern const Gfx water_mine_seg6_dl_0600D230[];
-extern const Gfx water_mine_seg6_dl_0600D268[];
 extern const Gfx water_mine_seg6_dl_0600D2E0[];
 extern const Gfx water_mine_seg6_dl_0600D3F8[];
 
