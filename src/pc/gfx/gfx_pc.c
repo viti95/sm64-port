@@ -179,10 +179,6 @@ static struct RenderingState {
 } rendering_state;
 
 struct GfxDimensions gfx_current_dimensions;
-static float ratio_x = 1.f;
-static float ratio_y = 1.f;
-static float inv_ratio_x = 1.f;
-static float inv_ratio_y = 1.f;
 
 static bool dropped_frame;
 
@@ -646,10 +642,6 @@ static void gfx_sp_pop_matrix(uint32_t count) {
     }
 }
 
-static inline float gfx_adjust_x_for_aspect_ratio(float x) {
-    return x * (4.0f / 3.0f) / (float)gfx_current_dimensions.aspect_ratio;
-}
-
 static void gfx_sp_vertex(size_t n_vertices, size_t dest_index, const Vtx *vertices) {
     for (size_t i = 0; i < n_vertices; i++, dest_index++) {
         const Vtx_t *v = &vertices[i].v;
@@ -660,8 +652,6 @@ static void gfx_sp_vertex(size_t n_vertices, size_t dest_index, const Vtx *verti
         float y = v->ob[0] * rsp.MP_matrix[0][1] + v->ob[1] * rsp.MP_matrix[1][1] + v->ob[2] * rsp.MP_matrix[2][1] + rsp.MP_matrix[3][1];
         float z = v->ob[0] * rsp.MP_matrix[0][2] + v->ob[1] * rsp.MP_matrix[1][2] + v->ob[2] * rsp.MP_matrix[2][2] + rsp.MP_matrix[3][2];
         float w = v->ob[0] * rsp.MP_matrix[0][3] + v->ob[1] * rsp.MP_matrix[1][3] + v->ob[2] * rsp.MP_matrix[2][3] + rsp.MP_matrix[3][3];
-
-        x = gfx_adjust_x_for_aspect_ratio(x);
 
         short U = v->tc[0] * rsp.texture_scaling_factor.s >> 16;
         short V = v->tc[1] * rsp.texture_scaling_factor.t >> 16;
@@ -1107,11 +1097,6 @@ static void gfx_calc_and_set_viewport(const Vp_t *viewport) {
     float x = (viewport->vtrans[0] / 4.0f) - width / 2.0f;
     float y = SCREEN_HEIGHT - ((viewport->vtrans[1] / 4.0f) + height / 2.0f);
 
-    width *= ratio_x;
-    height *= ratio_y;
-    x *= ratio_x;
-    y *= ratio_y;
-
     rdp.viewport.x = x;
     rdp.viewport.y = y;
     rdp.viewport.width = width;
@@ -1177,10 +1162,10 @@ static void gfx_sp_texture(uint16_t sc, uint16_t tc, uint8_t level, uint8_t tile
 }
 
 static void gfx_dp_set_scissor(uint32_t mode, uint32_t ulx, uint32_t uly, uint32_t lrx, uint32_t lry) {
-    float x = ulx / 4.0f * ratio_x;
-    float y = (SCREEN_HEIGHT - lry / 4.0f) * ratio_y;
-    float width = (lrx - ulx) / 4.0f * ratio_x;
-    float height = (lry - uly) / 4.0f * ratio_y;
+    float x = ulx / 4.0f;
+    float y = (SCREEN_HEIGHT - lry / 4.0f);
+    float width = (lrx - ulx) / 4.0f;
+    float height = (lry - uly) / 4.0f;
 
     rdp.scissor.x = x;
     rdp.scissor.y = y;
@@ -1379,8 +1364,6 @@ static void gfx_draw_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t lr
     ulyf = -(ulyf / (4.0f * HALF_SCREEN_HEIGHT)) + 1.0f;
     lrxf = lrxf / (4.0f * HALF_SCREEN_WIDTH) - 1.0f;
     lryf = -(lryf / (4.0f * HALF_SCREEN_HEIGHT)) + 1.0f;
-    ulxf = gfx_adjust_x_for_aspect_ratio(ulxf);
-    lrxf = gfx_adjust_x_for_aspect_ratio(lrxf);
 
     struct LoadedVertex* ul = &rsp.loaded_vertices[MAX_VERTICES + 0];
     struct LoadedVertex* ll = &rsp.loaded_vertices[MAX_VERTICES + 1];
@@ -1457,17 +1440,17 @@ static void gfx_dp_texture_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int3
     float lrt = ((ult << 7) + dtdy * height) >> 7;
 
     if (gfx_rapi->tex_rect) {
-        float ulxf = ulx * ratio_x;
-        float ulyf = uly * ratio_y;
-        float lrxf = lrx * ratio_x;
-        float lryf = lry * ratio_y;
+        float ulxf = ulx;
+        float ulyf = uly;
+        float lrxf = lrx;
+        float lryf = lry;
         const float dudx = ((lrs - (float)uls) / (lrxf - ulxf));
         const float dvdy = ((lrt - (float)ult) / (lryf - ulyf));
         const bool used_textures[2] = { true, false };
         gfx_pick_combiner(NULL, NULL);
         gfx_update_textures(used_textures, false);
-        ulxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(ulxf / 4.0f - HALF_SCREEN_WIDTH);
-        lrxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(lrxf / 4.0f - HALF_SCREEN_WIDTH);
+        ulxf = HALF_SCREEN_WIDTH + (ulxf / 4.0f - HALF_SCREEN_WIDTH);
+        lrxf = HALF_SCREEN_WIDTH + (lrxf / 4.0f - HALF_SCREEN_WIDTH);
         ulyf = ulyf / 4.0f;
         lryf = lryf / 4.0f;
         gfx_rapi->tex_rect(ulxf, ulyf, lrxf, lryf, uls / 32.f, ult / 32.f, dudx / 8.f, dvdy / 8.f, &rdp.env_color.r);
@@ -1514,13 +1497,13 @@ static void gfx_dp_fill_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t
     gfx_dp_set_combine_mode(color_comb(0, 0, 0, G_CCMUX_SHADE), color_comb(0, 0, 0, G_ACMUX_SHADE));
 
     if (gfx_rapi->fill_rect) {
-        float ulxf = ulx * ratio_x;
-        float ulyf = uly * ratio_y;
-        float lrxf = lrx * ratio_x;
-        float lryf = lry * ratio_y;
+        float ulxf = ulx;
+        float ulyf = uly;
+        float lrxf = lrx;
+        float lryf = lry;
         gfx_pick_combiner(NULL, NULL);
-        ulxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(ulxf / 4.0f - HALF_SCREEN_WIDTH);
-        lrxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(lrxf / 4.0f - HALF_SCREEN_WIDTH);
+        ulxf = HALF_SCREEN_WIDTH + (ulxf / 4.0f - HALF_SCREEN_WIDTH);
+        lrxf = HALF_SCREEN_WIDTH + (lrxf / 4.0f - HALF_SCREEN_WIDTH);
         ulyf = ulyf / 4.0f;
         lryf = lryf / 4.0f;
         gfx_rapi->fill_rect(ulxf, ulyf, lrxf, lryf, &rdp.fill_color.r);
@@ -1832,11 +1815,7 @@ void gfx_start_frame(void) {
         // Avoid division by zero
         gfx_current_dimensions.height = 1;
     }
-    ratio_x = (float)gfx_current_dimensions.width / (float)SCREEN_WIDTH;
-    ratio_y = (float)gfx_current_dimensions.height / (float)SCREEN_HEIGHT;
-    inv_ratio_x = (float)SCREEN_WIDTH / (float)gfx_current_dimensions.width;
-    inv_ratio_y = (float)SCREEN_HEIGHT / (float)gfx_current_dimensions.height;
-    gfx_current_dimensions.aspect_ratio = (float)gfx_current_dimensions.width / (float)gfx_current_dimensions.height;
+    gfx_current_dimensions.aspect_ratio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 }
 
 void gfx_run(Gfx *commands) {

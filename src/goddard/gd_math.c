@@ -8,6 +8,22 @@
 #include "macros.h"
 #include "renderer.h"
 
+static inline float Q_rsqrt( float number )
+{
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f375a86 - ( i >> 1 );               // what the fuck?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+
+    return y;
+}
+
 /**
  * Finds the square root of a float by treating
  * it as a double and finding the square root from there.
@@ -55,7 +71,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
         d.x = norm.z;
     }
 
-    invLength = -1.0 / gd_sqrt_f(SQ(d.z) + SQ(d.y) + SQ(d.x));
+    invLength = - Q_rsqrt(SQ(d.z) + SQ(d.y) + SQ(d.x));
     d.z *= invLength;
     d.y *= invLength;
     d.x *= invLength;
@@ -64,7 +80,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
     colX.y = xColY * d.z - zColY * d.x;
     colX.x = zColY * d.y - yColY * d.z;
 
-    invLength = 1.0 / gd_sqrt_f(SQ(colX.z) + SQ(colX.y) + SQ(colX.x));
+    invLength = Q_rsqrt(SQ(colX.z) + SQ(colX.y) + SQ(colX.x));
 
     colX.z *= invLength;
     colX.y *= invLength;
@@ -74,7 +90,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
     yColY = d.x * colX.z - d.z * colX.x;
     xColY = d.z * colX.y - d.y * colX.z;
 
-    invLength = 1.0 / gd_sqrt_f(SQ(zColY) + SQ(yColY) + SQ(xColY));
+    invLength = Q_rsqrt(SQ(zColY) + SQ(yColY) + SQ(xColY));
 
     zColY *= invLength;
     yColY *= invLength;
@@ -925,42 +941,4 @@ void UNUSED gd_print_quat(const char *prefix, const f32 f[4]) {
         gd_printf("%f ", f[i]);
     }
     gd_printf("\n");
-}
-
-/**
- * Rotates a matrix or creates a rotation matrix about a vector made from an offset
- * of 100 and the passed in x, y, and z values.
- */
-void UNUSED gd_rot_mat_offset(Mat4f *dst, f32 x, f32 y, f32 z, s32 copy) {
-    f32 adj = 100.0f;
-    Mat4f rot;
-    f32 c;
-    f32 s;
-    f32 opp;
-    f32 mag;
-    struct GdVec3f vec;
-
-    opp = gd_sqrt_f(SQ(x) + SQ(y) + SQ(z));
-
-    if (opp == 0.0f) {
-        if (copy) {
-            gd_set_identity_mat4(dst);
-        }
-        return;
-    }
-
-    mag = gd_sqrt_f(SQ(adj) + SQ(opp));
-    c = adj / mag;
-    s = opp / mag;
-
-    vec.x = -y / opp;
-    vec.y = -x / opp;
-    vec.z = -z / opp;
-
-    gd_create_rot_matrix(&rot, &vec, s, c);
-    if (!copy) {
-        gd_mult_mat4f(dst, &rot, dst);
-    } else {
-        gd_copy_mat4f(&rot, dst);
-    }
 }

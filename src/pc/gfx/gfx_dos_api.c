@@ -80,6 +80,8 @@ static void gfx_dos_shutdown_impl(void) {
 #define SCREEN_HEIGHT_200_2X 400
 #define SCREEN_HEIGHT_240_2X 480
 
+#define CRTC_INDEX 0x3D4
+
 // 7*9*4 regular palette (252 colors)
 #define PAL_RBITS 7
 #define PAL_GBITS 9
@@ -116,6 +118,8 @@ uint32_t *osmesa_buffer; // 320x240x3 bytes (RGB)
 uint8_t *ptrscreen;
 uint32_t numLoops;
 void (*backbuffer_function)(void);
+uint8_t page = 0;
+//uint8_t *destscreen = (uint8_t *) (VGA_BASE + 0x4B00);
 
 static void gfx_dos_swap_buffers_modex(void) {
     // we're gonna be only sending plane switch commands until the end of the function
@@ -127,18 +131,30 @@ static void gfx_dos_swap_buffers_modex(void) {
     for (unsigned plane = 0; plane < 4; ++plane) {
         outportb(REG_VALUE, 1 << plane);
         for (register unsigned x = plane; x < SCREEN_WIDTH; x += 4) {
-            inp = (uint8_t *) (GFX_BUFFER) + 3*x;
+            inp = (uint8_t *) (GFX_BUFFER) + 4*x;
             // target pixel is at VGAMEM[(y << 4) + (y << 6) + (x >> 2)]
             // calculate the x part and then just add 16 + 64 until bottom
             outp = ptrscreen + (x >> 2);
-            for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH * 3, outp += (1 << 4) + (1 << 6)) {
-                uint8_t R = (*(inp) & 0b11100000);
+            for (register unsigned y = 0; y < SCREEN_HEIGHT_240; ++y, inp += SCREEN_WIDTH * 4, outp += (1 << 4) + (1 << 6)) {
+                uint8_t B = (*(inp) & 0b11100000);
                 uint8_t G = (*(inp + 1) & 0b11100000) >> 3;
-                uint8_t B = *(inp + 2) >> 6;
+                uint8_t R = *(inp + 2) >> 6;
                 *outp = R | G | B;
             }
         }
     }
+
+   outportw(CRTC_INDEX, ((int)(ptrscreen - __djgpp_conventional_base) & 0xff00) + 0xC);
+
+   page++;
+
+   if (page == 3){
+       ptrscreen -= 0x4B00 * 2;
+       page = 0;
+    }else{
+       ptrscreen += 0x4B00;
+    }
+
 }
 
 static void gfx_dos_swap_buffers_hercules(void) {

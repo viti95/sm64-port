@@ -914,7 +914,7 @@ static void gfx_soft_prepare_tables(void) {
             mult_tab[x][y] = (x * y) >> 8;
 }
 
-static void gfx_soft_set_resolution(const int width, const int height) {
+static void gfx_soft_set_resolution(UNUSED const int width, UNUSED const int height) {
     if (z_buffer) free(z_buffer);
     if (gfx_output) free(gfx_output);
 
