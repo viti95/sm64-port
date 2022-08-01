@@ -18,9 +18,6 @@ extern const Collision capswitch_collision_050033D0[];
 extern const Collision capswitch_collision_05003448[];
 
 // springboard
-extern const Gfx springboard_checkerboard_seg5_dl_050016B8[];
-extern const Gfx springboard_spring_seg5_dl_05001800[];
-extern const Gfx springboard_checkerboard_seg5_dl_05001900[];
 extern const Collision springboard_collision_05001A28[];
 
 #endif
