@@ -48,8 +48,6 @@ struct GraphNode gObjParentGraphNode;
 struct AllocOnlyPool *gGraphNodePool;
 struct GraphNode *gCurRootGraphNode;
 
-UNUSED s32 D_8038BCA8;
-
 /* The gGeoViews array is a mysterious one. Some background:
  *
  * If there are e.g. multiple Goombas, the multiple Goomba objects share one

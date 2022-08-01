@@ -1194,7 +1194,7 @@ u32 interact_clam_or_bubba(struct MarioState *m, UNUSED u32 interactType, struct
 }
 
 u32 interact_bully(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    UNUSED u32 unused;
+
 
     u32 interaction;
     if (m->flags & MARIO_METAL_CAP) {
@@ -1288,7 +1288,7 @@ u32 interact_mr_blizzard(struct MarioState *m, UNUSED u32 interactType, struct O
 }
 
 u32 interact_hit_from_below(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    UNUSED u32 unused;
+
 
     u32 interaction;
     if (m->flags & MARIO_METAL_CAP) {

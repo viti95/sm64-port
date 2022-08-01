@@ -8,18 +8,6 @@ struct RumbleData {
     s16 unk04;
 };
 
-struct StructSH8031D9B0 {
-    s16 unk00;
-    s16 unk02;
-    s16 unk04;
-    s16 unk06;
-    s16 unk08;
-    s16 unk0A;
-    s16 unk0C;
-    s16 unk0E;
-};
-
-extern OSThread D_80339210;
 extern OSThread gIdleThread;
 extern OSThread gMainThread;
 extern OSThread gGameLoopThread;
@@ -51,7 +39,6 @@ extern OSMesg gRumblePakSchedulerMesgBuf[1];
 extern OSMesg gRumbleThreadVIMesgBuf[1];
 
 extern struct RumbleData gRumbleDataQueue[3];
-extern struct StructSH8031D9B0 gCurrRumbleSettings;
 #endif
 
 extern struct VblankHandler *gVblankHandler1;

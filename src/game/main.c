@@ -19,7 +19,6 @@
 #define MESG_START_GFX_SPTASK 103
 #define MESG_NMI_REQUEST 104
 
-OSThread D_80339210; // unused?
 OSThread gIdleThread;
 OSThread gMainThread;
 OSThread gGameLoopThread;
@@ -51,7 +50,6 @@ OSMesg gRumblePakSchedulerMesgBuf[1];
 OSMesg gRumbleThreadVIMesgBuf[1];
 
 struct RumbleData gRumbleDataQueue[3];
-struct StructSH8031D9B0 gCurrRumbleSettings;
 #endif
 
 struct VblankHandler *gVblankHandler1 = NULL;

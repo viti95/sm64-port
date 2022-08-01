@@ -138,7 +138,7 @@ void spawn_coin_in_formation(s32 sp50, s32 sp54) {
     Vec3i sp40;
     s32 sp3C = 1;
     s32 sp38 = 1;
-    UNUSED s32 unused;
+
     sp40[2] = 0;
     sp40[0] = (sp40[1] = sp40[2]);
     switch (sp54 & 7) {
@@ -255,7 +255,7 @@ void bhv_coin_sparkles_loop(void) {
 
 void bhv_golden_coin_sparkles_loop(void) {
     struct Object *sp2C;
-    UNUSED s32 unused;
+
     f32 sp24 = 30.0f;
     sp2C = spawn_object(o, MODEL_SPARKLES, bhvCoinSparkles);
     sp2C->oPosX += random_float() * sp24 - sp24 / 2;

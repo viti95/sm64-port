@@ -131,7 +131,6 @@ extern s16 sLakituPitch;
 extern f32 sZoomAmount;
 extern s16 sCSideButtonYaw;
 extern s16 sBehindMarioSoundTimer;
-extern f32 sZeroZoomDist;
 extern s16 sCUpCameraPitch;
 extern s16 sModeOffsetYaw;
 extern s16 sSpiralStairsYawOffset;
@@ -282,11 +281,6 @@ s16 sCSideButtonYaw;
  * Sound timer used to space out sounds in behind Mario mode
  */
 s16 sBehindMarioSoundTimer;
-
-/**
- * Virtually unused aside being set to 0 and compared with gCameraZoomDist (which is never < 0)
- */
-f32 sZeroZoomDist;
 
 /**
  * The camera's pitch in C-Up mode. Mainly controls Mario's head rotation.
@@ -1167,7 +1161,7 @@ s32 update_parallel_tracking_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     Vec3f focOffset;
     s16 pathPitch;
     s16 pathYaw;
-    UNUSED u8 filler[4];
+
     f32 distThresh;
     f32 zoom;
     f32 camParDist;
@@ -3137,7 +3131,6 @@ void reset_camera(struct Camera *c) {
     sPanDistance = 0.f;
     sCannonYOffset = 0.f;
     sZoomAmount = 0.f;
-    sZeroZoomDist = 0.f;
     sBehindMarioSoundTimer = 0;
     sCSideButtonYaw = 0;
     s8DirModeBaseYaw = 0;
@@ -4826,11 +4819,7 @@ void handle_c_button_movement(struct Camera *c) {
             play_sound_cbutton_up();
         } else {
             set_mode_c_up(c);
-            if (sZeroZoomDist > gCameraZoomDist) {
-                sZoomAmount = -gCameraZoomDist;
-            } else {
-                sZoomAmount = gCameraZoomDist;
-            }
+            sZoomAmount = gCameraZoomDist;
         }
     }
     if (c->mode != CAMERA_MODE_FIXED) {

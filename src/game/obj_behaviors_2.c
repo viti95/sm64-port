@@ -150,7 +150,7 @@ static void platform_on_track_update_pos_or_spawn_ball(s32 ballIndex, f32 x, f32
     struct Waypoint *initialPrevWaypoint;
     struct Waypoint *nextWaypoint;
     struct Waypoint *prevWaypoint;
-    UNUSED s32 unused;
+
     f32 amountToMove;
     f32 dx;
     f32 dy;

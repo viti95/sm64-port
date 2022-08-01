@@ -200,7 +200,6 @@ static void geo_append_display_list(void *displayList, s16 layer) {
  */
 static void geo_process_master_list(struct GraphNodeMasterList *node) {
     s32 i;
-    UNUSED s32 sp1C;
 
     if (gCurGraphNodeMasterList == NULL && node->node.children != NULL) {
         gCurGraphNodeMasterList = node;
@@ -418,7 +417,6 @@ static void geo_process_rotation(struct GraphNodeRotation *node) {
  * For the rest it acts as a normal display list node.
  */
 static void geo_process_scale(struct GraphNodeScale *node) {
-    UNUSED Mat4 transform;
     Vec3f scaleVec;
     Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
@@ -1045,7 +1043,7 @@ void geo_process_node_and_siblings(struct GraphNode *firstNode) {
  * to set up the projection and draw display lists.
  */
 void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) {
-    UNUSED s32 unused;
+
 
     if (node->node.flags & GRAPH_RENDER_ACTIVE) {
         Mtx *initialMatrix;

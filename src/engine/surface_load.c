@@ -596,7 +596,7 @@ u32 get_area_terrain_size(s16 *data) {
 void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects) {
     s16 terrainLoadType;
     s16 *vertexData;
-    UNUSED s32 unused;
+
 
     // Initialize the data for this.
     gEnvironmentRegions = NULL;
@@ -758,7 +758,7 @@ void load_object_surfaces(s16 **data, s16 *vertexData) {
  * Transform an object's vertices, reload them, and render the object.
  */
 void load_object_collision_model(void) {
-    UNUSED s32 unused;
+
     s16 vertexData[600];
 
     s16 *collisionData = gCurrentObject->collisionData;

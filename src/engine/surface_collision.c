@@ -587,7 +587,7 @@ f32 find_water_level(f32 x, f32 z) {
 f32 find_poison_gas_level(f32 x, f32 z) {
     s32 i;
     s32 numRegions;
-    UNUSED s32 unused;
+
     s16 val;
     f32 loX, hiX, loZ, hiZ;
     f32 gasLevel = -11000.0f;

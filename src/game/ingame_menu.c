@@ -940,7 +940,7 @@ void reset_dialog_render_state(void) {
 #endif
 
 void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
-    UNUSED s32 unused;
+
 
     create_dl_translation_matrix(MENU_MTX_NOPUSH, dialog->leftOffset, dialog->width, 0);
 
