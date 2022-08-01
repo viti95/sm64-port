@@ -592,7 +592,7 @@ void set_camera_shake_from_point(s16 shake, f32 posX, f32 posY, f32 posZ) {
 f32 calc_y_to_curr_floor(f32 *posOff, f32 posMul, f32 posBound, f32 *focOff, f32 focMul, f32 focBound) {
     f32 floorHeight = sMarioGeometry.currFloorHeight;
     f32 waterHeight;
-    UNUSED s32 filler;
+
 
     if (!(sMarioCamState->action & ACT_FLAG_METAL_WATER)) {
         //! @bug this should use sMarioGeometry.waterHeight
@@ -863,7 +863,7 @@ void radial_camera_move(struct Camera *c) {
     UNUSED s32 unused2 = 0;
     f32 areaDistX = sMarioCamState->pos[0] - c->areaCenX;
     f32 areaDistZ = sMarioCamState->pos[2] - c->areaCenZ;
-    UNUSED s32 filler;
+
 
     // How much the camera's yaw changed
     s16 yawOffset = calculate_yaw(sMarioCamState->pos, c->pos) - atan2s(areaDistZ, areaDistX);
@@ -1047,7 +1047,7 @@ void mode_radial_camera(struct Camera *c) {
     Vec3f pos;
     UNUSED u8 unused1[8];
     s16 oldAreaYaw = sAreaYaw;
-    UNUSED u8 unused2[4];
+
 
     if (gCameraMovementFlags & CAM_MOVING_INTO_MODE) {
         update_yaw_and_dist_from_c_up();
@@ -1653,7 +1653,7 @@ void mode_fixed_camera(struct Camera *c) {
 s32 update_behind_mario_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     UNUSED u8 unused2[12];
     f32 dist;
-    UNUSED u8 unused3[4];
+
     s16 absPitch;
     s16 pitch;
     s16 yaw;
@@ -1965,7 +1965,7 @@ s16 update_default_camera(struct Camera *c) {
     f32 camFloorHeight;
     f32 tempFloorHeight;
     f32 marioFloorHeight;
-    UNUSED u8 unused2[4];
+
     f32 dist;
     f32 zoomDist;
     f32 waterHeight;
@@ -1980,7 +1980,7 @@ s16 update_default_camera(struct Camera *c) {
     s16 tempPitch;
     s16 tempYaw;
     f32 xzDist;
-    UNUSED u8 unused4[4];
+
     s16 nextYawVel;
     s16 yawVel = 0;
     f32 scale;
@@ -4946,7 +4946,7 @@ u8 open_door_cutscene(u8 pullResult, u8 pushResult) {
  * @return the cutscene that should start, 0 if none
  */
 u8 get_cutscene_from_mario_status(struct Camera *c) {
-    UNUSED u8 unused1[4];
+
     u8 cutscene = c->cutscene;
     UNUSED u8 unused2[12];
 

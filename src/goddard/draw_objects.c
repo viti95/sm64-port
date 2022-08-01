@@ -898,9 +898,9 @@ void draw_particle(struct GdObj *obj) {
  */
 void draw_bone(struct GdObj *obj) {
     struct ObjBone *bone = (struct ObjBone *) obj;
-    UNUSED u8 unused1[4];
+
     s32 colour;
-    UNUSED u8 unused2[4];
+
     struct GdVec3f scale; // guess
 
     return;
@@ -929,9 +929,9 @@ void draw_bone(struct GdObj *obj) {
  */
 void draw_joint(struct GdObj *obj) {
     struct ObjJoint *joint = (struct ObjJoint *) obj;
-    UNUSED u8 unused1[4];
+
     UNUSED f32 sp7C = 70.0f;
-    UNUSED u8 unused2[4];
+
     UNUSED s32 sp74 = 1;
     s32 colour;
     UNUSED u8 unused[8];

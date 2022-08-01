@@ -31,14 +31,12 @@
 
 extern struct AllocOnlyPool *gGraphNodePool;
 extern struct GraphNode *gCurRootGraphNode;
-extern UNUSED s32 D_8038BCA8;
 extern struct GraphNode **gGeoViews;
 extern u16 gGeoNumViews;
 extern uintptr_t gGeoLayoutStack[];
 extern struct GraphNode *gCurGraphNodeList[];
 extern s16 gCurGraphNodeIndex;
 extern s16 gGeoLayoutStackIndex;
-extern UNUSED s16 D_8038BD7C;
 extern s16 gGeoLayoutReturnIndex;
 extern u8 *gGeoLayoutCommand;
 extern struct GraphNode gObjParentGraphNode;

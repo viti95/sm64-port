@@ -322,10 +322,10 @@ void move_particle(struct ObjParticle *ptc) {
     UNUSED u8 unused2[12];
     struct GdVec3f sp64;
     struct ObjParticle *sp60;
-    UNUSED u8 unused1[4];
+
     s32 sp58;
-    UNUSED u8 unused4[4];
-    UNUSED u8 unused5[4];
+
+
     struct ObjCamera *sp4C;
     struct GdVec3f sp40;
     struct GdVec3f sp34;
