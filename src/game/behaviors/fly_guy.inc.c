@@ -19,11 +19,6 @@ static struct ObjectHitbox sFlyGuyHitbox = {
 };
 
 /**
- * Unused jitter amounts.
- */
-static s16 sFlyGuyJitterAmounts[] = { 0x1000, -0x2000, 0x2000 };
-
-/**
  * Return to regular size. When mario is close enough or home is far enough,
  * turn toward mario/home and enter the approach mario action.
  */
@@ -44,7 +39,6 @@ static void fly_guy_act_idle(void) {
                 o->oFlyGuyIdleTimer = 0;
                 o->oAction = FLY_GUY_ACT_APPROACH_MARIO;
             } else {
-                o->oFlyGuyUnusedJitter = o->oMoveAngleYaw + sFlyGuyJitterAmounts[o->oFlyGuyIdleTimer];
                 o->oFlyGuyIdleTimer += 1;
             }
         }

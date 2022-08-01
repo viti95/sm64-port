@@ -169,7 +169,7 @@ void fish_group_act_rotation(void) {
 void fish_group_act_move(void) {
     f32 fishY = o->oPosY - gMarioObject->oPosY;
     // Marked unused, but has arithmetic performed on it in a useless manner.
-    UNUSED s32 distance;
+
     o->oFishPosY = gMarioObject->oPosY + o->oFishRandomOffset;
     /**
      * Set fish variables to random floats when timer reaches zero and plays sound effect.
@@ -179,12 +179,6 @@ void fish_group_act_move(void) {
         o->oFishActiveDistance = random_float() * 300.0f;
         o->oFishRandomSpeed = random_float() * 1024.0f + 1024.0f;
         o->oFishRandomVel = random_float() * 4.0f + 8.0f + 5.0f;
-        if (o->oDistanceToMario < 600.0f) {
-            distance = 1;
-        } else {
-            distance = (s32)(1.0 / (o->oDistanceToMario / 600.0));
-        }
-        distance *= 127;
         cur_obj_play_sound_2(SOUND_GENERAL_MOVING_WATER);
     }
     // Enable fish animation in a natural manner.
@@ -241,7 +235,7 @@ void (*sFishGroupActions[])(void) = {
  */
 void bhv_fish_loop(void)
 {
-    UNUSED s32 unused[4];
+
     cur_obj_scale(1.0f);
 
     /**
