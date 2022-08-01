@@ -646,6 +646,10 @@ static void gfx_sp_pop_matrix(uint32_t count) {
     }
 }
 
+static inline float gfx_adjust_x_for_aspect_ratio(float x) {
+    return x * (4.0f / 3.0f) / (float)gfx_current_dimensions.aspect_ratio;
+}
+
 static void gfx_sp_vertex(size_t n_vertices, size_t dest_index, const Vtx *vertices) {
     for (size_t i = 0; i < n_vertices; i++, dest_index++) {
         const Vtx_t *v = &vertices[i].v;
@@ -656,6 +660,8 @@ static void gfx_sp_vertex(size_t n_vertices, size_t dest_index, const Vtx *verti
         float y = v->ob[0] * rsp.MP_matrix[0][1] + v->ob[1] * rsp.MP_matrix[1][1] + v->ob[2] * rsp.MP_matrix[2][1] + rsp.MP_matrix[3][1];
         float z = v->ob[0] * rsp.MP_matrix[0][2] + v->ob[1] * rsp.MP_matrix[1][2] + v->ob[2] * rsp.MP_matrix[2][2] + rsp.MP_matrix[3][2];
         float w = v->ob[0] * rsp.MP_matrix[0][3] + v->ob[1] * rsp.MP_matrix[1][3] + v->ob[2] * rsp.MP_matrix[2][3] + rsp.MP_matrix[3][3];
+
+        x = gfx_adjust_x_for_aspect_ratio(x);
 
         short U = v->tc[0] * rsp.texture_scaling_factor.s >> 16;
         short V = v->tc[1] * rsp.texture_scaling_factor.t >> 16;
@@ -1373,6 +1379,8 @@ static void gfx_draw_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t lr
     ulyf = -(ulyf / (4.0f * HALF_SCREEN_HEIGHT)) + 1.0f;
     lrxf = lrxf / (4.0f * HALF_SCREEN_WIDTH) - 1.0f;
     lryf = -(lryf / (4.0f * HALF_SCREEN_HEIGHT)) + 1.0f;
+    ulxf = gfx_adjust_x_for_aspect_ratio(ulxf);
+    lrxf = gfx_adjust_x_for_aspect_ratio(lrxf);
 
     struct LoadedVertex* ul = &rsp.loaded_vertices[MAX_VERTICES + 0];
     struct LoadedVertex* ll = &rsp.loaded_vertices[MAX_VERTICES + 1];
@@ -1458,8 +1466,8 @@ static void gfx_dp_texture_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int3
         const bool used_textures[2] = { true, false };
         gfx_pick_combiner(NULL, NULL);
         gfx_update_textures(used_textures, false);
-        ulxf = HALF_SCREEN_WIDTH + (ulxf / 4.0f - HALF_SCREEN_WIDTH);
-        lrxf = HALF_SCREEN_WIDTH + (lrxf / 4.0f - HALF_SCREEN_WIDTH);
+        ulxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(ulxf / 4.0f - HALF_SCREEN_WIDTH);
+        lrxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(lrxf / 4.0f - HALF_SCREEN_WIDTH);
         ulyf = ulyf / 4.0f;
         lryf = lryf / 4.0f;
         gfx_rapi->tex_rect(ulxf, ulyf, lrxf, lryf, uls / 32.f, ult / 32.f, dudx / 8.f, dvdy / 8.f, &rdp.env_color.r);
@@ -1511,8 +1519,8 @@ static void gfx_dp_fill_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t
         float lrxf = lrx * ratio_x;
         float lryf = lry * ratio_y;
         gfx_pick_combiner(NULL, NULL);
-        ulxf = HALF_SCREEN_WIDTH + (ulxf / 4.0f - HALF_SCREEN_WIDTH);
-        lrxf = HALF_SCREEN_WIDTH + (lrxf / 4.0f - HALF_SCREEN_WIDTH);
+        ulxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(ulxf / 4.0f - HALF_SCREEN_WIDTH);
+        lrxf = HALF_SCREEN_WIDTH + gfx_adjust_x_for_aspect_ratio(lrxf / 4.0f - HALF_SCREEN_WIDTH);
         ulyf = ulyf / 4.0f;
         lryf = lryf / 4.0f;
         gfx_rapi->fill_rect(ulxf, ulyf, lrxf, lryf, &rdp.fill_color.r);
