@@ -496,20 +496,6 @@ void ukiki_free_loop(void) {
 }
 
 /**
- * Unused function for timing ukiki's blinking.
- * Image still present in Ukiki's actor graphics.
- *
- * Possibly unused so AnimState could be used for wearing a hat?
- */
-static void ukiki_blink_timer(void) {
-    if (gGlobalTimer % 50 < 7) {
-        o->oAnimState = UKIKI_ANIM_STATE_EYE_CLOSED;
-    } else {
-        o->oAnimState = UKIKI_ANIM_STATE_DEFAULT;
-    }
-}
-
-/**
  * Called by the main behavior function for the cage ukiki whenever it is held.
  */
 void cage_ukiki_held_loop(void) {

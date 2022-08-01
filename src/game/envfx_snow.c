@@ -72,11 +72,6 @@ s32 envfx_init_snow(s32 mode) {
             gSnowParticleMaxCount = 30;
             gSnowParticleCount = 30;
             break;
-
-        case ENVFX_SNOW_BLIZZARD:
-            gSnowParticleMaxCount = 140;
-            gSnowParticleCount = 140;
-            break;
     }
 
     gEnvFxBuffer = mem_pool_alloc(gEffectsMemoryPool, gSnowParticleMaxCount * sizeof(struct EnvFxParticle));
@@ -122,9 +117,6 @@ void envfx_update_snowflake_count(s32 mode, Vec3s marioPos) {
                 gSnowParticleCount = gSnowParticleMaxCount;
             }
 
-            break;
-
-        case ENVFX_SNOW_BLIZZARD:
             break;
     }
 }
@@ -450,21 +442,11 @@ Gfx *envfx_update_snow(s32 snowMode, Vec3s marioPos, Vec3s camFrom, Vec3s camTo)
             pos_from_orbit(camTo, snowCylinderPos, radius, pitch, yaw);
             envfx_update_snow_water(snowCylinderPos[0], snowCylinderPos[1], snowCylinderPos[2]);
             break;
-        case ENVFX_SNOW_BLIZZARD:
-            if (radius > 250) {
-                radius -= 250;
-            } else {
-                radius = 1;
-            }
-
-            pos_from_orbit(camTo, snowCylinderPos, radius, pitch, yaw);
-            envfx_update_snow_blizzard(snowCylinderPos[0], snowCylinderPos[1], snowCylinderPos[2]);
-            break;
     }
 
     rotate_triangle_vertices((s16 *) &vertex1, (s16 *) &vertex2, (s16 *) &vertex3, pitch, yaw);
 
-    if (snowMode == ENVFX_SNOW_NORMAL || snowMode == ENVFX_SNOW_BLIZZARD) {
+    if (snowMode == ENVFX_SNOW_NORMAL) {
         gSPDisplayList(gfx++, &tiny_bubble_dl_0B006A50); // snowflake with gray edge
     } else if (snowMode == ENVFX_SNOW_WATER) {
         gSPDisplayList(gfx++, &tiny_bubble_dl_0B006CD8); // snowflake with blue edge
@@ -520,10 +502,6 @@ Gfx *envfx_update_particles(s32 mode, Vec3s marioPos, Vec3s camTo, Vec3s camFrom
 
         case ENVFX_SNOW_WATER:
             gfx = envfx_update_snow(2, marioPos, camFrom, camTo);
-            break;
-
-        case ENVFX_SNOW_BLIZZARD:
-            gfx = envfx_update_snow(3, marioPos, camFrom, camTo);
             break;
 
         default:

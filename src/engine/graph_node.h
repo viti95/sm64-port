@@ -419,9 +419,6 @@ void geo_obj_init_animation_accel(struct GraphNodeObject *graphNode, struct Anim
 s32 retrieve_animation_index(s32 frame, u16 **attributes);
 
 s16 geo_update_animation_frame(struct GraphNodeObject_sub *obj, s32 *accelAssist);
-void geo_retreive_animation_translation(struct GraphNodeObject *obj, Vec3f position);
-
-struct GraphNodeRoot *geo_find_root(struct GraphNode *graphNode);
 
 // graph_node_manager
 s16 *read_vec3s_to_vec3f(Vec3f, s16 *src);

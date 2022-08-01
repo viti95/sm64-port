@@ -302,18 +302,6 @@ void render_hud_stars(void) {
 }
 
 /**
- * Unused function that renders the amount of keys collected.
- * Leftover function from the beta version of the game.
- */
-void render_hud_keys(void) {
-    s16 i;
-
-    for (i = 0; i < gHudDisplay.keys; i++) {
-        print_text((i * 16) + 220, 142, "/"); // unused glyph - beta key
-    }
-}
-
-/**
  * Renders the timer when Mario start sliding in PSS.
  */
 void render_hud_timer(void) {
@@ -453,10 +441,6 @@ void render_hud(void) {
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
             render_hud_stars();
-        }
-
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
-            render_hud_keys();
         }
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
