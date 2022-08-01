@@ -188,7 +188,7 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *arg3) {
 #else
     size_t bufferPos;
 #endif
-    UNUSED u32 pad;
+
 
     if (arg2 != 0 || *arg3 >= sSampleDmaListSize1) {
         for (i = sSampleDmaListSize1; i < gSampleDmaNumListItems; i++) {
@@ -558,7 +558,7 @@ l2:
 }
 
 struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
-    UNUSED u32 pad1[4];
+
     u32 buf[4];
     u32 numInstruments, numDrums;
     struct AudioBank *ret;
@@ -591,16 +591,13 @@ struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
 
 struct AudioBank *bank_load_async(s32 bankId, s32 arg1, struct SequencePlayer *seqPlayer) {
     u32 numInstruments, numDrums;
-    UNUSED u32 pad1[2];
+
     u32 buf[4];
-    UNUSED u32 pad2;
+
     size_t alloc;
     struct AudioBank *ret;
     u8 *ctlData;
     OSMesgQueue *mesgQueue;
-#ifdef VERSION_EU
-    UNUSED u32 pad3;
-#endif
 
     alloc = gAlCtlHeader->seqArray[bankId].len + 0xf;
     alloc = ALIGN16(alloc);
@@ -819,7 +816,7 @@ void load_sequence(u32 player, u32 seqId, s32 loadAsync) {
 void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
     void *sequenceData;
     struct SequencePlayer *seqPlayer = &gSequencePlayers[player];
-    UNUSED u32 padding[2];
+
 
     if (seqId >= gSequenceCount) {
         return;

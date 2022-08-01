@@ -77,4 +77,4 @@ const Collision springboard_collision_05001A28[] = {
     COL_END(),
 };
 
-UNUSED static const u32 springboard_unused_1 = 0;
+

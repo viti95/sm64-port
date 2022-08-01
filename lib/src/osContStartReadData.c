@@ -4,7 +4,7 @@
 
 #ifndef AVOID_UB
 ALIGNED8 OSContPackedStruct _osContCmdBuf[7];
-UNUSED static u32 unused; // padding between these two variables
+
 u32 _osContPifCtrl;
 #else
 // Reordered gcc vars above will disturb the aliasing done to access all 8 members of this array, hence AVOID_UB.

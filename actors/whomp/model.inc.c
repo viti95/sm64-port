@@ -1,7 +1,7 @@
 // Whomp
 
 // ???
-UNUSED static const u64 whomp_unused_1 = 2;
+
 
 
 // 0x0601C360

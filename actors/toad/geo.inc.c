@@ -138,4 +138,4 @@ const GeoLayout toad_geo[] = {
    GEO_END(),
 };
 
-UNUSED static const u64 toad_unused_1 = 0;
+

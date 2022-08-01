@@ -3501,7 +3501,7 @@ const BehaviorScript bhvYellowBall[] = {
     BREAK(),
 };
 
-UNUSED static const u64 behavior_data_unused_0 = 0;
+
 const BehaviorScript bhvMario[] = {
     BEGIN(OBJ_LIST_PLAYER),
     SET_INT(oIntangibleTimer, 0),
@@ -3595,7 +3595,7 @@ const BehaviorScript bhvSwimmingWarp[] = {
     BREAK(),
 };
 
-UNUSED static const u64 behavior_data_unused_1 = 0;
+
 const BehaviorScript bhvRandomAnimatedTexture[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),

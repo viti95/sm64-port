@@ -41,11 +41,6 @@ void osInitialize(void) {
     u32 sp34;
     u32 sp30 = 0;
 
-#if defined(VERSION_EU) || defined(VERSION_SH)
-    UNUSED u32 eu_sp34;
-    UNUSED u32 eu_sp30;
-#endif
-    UNUSED u32 sp2c;
     D_80365CD0 = TRUE;
     __osSetSR(__osGetSR() | 0x20000000);
     __osSetFpcCsr(0x01000800);

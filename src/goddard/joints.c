@@ -654,12 +654,8 @@ void func_80190574(s32 a0, struct ObjJoint *a1, struct ObjJoint *a2, f32 x, f32 
     struct ObjJoint *sp274; // = a2?
     struct ObjJoint *sp270; // mid-point of stack array?
     struct ObjJoint *sp26C; // jointstackarr[i]? curjoint?
-    UNUSED u32 pad268;
-    UNUSED u32 sp264 = 0;
-    UNUSED u32 sp258[3]; // unused vec?
     struct GdVec3f sp24C;
     struct GdVec3f sp240;
-    UNUSED u32 pad238[2];
     s32 sp234; // i?
     s32 sp230;
     s32 sp22C = 1;

@@ -7,7 +7,7 @@ static const Lights1 ukiki_seg5_lights_05007BA0 = gdSPDefLights1(
 );
 
 // The hell?
-UNUSED static const u64 ukiki_unused_1 = 1;
+
 
 // 0x05007BC0
 ALIGNED8 static const u8 ukiki_seg5_texture_05007BC0[] = {

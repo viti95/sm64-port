@@ -1,6 +1,6 @@
 // Power Meter HUD
 
-UNUSED static const u64 power_meter_unused_1 = 0;
+
 
 // 0x030233E0
 ALIGNED8 static const u8 texture_power_meter_left_side[] = {

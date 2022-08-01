@@ -8,7 +8,7 @@ void __osDevMgrMain(void *args) {
     OSMesg sp3c;
     s32 sp38;
     OSMgrArgs *sp34;
-    UNUSED u32 sp30;
+
     u32 sp2c;
     __OSBlockInfo *sp28;
     __OSTranxInfo *sp24;

@@ -792,7 +792,7 @@ struct Note *pop_node_with_value_less_equal(struct AudioListItem *list, s32 limi
 
 #if defined(VERSION_EU)
 void note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLayer) {
-    UNUSED s32 pad[4];
+
     s16 instId;
     struct NoteSubEu *sub = &note->noteSubEu;
 

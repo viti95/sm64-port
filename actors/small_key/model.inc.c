@@ -1,7 +1,7 @@
 // Small Key (unused)
 
 // ???
-UNUSED static const u64 small_key_unused_1 = 0;
+
 
 // 0x05005798
 static const Lights1 small_key_seg5_lights_05005798 = gdSPDefLights1(
@@ -28,7 +28,7 @@ static const Lights1 small_key_seg5_lights_050057E0 = gdSPDefLights1(
 );
 
 // align
-UNUSED static const u64 small_key_unused_2 = 0;
+
 // 0x05005800
 static const Vtx small_key_seg5_vertex_05005800[] = {
     {{{   -14,   -109,     14}, 0, {     0,      0}, {0x00, 0x00, 0x7f, 0x00}}},

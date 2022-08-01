@@ -3,7 +3,7 @@
 // Could be a duplicate binid of the previous actor, but i'm putting it here for
 // macro reasons so I don't have to clutter the macros.inc with a new macro for this
 // case.
-UNUSED static const u64 sushi_unused_1 = 1;
+
 
 // 0x05008ED0
 ALIGNED8 static const u8 sushi_seg5_texture_05008ED0[] = {

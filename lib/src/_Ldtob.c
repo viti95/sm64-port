@@ -47,7 +47,7 @@ const double D_80338670[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L
 void _Ldtob(printf_struct *args, u8 type) {
     u8 buff[BUFF_LEN];
     u8 *ptr;
-    UNUSED u32 sp70;
+
     f64 val;
     /* maybe struct? */
     s16 err;
@@ -64,7 +64,7 @@ void _Ldtob(printf_struct *args, u8 type) {
     u8 drop;
     s32 n2;
     /* */
-    UNUSED u8 unused[0x4];
+
     ptr = buff;
     val = args->value.f64;
     if (args->precision < 0) {

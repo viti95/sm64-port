@@ -609,7 +609,7 @@ const u8 *const menu_hud_lut[] = {
 };
 
 #ifdef VERSION_JP
-UNUSED static const u64 menu_unused_0 = 0;
+
 
 // 0x0700AC48
 ALIGNED8 static const u8 texture_menu_font_char_jp_0[] = {
@@ -1718,7 +1718,7 @@ const Gfx dl_menu_ia8_text_end[] = {
     gsSPEndDisplayList(),
 };
 
-UNUSED static const u64 menu_unused_1 = 0;
+
 
 #ifdef VERSION_EU
 

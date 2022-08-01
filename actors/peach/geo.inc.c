@@ -151,4 +151,4 @@ const GeoLayout peach_geo[] = {
    GEO_END(),
 };
 
-UNUSED static const u64 peach_unused_1 = 0;
+
