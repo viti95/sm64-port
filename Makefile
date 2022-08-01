@@ -579,8 +579,6 @@ else ifeq ($(ENABLE_SOFTRAST),1)
   endif
 endif
 
-GFX_CFLAGS += -DWIDESCREEN
-
 ifeq ($(TARGET_DOS),0)
   MARCH := -march=native
 endif
