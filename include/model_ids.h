@@ -183,10 +183,8 @@
 #define MODEL_RR_FLYING_CARPET                    0x37        // rr_geo_000848
 #define MODEL_RR_OCTAGONAL_PLATFORM               0x38        // rr_geo_0008A8
 #define MODEL_RR_ROTATING_BRIDGE_PLATFORM         0x39        // rr_geo_000878
-#define MODEL_RR_TRIANGLE_PLATFORM                0x3A        // rr_geo_0008D8 - unused
 #define MODEL_RR_CRUISER_WING                     0x3B        // rr_geo_000890
 #define MODEL_RR_SEESAW_PLATFORM                  0x3C        // rr_geo_000908
-#define MODEL_RR_L_SHAPED_PLATFORM                0x3D        // rr_geo_000940 - unused
 #define MODEL_RR_SWINGING_PLATFORM                0x3E        // rr_geo_000860
 #define MODEL_RR_DONUT_PLATFORM                   0x3F        // rr_geo_000920
 #define MODEL_RR_ELEVATOR_PLATFORM                0x40        // rr_geo_0008F0

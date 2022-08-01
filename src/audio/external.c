@@ -2303,7 +2303,7 @@ void func_80320ED8(void) {
 }
 
 void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) {
-    UNUSED u32 dummy;
+
 
     sUnused80332118 = 0;
     if (sPlayer0CurSeqId == 0xff || sPlayer0CurSeqId == SEQ_MENU_TITLE_SCREEN) {

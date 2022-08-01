@@ -805,11 +805,11 @@ s32 update_radial_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     f32 cenDistZ = sMarioCamState->pos[2] - c->areaCenZ;
     s16 camYaw = atan2s(cenDistZ, cenDistX) + sModeOffsetYaw;
     s16 pitch = look_down_slopes(camYaw);
-    UNUSED f32 unused1;
+
     f32 posY;
     f32 focusY;
-    UNUSED f32 unused2;
-    UNUSED f32 unused3;
+
+
     f32 yOff = 125.f;
     f32 baseDist = 1000.f;
 
@@ -831,9 +831,9 @@ s32 update_8_directions_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     s16 pitch = look_down_slopes(camYaw);
     f32 posY;
     f32 focusY;
-    UNUSED f32 unused1;
-    UNUSED f32 unused2;
-    UNUSED f32 unused3;
+
+
+
     f32 yOff = 125.f;
     f32 baseDist = 1000.f;
 
@@ -6562,12 +6562,12 @@ void resolve_geometry_collisions(Vec3f pos, UNUSED Vec3f lastGood) {
  * @return 3 if a wall is covering Mario, 1 if a wall is only near the camera.
  */
 s32 rotate_camera_around_walls(struct Camera *c, Vec3f cPos, s16 *avoidYaw, s16 yawRange) {
-    UNUSED f32 unused1;
+
     struct WallCollisionData colData;
     struct Surface *wall;
     UNUSED Vec3f unused2;
     f32 dummyDist, checkDist;
-    UNUSED f32 unused3;
+
     f32 coarseRadius;
     f32 fineRadius;
     s16 wallYaw, horWallNorm;
@@ -8208,7 +8208,7 @@ BAD_RETURN(s32) cutscene_red_coin_star_end(struct Camera *c) {
  * @param rotYaw constant yaw offset to add to the camera's focus
  */
 void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 rotPitch, s16 rotYaw) {
-    UNUSED f32 unused1;
+
     f32 nextDist;
     s16 nextPitch, nextYaw;
     // The next 2 polar coord points are only used in CUTSCENE_PREPARE_CANNON
@@ -8476,9 +8476,9 @@ BAD_RETURN(s32) cutscene_suffocation_fly_away(UNUSED struct Camera *c) {
  * Keep Lakitu above the gas level.
  */
 BAD_RETURN(s32) cutscene_suffocation_stay_above_gas(struct Camera *c) {
-    UNUSED f32 unused1;
+
     f32 gasLevel;
-    UNUSED f32 unused2;
+
 
     cutscene_goto_cvar_pos(c, 400.f, 0x2800, 0x200, 0);
     gasLevel = find_poison_gas_level(sMarioCamState->pos[0], sMarioCamState->pos[2]);
@@ -8683,7 +8683,7 @@ static void unused_cutscene_goto_cvar(struct Camera *c) {
  * cvar9.angle[1] is the yaw between Mario and the gCutsceneFocus
  */
 BAD_RETURN(s32) cutscene_dialog_start(struct Camera *c) {
-    UNUSED f32 unused1;
+
     UNUSED s16 unused2;
     s16 yaw;
 

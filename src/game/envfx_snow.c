@@ -222,56 +222,6 @@ void envfx_update_snow_normal(s32 snowCylinderX, s32 snowCylinderY, s32 snowCyli
 }
 
 /**
- * Unused function. Basically a copy-paste of envfx_update_snow_normal,
- * but an extra 20 units is added to each snowflake x and snowflakes can
- * respawn in y-range [-200, 200] instead of [0, 200] relative to snowCylinderY
- * They also fall a bit faster (with vertical speed -5 instead of -2).
- */
-void envfx_update_snow_blizzard(s32 snowCylinderX, s32 snowCylinderY, s32 snowCylinderZ) {
-    s32 i;
-    s32 deltaX = snowCylinderX - gSnowCylinderLastPos[0];
-    s32 deltaY = snowCylinderY - gSnowCylinderLastPos[1];
-    s32 deltaZ = snowCylinderZ - gSnowCylinderLastPos[2];
-
-    for (i = 0; i < gSnowParticleCount; i++) {
-        (gEnvFxBuffer + i)->isAlive =
-            envfx_is_snowflake_alive(i, snowCylinderX, snowCylinderY, snowCylinderZ);
-        if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->xPos =
-                400.0f * random_float() - 200.0f + snowCylinderX + (s16)(deltaX * 2);
-            (gEnvFxBuffer + i)->zPos =
-                400.0f * random_float() - 200.0f + snowCylinderZ + (s16)(deltaZ * 2);
-            (gEnvFxBuffer + i)->yPos = 400.0f * random_float() - 200.0f + snowCylinderY;
-            (gEnvFxBuffer + i)->isAlive = 1;
-        } else {
-            (gEnvFxBuffer + i)->xPos += random_float() * 2 - 1.0f + (s16)(deltaX / 1.2) + 20.0f;
-            (gEnvFxBuffer + i)->yPos -= 5 -(s16)(deltaY * 0.8);
-            (gEnvFxBuffer + i)->zPos += random_float() * 2 - 1.0f + (s16)(deltaZ / 1.2);
-        }
-    }
-
-    gSnowCylinderLastPos[0] = snowCylinderX;
-    gSnowCylinderLastPos[1] = snowCylinderY;
-    gSnowCylinderLastPos[2] = snowCylinderZ;
-}
-
-/*! Unused function. Checks whether a position is laterally within 3000 units
- *  to the point (x: 3380, z: -520). Considering there is an unused blizzard
- *  snow mode, this could have been used to check whether Mario is in a
- *  'blizzard area'. In Cool Cool Mountain and Snowman's Land the area lies
- *  near the starting point and doesn't seem meaningful. Notably, the point is
- *  close to the entrance of SL, so maybe there were plans for an extra hint to
- *  find it. The radius of 3000 units is quite large for that though, covering
- *  more than half of the mirror room.
- */
-static s32 is_in_mystery_snow_area(s32 x, UNUSED s32 y, s32 z) {
-    if (sqr(x - 3380) + sqr(z + 520) < sqr(3000)) {
-        return 1;
-    }
-    return 0;
-}
-
-/**
  * Update the position of underwater snow particles. Since they are stationary,
  * they merely jump back into view when they are out of view.
  */
