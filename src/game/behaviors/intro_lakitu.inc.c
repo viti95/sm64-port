@@ -24,7 +24,7 @@ void intro_lakitu_set_offset_from_camera(struct Object *o, Vec3f offset) {
 }
 
 void intro_lakitu_set_focus(struct Object *o, Vec3f newFocus) {
-    UNUSED Vec3f unusedVec3f;
+
     Vec3f origin;
     f32 dist;
     s16 pitch, yaw;
@@ -59,7 +59,7 @@ s32 intro_lakitu_set_pos_and_focus(struct Object *o, struct CutsceneSplinePoint 
 
 void bhv_intro_lakitu_loop(void) {
     Vec3f sp64, sp58, sp4C;
-    UNUSED u32 pad[4];
+
 
     switch (gCurrentObject->oAction) {
         case 0:

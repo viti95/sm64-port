@@ -895,7 +895,7 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
 /**
  * Transitions for a variety of moving actions.
  */
-static u32 set_mario_action_moving(struct MarioState *m, u32 action, UNUSED u32 actionArg) {
+static u32 set_mario_action_moving(struct MarioState *m, u32 action) {
     s16 floorClass = mario_get_floor_class(m);
     f32 forwardVel = m->forwardVel;
     f32 mag = min(m->intendedMag, 8.0f);
@@ -940,7 +940,7 @@ static u32 set_mario_action_moving(struct MarioState *m, u32 action, UNUSED u32 
 /**
  * Transition for certain submerged actions, which is actually just the metal jump actions.
  */
-static u32 set_mario_action_submerged(struct MarioState *m, u32 action, UNUSED u32 actionArg) {
+static u32 set_mario_action_submerged(struct MarioState *m, u32 action) {
     if (action == ACT_METAL_WATER_JUMP || action == ACT_HOLD_METAL_WATER_JUMP) {
         m->vel[1] = 32.0f;
     }
@@ -951,7 +951,7 @@ static u32 set_mario_action_submerged(struct MarioState *m, u32 action, UNUSED u
 /**
  * Transitions for a variety of cutscene actions.
  */
-static u32 set_mario_action_cutscene(struct MarioState *m, u32 action, UNUSED u32 actionArg) {
+static u32 set_mario_action_cutscene(struct MarioState *m, u32 action) {
     switch (action) {
         case ACT_EMERGE_FROM_PIPE:
             m->vel[1] = 52.0f;
@@ -981,7 +981,7 @@ static u32 set_mario_action_cutscene(struct MarioState *m, u32 action, UNUSED u3
 u32 set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
     switch (action & ACT_GROUP_MASK) {
         case ACT_GROUP_MOVING:
-            action = set_mario_action_moving(m, action, actionArg);
+            action = set_mario_action_moving(m, action);
             break;
 
         case ACT_GROUP_AIRBORNE:
@@ -989,11 +989,11 @@ u32 set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
             break;
 
         case ACT_GROUP_SUBMERGED:
-            action = set_mario_action_submerged(m, action, actionArg);
+            action = set_mario_action_submerged(m, action);
             break;
 
         case ACT_GROUP_CUTSCENE:
-            action = set_mario_action_cutscene(m, action, actionArg);
+            action = set_mario_action_cutscene(m, action);
             break;
     }
 
@@ -1660,26 +1660,6 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
     if ((m->flags & MARIO_TELEPORTING) && (m->fadeWarpOpacity != 0xFF)) {
         bodyState->modelState &= ~0xFF;
         bodyState->modelState |= (0x100 | m->fadeWarpOpacity);
-    }
-}
-
-/**
- * An unused and possibly a debug function. Z + another button input
- * sets Mario with a different cap.
- */
-static void debug_update_mario_cap(u16 button, s32 flags, u16 capTimer, u16 capMusic) {
-    // This checks for Z_TRIG instead of Z_DOWN flag
-    // (which is also what other debug functions do),
-    // so likely debug behavior rather than unused behavior.
-    if ((gPlayer1Controller->buttonDown & Z_TRIG) && (gPlayer1Controller->buttonPressed & button)
-        && ((gMarioState->flags & flags) == 0)) {
-        gMarioState->flags |= (flags + MARIO_CAP_ON_HEAD);
-
-        if (capTimer > gMarioState->capTimer) {
-            gMarioState->capTimer = capTimer;
-        }
-
-        play_cap_music(capMusic);
     }
 }
 
