@@ -434,13 +434,6 @@ end:;
 }
 
 /**
- * Unused action function.
- */
-static void koopa_unshelled_act_unused3(void) {
-    cur_obj_init_anim_extend(0);
-}
-
-/**
  * Update function for koopa after losing his shell.
  */
 static void koopa_unshelled_update(void) {
@@ -454,9 +447,6 @@ static void koopa_unshelled_update(void) {
         case KOOPA_UNSHELLED_ACT_DIVE:
         case KOOPA_UNSHELLED_ACT_LYING:
             koopa_unshelled_act_dive();
-            break;
-        case KOOPA_UNSHELLED_ACT_UNUSED3:
-            koopa_unshelled_act_unused3();
             break;
     }
 
@@ -754,7 +744,6 @@ static void koopa_the_quick_update(void) {
 
     switch (o->oAction) {
         case KOOPA_THE_QUICK_ACT_WAIT_BEFORE_RACE:
-        case KOOPA_THE_QUICK_ACT_UNUSED1:
             koopa_the_quick_act_wait_before_race();
             break;
         case KOOPA_THE_QUICK_ACT_SHOW_INIT_TEXT:
