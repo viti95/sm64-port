@@ -179,6 +179,10 @@ static struct RenderingState {
 } rendering_state;
 
 struct GfxDimensions gfx_current_dimensions;
+static float ratio_x = 1.f;
+static float ratio_y = 1.f;
+static float inv_ratio_x = 1.f;
+static float inv_ratio_y = 1.f;
 
 static bool dropped_frame;
 
@@ -1097,6 +1101,11 @@ static void gfx_calc_and_set_viewport(const Vp_t *viewport) {
     float x = (viewport->vtrans[0] / 4.0f) - width / 2.0f;
     float y = SCREEN_HEIGHT - ((viewport->vtrans[1] / 4.0f) + height / 2.0f);
 
+    width *= ratio_x;
+    height *= ratio_y;
+    x *= ratio_x;
+    y *= ratio_y;
+
     rdp.viewport.x = x;
     rdp.viewport.y = y;
     rdp.viewport.width = width;
@@ -1162,10 +1171,10 @@ static void gfx_sp_texture(uint16_t sc, uint16_t tc, uint8_t level, uint8_t tile
 }
 
 static void gfx_dp_set_scissor(uint32_t mode, uint32_t ulx, uint32_t uly, uint32_t lrx, uint32_t lry) {
-    float x = ulx / 4.0f;
-    float y = (SCREEN_HEIGHT - lry / 4.0f);
-    float width = (lrx - ulx) / 4.0f;
-    float height = (lry - uly) / 4.0f;
+    float x = ulx / 4.0f * ratio_x;
+    float y = (SCREEN_HEIGHT - lry / 4.0f) * ratio_y;
+    float width = (lrx - ulx) / 4.0f * ratio_x;
+    float height = (lry - uly) / 4.0f * ratio_y;
 
     rdp.scissor.x = x;
     rdp.scissor.y = y;
@@ -1440,10 +1449,10 @@ static void gfx_dp_texture_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int3
     float lrt = ((ult << 7) + dtdy * height) >> 7;
 
     if (gfx_rapi->tex_rect) {
-        float ulxf = ulx;
-        float ulyf = uly;
-        float lrxf = lrx;
-        float lryf = lry;
+        float ulxf = ulx * ratio_x;
+        float ulyf = uly * ratio_y;
+        float lrxf = lrx * ratio_x;
+        float lryf = lry * ratio_y;
         const float dudx = ((lrs - (float)uls) / (lrxf - ulxf));
         const float dvdy = ((lrt - (float)ult) / (lryf - ulyf));
         const bool used_textures[2] = { true, false };
@@ -1497,10 +1506,10 @@ static void gfx_dp_fill_rectangle(int32_t ulx, int32_t uly, int32_t lrx, int32_t
     gfx_dp_set_combine_mode(color_comb(0, 0, 0, G_CCMUX_SHADE), color_comb(0, 0, 0, G_ACMUX_SHADE));
 
     if (gfx_rapi->fill_rect) {
-        float ulxf = ulx;
-        float ulyf = uly;
-        float lrxf = lrx;
-        float lryf = lry;
+        float ulxf = ulx * ratio_x;
+        float ulyf = uly * ratio_y;
+        float lrxf = lrx * ratio_x;
+        float lryf = lry * ratio_y;
         gfx_pick_combiner(NULL, NULL);
         ulxf = HALF_SCREEN_WIDTH + (ulxf / 4.0f - HALF_SCREEN_WIDTH);
         lrxf = HALF_SCREEN_WIDTH + (lrxf / 4.0f - HALF_SCREEN_WIDTH);
@@ -1815,7 +1824,11 @@ void gfx_start_frame(void) {
         // Avoid division by zero
         gfx_current_dimensions.height = 1;
     }
-    gfx_current_dimensions.aspect_ratio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+    ratio_x = (float)gfx_current_dimensions.width / (float)SCREEN_WIDTH;
+    ratio_y = (float)gfx_current_dimensions.height / (float)SCREEN_HEIGHT;
+    inv_ratio_x = (float)SCREEN_WIDTH / (float)gfx_current_dimensions.width;
+    inv_ratio_y = (float)SCREEN_HEIGHT / (float)gfx_current_dimensions.height;
+    gfx_current_dimensions.aspect_ratio = (float)gfx_current_dimensions.width / (float)gfx_current_dimensions.height;
 }
 
 void gfx_run(Gfx *commands) {
