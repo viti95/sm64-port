@@ -2711,8 +2711,8 @@ void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
  * Also checks if all saves exists and defines text and main menu timers.
  */
 static void print_file_select_strings(void) {
-    UNUSED s32 unused1;
-    UNUSED s32 unused2;
+
+
 
     create_dl_ortho_matrix();
     switch (sSelectedButtonID) {

@@ -391,9 +391,7 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
 #ifdef VERSION_EU
     u16 sp3A; // t2, a0, a1
     s32 sameSound;
-    UNUSED s32 pad[1];
 #else
-    UNUSED s32 pad[1];
     u8 sameSound;    // sp3F
 #endif
     UNUSED u8 allocNewNote; // sp3D, t0
@@ -402,9 +400,9 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
 #ifndef VERSION_EU
     u16 sp3A; // t2, a0, a1
 #endif
-    UNUSED s32 pad2[1];
+
     s32 vel; // sp30, t3
-    UNUSED s32 pad3[1];
+
 #ifdef VERSION_EU
     UNUSED f32 velFloat;
 #endif
@@ -412,21 +410,21 @@ void seq_channel_layer_process_script(struct SequenceChannelLayer *layer) {
 #ifndef VERSION_EU
     f32 sp24;
 #endif
-    UNUSED u8 temp8;
-    UNUSED u8 semitone; // v0
-    UNUSED s32 usedSemitone; // a1
+
+
+
     f32 temp_f12;
     f32 temp_f2;
     s32 temp_a0_5;
-    UNUSED u8 drumIndex; // t0
-    UNUSED s32 cmdBase; // t1
+
+
     u8 temp_a0_6;
-    UNUSED u8 portamentoTargetNote; // t7
+
 #ifndef VERSION_EU
     UNUSED s32 bankId; // a3
 #endif
-    UNUSED u8 instId; // v0
-    UNUSED u8 cmdSemitone; // v1
+
+
     f32 tuning; // f0
 
     sameSound = TRUE;

@@ -66,10 +66,8 @@ void bobomb_check_interactions(void) {
 
 void bobomb_act_patrol(void) {
 
-    UNUSED s16 sp22;
     s16 collisionFlags;
 
-    sp22 = o->header.gfx.unk38.animFrame;
     o->oForwardVel = 5.0;
 
     collisionFlags = object_step();
@@ -287,13 +285,12 @@ void bhv_bobomb_buddy_init(void) {
 void bobomb_buddy_act_idle(void) {
 
     s16 sp1a = o->header.gfx.unk38.animFrame;
-    UNUSED s16 collisionFlags = 0;
 
     o->oBobombBuddyPosXCopy = o->oPosX;
     o->oBobombBuddyPosYCopy = o->oPosY;
     o->oBobombBuddyPosZCopy = o->oPosZ;
 
-    collisionFlags = object_step();
+    object_step();
 
     if ((sp1a == 5) || (sp1a == 16))
         cur_obj_play_sound_2(SOUND_OBJ_BOBOMB_WALK);

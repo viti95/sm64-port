@@ -261,14 +261,14 @@ static s16 upper_cell_index(s16 coord) {
  */
 static void add_surface(struct Surface *surface, s32 dynamic) {
     // minY/maxY maybe? s32 instead of s16, though.
-    UNUSED s32 unused1, unused2;
+
     s16 minX, minZ, maxX, maxZ;
 
     s16 minCellX, minCellZ, maxCellX, maxCellZ;
 
     s16 cellZ, cellX;
     // cellY maybe? s32 instead of s16, though.
-    UNUSED s32 unused3 = 0;
+
 
     minX = min_3(surface->vertex1[0], surface->vertex2[0], surface->vertex3[0]);
     minZ = min_3(surface->vertex1[2], surface->vertex2[2], surface->vertex3[2]);
@@ -481,8 +481,8 @@ static void load_static_surfaces(s16 **data, s16 *vertexData, s16 surfaceType, s
  */
 static s16 *read_vertex_data(s16 **data) {
     s32 numVertices;
-    UNUSED s16 unused1[3];
-    UNUSED s16 unused2[3];
+
+
     s16 *vertexData;
 
     numVertices = *(*data);
@@ -508,15 +508,13 @@ static void load_environmental_regions(s16 **data) {
     }
 
     for (i = 0; i < numRegions; i++) {
-        UNUSED s16 val, loX, loZ, hiX, hiZ;
         s16 height;
 
-        val = *(*data)++;
-
-        loX = *(*data)++;
-        hiX = *(*data)++;
-        loZ = *(*data)++;
-        hiZ = *(*data)++;
+        *(*data)++;
+        *(*data)++;
+        *(*data)++;
+        *(*data)++;
+        *(*data)++;
 
         height = *(*data)++;
 

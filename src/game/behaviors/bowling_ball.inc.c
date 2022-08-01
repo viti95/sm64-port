@@ -228,7 +228,7 @@ void bhv_bob_pit_bowling_ball_init(void) {
 
 void bhv_bob_pit_bowling_ball_loop(void) {
     struct FloorGeometry *sp1c;
-    UNUSED s16 collisionFlags = object_step();
+    object_step();
 
     find_floor_height_and_data(o->oPosX, o->oPosY, o->oPosZ, &sp1c);
     if ((sp1c->normalX == 0) && (sp1c->normalZ == 0))

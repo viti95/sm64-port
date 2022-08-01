@@ -328,7 +328,7 @@ void bowser_act_breath_fire(void) {
 
 void bowser_act_walk_to_mario(void) // turn towards Mario
 {
-    UNUSED s32 facing; // is Bowser facing Mario?
+
     s16 turnSpeed;
     s16 angleFromMario = abs_angle_diff(o->oMoveAngleYaw, o->oAngleToMario);
     if (BITFS)
@@ -339,7 +339,7 @@ void bowser_act_walk_to_mario(void) // turn towards Mario
         turnSpeed = 0x300;
     else
         turnSpeed = 0x200;
-    facing = cur_obj_rotate_yaw_toward(o->oAngleToMario, turnSpeed);
+    cur_obj_rotate_yaw_toward(o->oAngleToMario, turnSpeed);
     if (o->oSubAction == 0) {
         o->oBowserUnkF8 = 0;
         if (bowser_set_anim_look_up_and_walk())
@@ -921,7 +921,7 @@ void bowser_tilt_platform(struct Object *platform, s16 a1) {
 
 void bowser_act_ride_tilting_platform(void) {
     struct Object *platform = cur_obj_nearest_object_with_behavior(bhvTiltingBowserLavaPlatform);
-    UNUSED s16 sp2A = o->oBowserAngleToCentre + 0x8000;
+
     s16 sp28;
 
     s32 i;

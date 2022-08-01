@@ -554,7 +554,7 @@ static s32 bhv_cmd_drop_to_floor(void) {
 // Command 0x18: No operation. Unused.
 // Usage: CMD_NOP_1(field)
 static s32 bhv_cmd_nop_1(void) {
-    UNUSED u8 field = BHV_CMD_GET_2ND_U8(0);
+
 
     gCurBhvCommand++;
     return BHV_PROC_CONTINUE;
@@ -563,7 +563,7 @@ static s32 bhv_cmd_nop_1(void) {
 // Command 0x1A: No operation. Unused.
 // Usage: CMD_NOP_3(field)
 static s32 bhv_cmd_nop_3(void) {
-    UNUSED u8 field = BHV_CMD_GET_2ND_U8(0);
+
 
     gCurBhvCommand++;
     return BHV_PROC_CONTINUE;
@@ -572,7 +572,7 @@ static s32 bhv_cmd_nop_3(void) {
 // Command 0x19: No operation. Unused.
 // Usage: CMD_NOP_2(field)
 static s32 bhv_cmd_nop_2(void) {
-    UNUSED u8 field = BHV_CMD_GET_2ND_U8(0);
+
 
     gCurBhvCommand++;
     return BHV_PROC_CONTINUE;
@@ -648,8 +648,8 @@ static s32 bhv_cmd_set_hitbox_with_offset(void) {
 // Command 0x24: No operation. Unused.
 // Usage: CMD_NOP_4(field, value)
 static s32 bhv_cmd_nop_4(void) {
-    UNUSED s16 field = BHV_CMD_GET_2ND_U8(0);
-    UNUSED s16 value = BHV_CMD_GET_2ND_S16(0);
+
+
 
     gCurBhvCommand++;
     return BHV_PROC_CONTINUE;
@@ -764,7 +764,7 @@ static s32 bhv_cmd_set_interact_subtype(void) {
 // Command 0x32: Sets the object's size to the specified percentage.
 // Usage: SCALE(unusedField, percent)
 static s32 bhv_cmd_scale(void) {
-    UNUSED u8 unusedField = BHV_CMD_GET_2ND_U8(0);
+
     s16 percent = BHV_CMD_GET_2ND_S16(0);
 
     cur_obj_scale(percent / 100.0f);
@@ -777,17 +777,12 @@ static s32 bhv_cmd_scale(void) {
 // Command 0x30: Sets various parameters that the object uses for calculating physics.
 // Usage: SET_OBJ_PHYSICS(wallHitboxRadius, gravity, bounciness, dragStrength, friction, buoyancy, unused1, unused2)
 static s32 bhv_cmd_set_obj_physics(void) {
-    UNUSED f32 unused1, unused2;
-
     gCurrentObject->oWallHitboxRadius = BHV_CMD_GET_1ST_S16(1);
     gCurrentObject->oGravity = BHV_CMD_GET_2ND_S16(1) / 100.0f;
     gCurrentObject->oBounciness = BHV_CMD_GET_1ST_S16(2) / 100.0f;
     gCurrentObject->oDragStrength = BHV_CMD_GET_2ND_S16(2) / 100.0f;
     gCurrentObject->oFriction = BHV_CMD_GET_1ST_S16(3) / 100.0f;
     gCurrentObject->oBuoyancy = BHV_CMD_GET_2ND_S16(3) / 100.0f;
-
-    unused1 = BHV_CMD_GET_1ST_S16(4) / 100.0f;
-    unused2 = BHV_CMD_GET_2ND_S16(4) / 100.0f;
 
     gCurBhvCommand += 5;
     return BHV_PROC_CONTINUE;
