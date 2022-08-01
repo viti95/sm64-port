@@ -1,8 +1,6 @@
 // mushroom_1up.c.inc
 
 void bhv_1up_interact(void) {
-    UNUSED s32 sp1C;
-
     if (obj_check_if_collided_with_object(o, gMarioObject) == 1) {
         play_sound(SOUND_GENERAL_COLLECT_1UP, gDefaultSoundArgs);
         gMarioState->numLives++;
@@ -197,7 +195,7 @@ void bhv_1up_jump_on_approach_loop(void) {
             break;
 
         case 2:
-            sp26 = object_step();
+            object_step();
             bhv_1up_interact();
             obj_flicker_and_disappear(o, 30);
             break;
@@ -226,13 +224,13 @@ void bhv_1up_hidden_loop(void) {
             break;
 
         case 2:
-            sp26 = object_step();
+            object_step();
             bhv_1up_interact();
             obj_flicker_and_disappear(o, 30);
             break;
 
         case 3:
-            sp26 = object_step();
+            object_step();
             if (o->oTimer >= 18)
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 
@@ -259,7 +257,6 @@ void bhv_1up_hidden_trigger_loop(void) {
 }
 
 void bhv_1up_hidden_in_pole_loop(void) {
-    UNUSED s16 sp26;
     switch (o->oAction) {
         case 0:
             o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
@@ -273,11 +270,11 @@ void bhv_1up_hidden_in_pole_loop(void) {
 
         case 1:
             pole_1up_move_towards_mario();
-            sp26 = object_step();
+            object_step();
             break;
 
         case 3:
-            sp26 = object_step();
+            object_step();
             if (o->oTimer >= 18)
                 spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
 

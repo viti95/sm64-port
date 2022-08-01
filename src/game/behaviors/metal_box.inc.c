@@ -25,7 +25,6 @@ s32 check_if_moving_over_floor(f32 a0, f32 a1) {
 }
 
 void bhv_pushable_loop(void) {
-    UNUSED s16 unused;
     s16 sp1C;
     obj_set_hitbox(o, &sMetalBoxHitbox);
     o->oForwardVel = 0.0f;

@@ -72,7 +72,6 @@ void mr_i_act_3(void) {
     s16 sp34;
     f32 sp30;
     f32 sp2C;
-    UNUSED u8 pad[8];
     f32 sp20;
     f32 sp1C;
     if (o->oBehParams2ndByte)
